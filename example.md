@@ -7,7 +7,7 @@ Testing was done using multiple large logs from a DXpedition.
 ```
 require_once 'vendor/autoload.php';
 
-use RFingAround\Adif\Adif;
+use Pota\Adif\Adif;
 
 $lib = new Adif;
 
