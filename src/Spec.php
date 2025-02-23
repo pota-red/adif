@@ -1,6 +1,6 @@
 <?php
 
-namespace RFingAround\Adif;
+namespace Pota\Adif;
 
 class Spec {
 
@@ -52,10 +52,10 @@ class Spec {
         'ISCAT' => ['ISCAT-A', 'ISCAT-B'],
         'JT4' => ['JT4A', 'JT4B', 'JT4C', 'JT4D', 'JT4E', 'JT4F', 'JT4G'],
         'JT6M' => [],
-        'JT9' => ['JT9-1', 'JT9-2', 'JT9-5', 'JT9-10', 'JT9-30', 'JT9A', 'JT9B', 'JT9C', 'JT9D', 'JT9E', 'JT9E FAST', 'JT9F', 'JT9F FAST', 'JT9G', 'JT9G FAST', 'JT9H', 'JT9H FAST'],	 
+        'JT9' => ['JT9-1', 'JT9-2', 'JT9-5', 'JT9-10', 'JT9-30', 'JT9A', 'JT9B', 'JT9C', 'JT9D', 'JT9E', 'JT9E FAST', 'JT9F', 'JT9F FAST', 'JT9G', 'JT9G FAST', 'JT9H', 'JT9H FAST'],
         'JT44' => [],
-        'JT65' => ['JT65A', 'JT65B', 'JT65B2', 'JT65C', 'JT65C2'],	 
-        'MFSK' => ['FSQCALL', 'FST4', 'FST4W', 'FT4', 'JS8', 'JTMS', 'MFSK4', 'MFSK8', 'MFSK11', 'MFSK16', 'MFSK22', 'MFSK31', 'MFSK32', 'MFSK64', 'MFSK64L', 'MFSK128', 'MFSK128L', 'Q65'],	 
+        'JT65' => ['JT65A', 'JT65B', 'JT65B2', 'JT65C', 'JT65C2'],
+        'MFSK' => ['FSQCALL', 'FST4', 'FST4W', 'FT4', 'JS8', 'JTMS', 'MFSK4', 'MFSK8', 'MFSK11', 'MFSK16', 'MFSK22', 'MFSK31', 'MFSK32', 'MFSK64', 'MFSK64L', 'MFSK128', 'MFSK128L', 'Q65'],
         'MSK144' => [],
         'MT63' => [],
         'OLIVIA' => ['OLIVIA 4/125', 'OLIVIA 4/250', 'OLIVIA 8/250', 'OLIVIA 8/500', 'OLIVIA 16/500', 'OLIVIA 16/1000', 'OLIVIA 32/1000'],
@@ -69,7 +69,7 @@ class Spec {
         'Q15' => [],
         'QRA64' => ['QRA64A', 'QRA64B', 'QRA64C', 'QRA64D', 'QRA64E'],
         'ROS' => ['ROS-EME', 'ROS-HF', 'ROS-MF'],
-        'RTTY' => ['ASCI'],	 
+        'RTTY' => ['ASCI'],
         'RTTYM' => [],
         'SSB' => ['LSB', 'USB'],
         'SSTV' => [],
@@ -80,7 +80,7 @@ class Spec {
         'V4' => [],
         'VOI' => [],
         'WINMOR' => [],
-        'WSPR' => [] 
+        'WSPR' => []
     ];
 
     public static array $enum_dxcc_entity = [0 => 'None', 1 => 'CANADA', 3 => 'AFGHANISTAN', 4 => 'AGALEGA & ST. BRANDON IS.', 5 => 'ALAND IS.', 6 => 'ALASKA',

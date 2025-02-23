@@ -1,6 +1,6 @@
 <?php
 
-namespace RFingAround\Adif;
+namespace Pota\Adif;
 
 class Validator {
 
@@ -25,7 +25,7 @@ class Validator {
                     }
                     break;
                 case 'ant_path':
-                    if (!Spec::isAntennaPath($v)) {
+                    if (!Spec::isAntPath($v)) {
                         $errors[] = $k;
                     }
                     break;
@@ -188,7 +188,12 @@ class Validator {
                 case 'hamqth_qso_upload_status':
                 case 'hrdlog_qso_upload_status':
                 case 'qrzcom_qso_upload_status':
-                    if (!Spec::isQsoUploadStatus($v)) {
+                    if (!Spec::isQsoUpload($v)) {
+                        $errors[] = $k;
+                    }
+                    break;
+                case 'qrzcom_qso_download_status':
+                    if (!Spec::isQsoDownload($v)) {
                         $errors[] = $k;
                     }
                     break;
@@ -210,7 +215,7 @@ class Validator {
                     break;
                 case 'qsl_rcvd_via':
                 case 'qsl_sent_via':
-                    if (!Spec::isQsoVia($v)) {
+                    if (!Spec::isQslVia($v)) {
                         $errors[] = $k;
                     }
                     break;
@@ -227,6 +232,12 @@ class Validator {
                     break;
                 case 'prop_mode':
                     if (!Spec::isPropagation($v)) {
+                        $errors[] = $k;
+                    }
+                    break;
+                case 'pota_ref':
+                case 'my_pota_ref':
+                    if (!Spec::isPotaRef($v)) {
                         $errors[] = $k;
                     }
                     break;

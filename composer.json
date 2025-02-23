@@ -1,5 +1,5 @@
 {
-    "name": "rfingaround/adif",
+    "name": "pota/adif",
     "description": "ADIF file format handling tools",
     "authors": [
         {
@@ -15,7 +15,7 @@
     ],
     "type": "library",
     "keywords": [
-        "RFingAround",
+        "POTA",
         "ADIF"
     ],
     "license": "MIT",
@@ -24,7 +24,7 @@
     },
     "autoload": {
         "psr-4": {
-            "RFingAround\\Adif\\": "src/"
+            "Pota\\Adif\\": "src/"
         }
     }
 }

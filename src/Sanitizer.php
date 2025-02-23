@@ -1,6 +1,6 @@
 <?php
 
-namespace RFingAround\Adif;
+namespace Pota\Adif;
 
 class Sanitizer {
 
@@ -83,7 +83,7 @@ class Sanitizer {
                 case 'mode':
                     $v = trim(strtoupper($v));
                     if (preg_match('/^(USB)|(LSB)$/', $v)) {
-                        $entry['submode'] = $v;                            
+                        $entry['submode'] = $v;
                         $v = 'SSB';
                     }
                     $hash[$k] = $v;

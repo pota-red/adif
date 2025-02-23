@@ -1,11 +1,11 @@
 <?php
 
-namespace RFingAround\Adif;
+namespace Pota\Adif;
 
-use RFingAround\Adif\Spec;
-use RFingAround\Adif\Document;
-use RFingAround\Adif\Sanitizer;
-use RFingAround\Adif\Validator;
+use Pota\Adif\Spec;
+use Pota\Adif\Document;
+use Pota\Adif\Sanitizer;
+use Pota\Adif\Validator;
 
 class Adif {
 

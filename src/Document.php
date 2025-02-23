@@ -1,6 +1,6 @@
 <?php
 
-namespace RFingAround\Adif;
+namespace Pota\Adif;
 
 class Document {
 
