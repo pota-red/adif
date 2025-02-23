@@ -6,9 +6,18 @@ class Validator {
 
     public static function entry(array $fields) : bool|array {
         $errors = [];
+        $required = Spec::$base_fields;
+        $self = [];
         foreach ($fields as $k => $v) {
             $k = trim(strtolower($k));
+            if (in_array($k, $required)) {
+                unset($required[$k]);
+            }
             switch ($k) {
+                case 'call':
+                case 'operator':
+                    $self[] = $v;
+                    break;
                 case 'age':
                     if (!is_numeric($v) || $v < 0 || $v > 120) {
                         $errors[] = $k;
@@ -153,21 +162,9 @@ class Validator {
                         }
                     }
                     break;
-                case 'iota':
-                case 'my_iota':
-                    if (!Spec::isIotaRef($v)) {
-                        $errors[] = $k;
-                    }
-                    break;
                 case 'rst_rcvd':
                 case 'rst_sent':
                     if (!Spec::isRst($v)) {
-                        $errors[] = $k;
-                    }
-                    break;
-                case 'wwff_ref':
-                case 'my_wwff_ref':
-                    if (!Spec::isWwffRef($v)) {
                         $errors[] = $k;
                     }
                     break;
@@ -241,9 +238,44 @@ class Validator {
                         $errors[] = $k;
                     }
                     break;
+                case 'sota_ref':
+                case 'my_sota_ref':
+                    if (!Spec::isSotaRef($v)) {
+                        $errors[] = $k;
+                    }
+                    break;
+                case 'iota':
+                case 'my_iota':
+                    if (!Spec::isIotaRef($v)) {
+                        $errors[] = $k;
+                    }
+                    break;
+                case 'wwff_ref':
+                case 'my_wwff_ref':
+                    if (!Spec::isWwffRef($v)) {
+                        $errors[] = $k;
+                    }
+                    break;
+            }
+            if (count(array_unique($self)) != 2) {
+                $errors[] = '@self';
             }
         }
+        foreach ($required as $k) {
+            $errors[] = $k;
+        }
         return empty($errors) ? true : $errors;
+    }
+
+    public static function duration(array $entries) : bool {
+        $f = time();
+        $l = 0;
+        foreach ($entries as $entry) {
+            $t = strtotime($entry['qso_date'] . ' ' . $entry['time_on']);
+            $f = $t < $f ? $t : $f;
+            $l = $t > $l ? $t : $l;
+        }
+        return (($l - $f) / count($entries)) >= 1;
     }
 
 }

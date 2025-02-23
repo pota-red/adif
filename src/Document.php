@@ -205,6 +205,9 @@ class Document {
                 $this->errors[$i] = $v;
             }
         }
+        if (!Validator::duration($this->entries)) {
+            $this->errors['@'][] = 'qps';
+        }
         $this->timer($tick, __FUNCTION__);
     }
 
