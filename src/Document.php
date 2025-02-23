@@ -15,13 +15,14 @@ class Document {
     private array $timers = [];
     private string $raw = '';
     private array $sources = [];
+    private array $chunks = [];
     private int $first_entry = -1;
     private int $last_entry = -1;
 
     public function __construct(string $data = null) {
         if (!empty($data)) {
             if (str_contains($data, '<eor>') || str_contains($data, '<EOR>')) {
-                $this->ftomString($data);
+                $this->fromString($data);
             } else if (is_file($data)) {
                 $this->fromFile($data);
             } else {
@@ -265,6 +266,33 @@ class Document {
         $this->timer($tick, __FUNCTION__);
     }
 
+    public function chunk(int $size = Adif::CHUNK_MAX_SIZE) : void {
+        $tick = $this->tick();
+        $current_size = strlen(json_encode($this->entries));
+        if ($current_size > $size) {
+            $chunk_size = 0;
+            $chunk_data = [];
+            foreach ($this->entries as $i => $entry) {
+                $entry_size = strlen(json_encode($entry));
+                if ($chunk_size + $entry_size <= $size) {
+                    $chunk_data[] = $i;
+                    $chunk_size += $entry_size;
+                } else {
+                    $this->chunks[] = $chunk_data;
+                    $chunk_data = [];
+                    $chunk_size = $entry_size;
+                    $chunk_data[] = $i;
+                }
+            }
+            if (count($chunk_data)) {
+                $this->chunks[] = $chunk_data;
+            }
+        } else {
+            $this->chunks[] = array_keys($this->entries);
+        }
+        $this->timer($tick, __FUNCTION__);
+    }
+
     private function generateAdifKeyValue(string $key, string $value, bool $newline = true) : string {
         $key = trim(strtolower($key));
         $value = trim($value);
@@ -313,7 +341,16 @@ class Document {
         if (count($this->headers)) {
             $data['headers'] = $this->headers;
         }
-        if (count($this->entries)) {
+        if (count($this->chunks)) {
+            $data['meta']['chunks'] = count($this->chunks);
+            foreach ($this->chunks as $chunk) {
+                $entries = [];
+                foreach ($chunk as $i) {
+                    $entries[] = $this->entries[$i];
+                }
+                $data['entries'][] = $entries;
+            }
+        } else if (count($this->entries)) {
             $data['entries'] = $this->entries;
         }
         $data['timers'] = $this->timers;
@@ -322,8 +359,7 @@ class Document {
         $data['timers'][$fn] = $tm;
         $json = ($pretty ? json_encode($data, JSON_PRETTY_PRINT) : json_encode($data)) . PHP_EOL;
         $this->timer($tick, $fn);
-        $json = str_replace($tm, (float)$this->getTimers($fn), $json);
-        return $json;
+        return str_replace($tm, (float)$this->getTimers($fn), $json);
     }
 
 }

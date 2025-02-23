@@ -1,6 +1,18 @@
 {
     "name": "rfingaround/adif",
     "description": "ADIF file format handling tools",
+    "authors": [
+        {
+            "name": "James Linden (VE3JLN/N6NRD)",
+            "email": "rfingaround@gmail.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Dan Muntz (WD4DAN)",
+            "email": "muntz.dan@gmail.com",
+            "role": "Developer"
+        }
+    ],
     "type": "library",
     "keywords": [
         "RFingAround",
