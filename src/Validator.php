@@ -268,14 +268,21 @@ class Validator {
     }
 
     public static function duration(array $entries) : bool {
-        $f = time();
-        $l = 0;
+        $hashes = [];
         foreach ($entries as $entry) {
-            $t = strtotime($entry['qso_date'] . ' ' . $entry['time_on']);
-            $f = $t < $f ? $t : $f;
-            $l = $t > $l ? $t : $l;
+            $hash = [
+                $entry['qso_date'],
+                $entry['time_on'],
+                array_key_exists('pota_ref', $entry) ? $entry['pota_ref'] : null,
+                array_key_exists('my_pota_ref', $entry) ? $entry['my_pota_ref'] : null,
+            ];
+            $hash = implode('|', $hash);
+            if (in_array($hash, $hashes)) {
+                return false;
+            }
+            $hashes[] = $hash;
         }
-        return (($l - $f) / count($entries)) >= 1;
+        return true;
     }
 
 }
