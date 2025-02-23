@@ -25,6 +25,34 @@ A general purpose ADIF handling library.
 
 ## Usage
 
+### Include With `composer`
+
+Add repository and require to your `composer.json`.
+```
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/pota-red/adif"
+        }
+    ],
+    "require": {
+        "pota/adif": "@dev"
+    }
+}
+```
+Run `composer update`.
+
+
+### Setup Your Script
+
+```
+require 'vendor/autoload.php';
+
+use Pota\Adif\Adif;
+use Pota\Adif\Document;
+```
+
 Full usage example at [example.md](example.md).
 
 ### Fresh ADIF
