@@ -15,6 +15,8 @@ class Document {
     private array $timers = [];
     private string $raw = '';
     private array $sources = [];
+    private int $first_entry = -1;
+    private int $last_entry = -1;
 
     public function __construct(string $data = null) {
         if (!empty($data)) {
@@ -102,6 +104,8 @@ class Document {
     }
 
     public function parseEntries(string $text) : array {
+        $first = time();
+        $last = 0;
         $data = [];
         $text = explode('<eor>', strtolower($text));
         foreach ($text as $chunk) {
@@ -112,12 +116,23 @@ class Document {
                     $f = $fs[1][$i];
                     $v = trim($fs[2][$i]);
                     if (!empty($v)) {
-                        $vs[$f] = $v;                            
+                        $vs[$f] = $v;
                     }
                 }
                 if (!empty($vs)) {
                     ksort($vs);
                     $data[] = $vs;
+                }
+                if (array_key_exists('qso_date', $vs) && array_key_exists('time_on', $vs)) {
+                    $t = strtotime($vs['qso_date'] . ' ' . $vs['time_on']);
+                    if ($t < $first) {
+                        $first = $t;
+                        $this->first_entry = count($data) - 1;
+                    }
+                    if ($t > $last) {
+                        $last = $t;
+                        $this->last_entry = count($data) - 1;
+                    }
                 }
                 unset($vs);
             }
@@ -163,6 +178,14 @@ class Document {
 
     public function getEntries() : array {
         return $this->entries;
+    }
+
+    public function getFirstEntry() : array|null {
+        return $this->first_entry > -1 ? $this->entries[$this->first_entry] : null;
+    }
+
+    public function getLastEntry() : array|null {
+        return $this->last_entry > -1 ? $this->entries[$this->last_entry] : null;
     }
 
     public function sanitize() : void {
