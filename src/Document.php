@@ -81,7 +81,7 @@ class Document {
     public function sumTimers() {
         $sum = 0;
         foreach ($this->timers as $value) {
-            $sum +=- $value;
+            $sum += $value;
         }
         return $sum;
     }
