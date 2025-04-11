@@ -10,9 +10,11 @@ class Validator {
         $self = [];
         foreach ($fields as $k => $v) {
             $k = trim(strtolower($k));
+            echo $k, chr(9), (in_array($k, $required) ? 'Y' : 'N'), chr(9);
             if (in_array($k, $required)) {
                 unset($required[$k]);
             }
+            echo (in_array($k, $required) ? 'Y' : 'N'), PHP_EOL;
             switch ($k) {
                 case 'call':
                 case 'operator':
