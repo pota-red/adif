@@ -271,7 +271,8 @@ class Spec {
         $len = strlen($text);
         if ($len >= 2 && $len <= 4) {
             $rs = ['[1-5][1-9nx]', '[1-9nx]', '[ackmsx]'];
-            return preg_match('/^' . implode('', array_slice($rs, 0, $len - 1)) . '$/', strtolower($text));
+            $re = '/^[+-]?[0-9]{1,2}$/';
+            return preg_match('/^' . implode('', array_slice($rs, 0, $len - 1)) . '$/', strtolower($text)) || preg_match($re, $text);
         }
         return false;
     }
