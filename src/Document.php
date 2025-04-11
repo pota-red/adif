@@ -221,12 +221,8 @@ class Document {
         foreach ($this->entries as $i => $entry) {
             $errors = Validator::entry($entry);
             if (is_array($errors)) {
-                print_r($entry);
-                print_r($errors);
                 if ($this->mode == self::MODE_POTA) {
                     list($clean, $errors) = Sanitizer::filter($entry, $errors, Spec::$pota_optional);
-                    print_r($clean);
-                    print_r($errors);
                     $this->entries[$i] = $clean;
                 }
                 if (is_array($errors)) {
