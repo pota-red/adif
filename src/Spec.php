@@ -172,14 +172,17 @@ class Spec {
         'RPT' => 'Terrestrial or atmospheric repeater or transponder', 'RS' => 'Rain scatter', 'SAT' => 'Satellite', 'TEP' => 'Trans-equatorial',
         'TR' => 'Tropospheric ducting'];
 
-    public static array $pota_fields = [
-        'band', 'band_rx', 'call', 'cnty', 'freq', 'freq_rx', 'gridsquare', 'mode', 'my_antenna', 'my_gridsquare', 'my_lat', 'my_lon', 'my_pota_ref',
-        'my_rig', 'my_sig', 'my_sig_info', 'my_state', 'operator', 'pota_ref', 'qso_date', 'rst_rcvd', 'rst_sent', 'rx_pwr', 'sat_mode', 'sat_name',
-        'sig', 'sig_info', 'state', 'station_callsign', 'submode', 'time_on', 'tx_pwr', 'my_sig', 'my_sig_info'];
-
     public static array $base_fields = ['band', 'call', 'mode', 'operator', 'qso_date', 'time_on'];
 
+    public static array $pota_fields = ['band', 'band_rx', 'call', 'cnty', 'freq', 'freq_rx', 'gridsquare', 'mode', 'my_antenna', 'my_gridsquare',
+        'my_lat', 'my_lon', 'my_pota_ref', 'my_rig', 'my_sig', 'my_sig_info', 'my_state', 'operator', 'pota_ref', 'qso_date', 'rst_rcvd', 'rst_sent',
+        'rx_pwr', 'sat_mode', 'sat_name', 'sig', 'sig_info', 'state', 'station_callsign', 'submode', 'time_on', 'tx_pwr', 'my_sig', 'my_sig_info'];
+
     public static array $pota_unique = ['band', 'call', 'mode', 'my_pota_ref', 'my_sig_info', 'operator', 'pota_ref', 'qso_date', 'sig_info', 'submode'];
+
+    public static array $pota_optional = ['band_rx', 'cnty', 'freq_rx', 'gridsquare', 'my_antenna', 'my_gridsquare', 'my_lat', 'my_lon', 'my_rig', 'my_sig',
+        'my_sig_info', 'my_state', 'pota_ref', 'rst_rcvd', 'rst_sent', 'rx_pwr', 'sat_mode', 'sat_name', 'sig', 'sig_info', 'state', 'station_callsign',
+        'submode', 'tx_pwr', 'my_sig', 'my_sig_info'];
 
     public static function isField(string $text) : bool {
         return in_array(strtolower($text), self::$enum_field);
@@ -306,6 +309,16 @@ class Spec {
             }
         }
         return false;
+    }
+
+    public static function bandFromFreq(string $text) : string|null {
+        $text = (float)$text;
+        foreach (self::$enum_band as $band => $range) {
+            if ($text >= $range[0] && $text <= $range[1]) {
+                return $band;
+            }
+        }
+        return null;
     }
 
     public static function isPotaRef(string $text) : bool {

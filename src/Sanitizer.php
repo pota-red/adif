@@ -62,6 +62,7 @@ class Sanitizer {
                     }
                     break;
                 case 'band':
+                case 'band_rx':
                 case 'call':
                 case 'pota_ref':
                 case 'my_pota_ref':
@@ -69,7 +70,6 @@ class Sanitizer {
                 case 'my_sig_info':
                 case 'operator':
                 case 'station_callsign':
-                case 'band_rx':
                 case 'cnty':
                 case 'submode':
                 case 'state':
@@ -83,7 +83,7 @@ class Sanitizer {
                 case 'mode':
                     $v = trim(strtoupper($v));
                     if (preg_match('/^(USB)|(LSB)$/', $v)) {
-                        $entry['submode'] = $v;
+                        $fields['submode'] = $v;
                         $v = 'SSB';
                     }
                     $hash[$k] = $v;
@@ -135,7 +135,23 @@ class Sanitizer {
             }
             $fields[$k] = $v;
         }
+        if (array_key_exists('band', $fields) && !Spec::isBand($fields['band']) && array_key_exists('freq', $fields)) {
+            $fields['band'] = Spec::bandFromFreq($fields['freq']);
+        }
+        if (array_key_exists('band_rx', $fields) && !Spec::isBand($fields['band_rx']) && array_key_exists('freq_rx', $fields)) {
+            $fields['band_rx'] = Spec::bandFromFreq($fields['freq_rx']);
+        }
         return $fields;
+    }
+
+    public static function filter(array $fields, array $errors, array $optional) : array {
+        foreach ($errors as $k => $v) {
+            if (in_array($k, $optional)) {
+                unset($fields[$v]);
+                unset($errors[$k]);
+            }
+        }
+        return [$fields, count($errors) == 0 ?? null];
     }
 
 }

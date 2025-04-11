@@ -283,7 +283,8 @@ class Validator {
                 $last = $stamp;
             }
         }
-        return (count($entries) / ($last - $first) < 5);
+        $diff = ($last - $first);
+        return ($diff > 0 && (count($entries) / $diff) < 5);
     }
 
 }

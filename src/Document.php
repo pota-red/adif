@@ -4,6 +4,9 @@ namespace Pota\Adif;
 
 class Document {
 
+    public const int MODE_DEFAULT = 1;
+    public const int MODE_POTA = 2;
+
     protected int $size = 0;
     public int $count = 0;
     protected string $path = '';
@@ -19,6 +22,7 @@ class Document {
     private int $first_entry = -1;
     private int $last_entry = -1;
     private array $overrides = [];
+    private int $mode = self::MODE_DEFAULT;
 
     public function __construct(string $data = null) {
         if (!empty($data)) {
@@ -29,6 +33,12 @@ class Document {
             } else {
                 throw new \Exception('Unable to create instance of ' . __CLASS__);
             }
+        }
+    }
+
+    public function setMode(int $mode) {
+        if ($mode == self::MODE_DEFAULT || $mode == self::MODE_POTA) {
+            $this->mode = $mode;
         }
     }
 
@@ -209,9 +219,15 @@ class Document {
     public function validate() : void {
         $tick = $this->tick();
         foreach ($this->entries as $i => $entry) {
-            $v = Validator::entry($entry);
-            if ($v !== true) {
-                $this->errors[$i] = $v;
+            $errors = Validator::entry($entry);
+            if (is_array($errors)) {
+                if ($this->mode == self::MODE_POTA) {
+                    list($entry, $errors) = Sanitizer::filter($entry, $errors, Spec::$pota_optional);
+                    $this->entries[$i] = $entry;
+                }
+                if (is_array($errors)) {
+                    $this->errors[$i] = $errors;
+                }
             }
         }
         if (!Validator::duration($this->entries)) {
