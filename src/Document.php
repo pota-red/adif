@@ -222,10 +222,12 @@ class Document {
             $errors = Validator::entry($entry);
             if (is_array($errors)) {
                 print_r($entry);
+                print_r($errors);
                 if ($this->mode == self::MODE_POTA) {
-                    list($entry, $errors) = Sanitizer::filter($entry, $errors, Spec::$pota_optional);
-                    print_r($entry);
-                    $this->entries[$i] = $entry;
+                    list($clean, $errors) = Sanitizer::filter($entry, $errors, Spec::$pota_optional);
+                    print_r($clean);
+                    print_r($errors);
+                    $this->entries[$i] = $clean;
                 }
                 if (is_array($errors)) {
                     $this->errors[$i] = $errors;

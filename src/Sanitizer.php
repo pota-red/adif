@@ -146,6 +146,9 @@ class Sanitizer {
 
     public static function filter(array $fields, array $errors, array $optional) : array {
         foreach ($errors as $k => $v) {
+            echo $k, PHP_EOL;
+            echo $v, PHP_EOL;
+            echo PHP_EOL;
             if (in_array($k, $optional)) {
                 unset($fields[$v]);
                 unset($errors[$k]);
