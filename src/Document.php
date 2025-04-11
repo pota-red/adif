@@ -23,6 +23,7 @@ class Document {
     private int $last_entry = -1;
     private array $overrides = [];
     private int $mode = self::MODE_DEFAULT;
+    private bool $check_qps = true;
 
     public function __construct(string $data = null) {
         if (!empty($data)) {
@@ -36,10 +37,14 @@ class Document {
         }
     }
 
-    public function setMode(int $mode) {
+    public function setMode(int $mode) : void {
         if ($mode == self::MODE_DEFAULT || $mode == self::MODE_POTA) {
             $this->mode = $mode;
         }
+    }
+
+    public function checkQps(bool $bool) : void {
+        $this->check_qps = $bool;
     }
 
     public function overrideField(string $field, string $value) : void {
@@ -73,6 +78,14 @@ class Document {
         }
     }
 
+    public function sumTimers() {
+        $sum = 0;
+        foreach ($this->timers as $value) {
+            $sum +=- $value;
+        }
+        return $sum;
+    }
+
     public function fromFile(string $path) : void {
         if (is_file($path) && is_readable($path)) {
             $this->raw = file_get_contents($path);
@@ -103,6 +116,7 @@ class Document {
         $this->timer($tick, __FUNCTION__);
     }
 
+    #TODO: current treating all header lines as strings
     public function parseHeaders(string $text) : array {
         $data = [];
         if (preg_match_all('/<([a-z_]*):.+?>([a-z0-9_ -.\/:@]+)?|(.*)/i', $text, $hs)) {
@@ -230,8 +244,10 @@ class Document {
                 }
             }
         }
-        if (!Validator::duration($this->entries)) {
-            $this->errors['@'][] = 'qps';
+        if ($this->check_qps) {
+            if (!Validator::duration($this->entries)) {
+                $this->errors['@'][] = 'qps';
+            }
         }
         $this->timer($tick, __FUNCTION__);
     }
