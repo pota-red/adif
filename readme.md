@@ -7,10 +7,10 @@ A general purpose ADIF handling library.
 * Load ADIF from file or string
 * Parse ADIF
 * Merge multiple files
-* Sanitize data - cleans up common typos, etc
+* Sanitize data - cleans up common typoes (eg: hypens in dates, colons in times, etc)
 * Validate data - Generic rules based on ADIF 3.1.5
 * Deduplicate entries - Based on POTA unique contact rules
-* Morph data - Strip entry data to ADIF core spec or POTA required fields
+* Morph data - Strip entry data to ADIF core spec or POTA supported fields
 * Chunk data - Split entries based on size (useful for storage targets with document size limits - eg: Google Firestore)
 * Generate ADIF
 * Generate JSON
