@@ -18,6 +18,7 @@ class Document {
     private array $chunks = [];
     private int $first_entry = -1;
     private int $last_entry = -1;
+    private array $overrides = [];
 
     public function __construct(string $data = null) {
         if (!empty($data)) {
@@ -29,6 +30,11 @@ class Document {
                 throw new \Exception('Unable to create instance of ' . __CLASS__);
             }
         }
+    }
+
+    public function overrideField(string $field, string $value) : void {
+        $field = trim(strtolower($field));
+        $this->overrides[$field] = trim($value);
     }
 
     private function tick() : int|float {
@@ -122,6 +128,9 @@ class Document {
                 }
                 if (!empty($vs)) {
                     ksort($vs);
+                    foreach ($this->overrides as $f => $v) {
+                        $vs[$f] = $v;
+                    }
                     $data[] = $vs;
                 }
                 if (array_key_exists('qso_date', $vs) && array_key_exists('time_on', $vs)) {

@@ -257,9 +257,9 @@ class Validator {
                     }
                     break;
             }
-            if (count(array_unique($self)) != 2) {
-                $errors[] = '@self';
-            }
+        }
+        if (count(array_unique($self)) != 2) {
+            $errors[] = '@self';
         }
         foreach ($required as $k) {
             $errors[] = $k;
