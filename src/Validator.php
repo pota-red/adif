@@ -7,14 +7,13 @@ class Validator {
     public static function entry(array $fields) : bool|array {
         $errors = [];
         $required = Spec::$base_fields;
+        $found_required = [];
         $self = [];
         foreach ($fields as $k => $v) {
             $k = trim(strtolower($k));
-            echo $k, chr(9), (in_array($k, $required) ? 'Y' : 'N'), chr(9);
             if (in_array($k, $required)) {
-                unset($required[$k]);
+                $found_required[] = $k;
             }
-            echo (in_array($k, $required) ? 'Y' : 'N'), PHP_EOL;
             switch ($k) {
                 case 'call':
                 case 'operator':
@@ -263,8 +262,12 @@ class Validator {
         if (count(array_unique($self)) != 2) {
             $errors[] = '@self';
         }
-        foreach ($required as $k) {
-            $errors[] = $k;
+        if (count($found_required) != count($required)) {
+            foreach ($required as $k) {
+                if (!in_array($k, $found_required)) {
+                    $errors[] = $k;
+                }
+            }
         }
         return empty($errors) ? true : $errors;
     }
