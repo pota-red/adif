@@ -12,13 +12,8 @@ class Linter {
                 $fields = Spec::$base_fields;
                 $errors = [];
                 foreach ($parts as $i => $part) {
-                    echo '---------------------- PART ------------------', PHP_EOL, $part, PHP_EOL;
-                    echo '-----------------------------------------------', PHP_EOL, PHP_EOL;
                     foreach ($fields as $field) {
-                        echo '----------------- ', $field, ' ----------------', PHP_EOL;
-                        var_dump(preg_match('/<' . $field . '>/is', $part));
-                        echo '-----------------------------------------------', PHP_EOL, PHP_EOL;
-                        if (!preg_match('/<' . $field . '>/is', $part)) {
+                        if (!preg_match('/<' . $field . ':[0-9]*>/is', $part)) {
                             $errors[$i][] = $field;
                         }
                     }
