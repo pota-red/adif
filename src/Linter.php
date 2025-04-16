@@ -14,7 +14,7 @@ class Linter {
                 foreach ($parts as $i => $part) {
                     foreach ($fields as $field) {
                         if (!preg_match('/<' . $field . '>/is', $part)) {
-                            $errors[$i][] = "Missing <{$field}>";
+                            $errors[$i][] = $field;
                         }
                     }
                 }
