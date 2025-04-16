@@ -102,6 +102,13 @@ class Document {
         $this->size = strlen($text);
     }
 
+    public function lint() : array {
+        $tick = $this->tick();
+        $result = Linter::lint($this->raw, $this->mode);
+        $this->timer($tick, __FUNCTION__);
+        return $result;
+    }
+
     public function parse() : void {
         $tick = $this->tick();
         if (preg_match('/<eoh>/i', $this->raw)) {

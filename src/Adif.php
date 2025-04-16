@@ -4,6 +4,7 @@ namespace Pota\Adif;
 
 use Pota\Adif\Spec;
 use Pota\Adif\Document;
+use Pota\Adif\Linter;
 use Pota\Adif\Sanitizer;
 use Pota\Adif\Validator;
 
