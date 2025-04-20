@@ -123,7 +123,7 @@ class Document {
         $this->timer($tick, __FUNCTION__);
     }
 
-    #TODO: current treating all header lines as strings
+    #TODO: currently treating all header lines as strings for some reason
     public function parseHeaders(string $text) : array {
         $data = [];
         if (preg_match_all('/<([a-z_]*):.+?>([a-z0-9_ -.\/:@]+)?|(.*)/i', $text, $hs)) {

@@ -5,6 +5,7 @@ namespace Pota\Adif;
 class Linter {
 
     public static function lint(string $text, int $mode) : array {
+        $bad_form = ['@' => 'ADIF requires <eoh> and at least one <eor>'];
         $text = trim($text);
         $basic = preg_match('/<eoh>.*<eor>/is', $text);
         if ($basic && $mode == Document::MODE_POTA) {
@@ -23,10 +24,10 @@ class Linter {
                 }
                 return $errors;
             } else {
-                return ['@' => 'ADIF requires <eoh> and at least one <eor>'];
+                return $bad_form;
             }
         }
-        return $basic ? [] : ['@' => 'ADIF requires <eoh> and at least one <eor>'];
+        return $basic ? [] : $bad_form;
     }
 
 }
