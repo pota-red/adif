@@ -323,11 +323,7 @@ class Document {
     public function unroll_pota_refs() : void {
         $tick = $this->tick();
 
-        foreach ($this->entries as $i => $entry) {
-            echo "$i\n";
-            print_r($entry);
-        }
-
+        // TODO
 
         $this->timer($tick, __FUNCTION__);
     }
