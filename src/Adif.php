@@ -13,6 +13,7 @@ class Adif {
     public const int CHUNK_MAX_SIZE = 800000;
     public const int MORPH_ADIF_STRICT = 1;
     public const int MORPH_POTA_ONLY = 2;
+    public const int MORPH_POTA_REFS = 3;
 
     protected array $docs = [];
 

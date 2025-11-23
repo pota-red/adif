@@ -308,6 +308,9 @@ class Document {
             case Adif::MORPH_POTA_ONLY:
                 $filter = Spec::$pota_fields;
                 break;
+            case Adif::MORPH_POTA_REFS:
+                echo "test\n";
+                break;
         }
         if (!empty($filter)) {
             foreach ($this->entries as $i => $entry) {
