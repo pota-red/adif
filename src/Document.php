@@ -309,7 +309,7 @@ class Document {
                 $filter = Spec::$pota_fields;
                 break;
             case Adif::MORPH_POTA_REFS:
-                echo "test\n";
+                $this->unroll_pota_refs();
                 break;
         }
         if (!empty($filter)) {
@@ -317,6 +317,18 @@ class Document {
                 $this->entries[$i] = array_filter($entry, fn($key) => in_array($key, $filter), ARRAY_FILTER_USE_KEY);
             }
         }
+        $this->timer($tick, __FUNCTION__);
+    }
+
+    public function unroll_pota_refs() : void {
+        $tick = $this->tick();
+
+        foreach ($this->entries as $i => $entry) {
+            echo "$i\n";
+            print_r($entry);
+        }
+
+
         $this->timer($tick, __FUNCTION__);
     }
 
