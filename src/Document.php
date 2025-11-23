@@ -389,8 +389,15 @@ class Document {
         }
         $data['meta']['count'] = count($this->entries);
         $data['meta']['duplicates'] = count($this->duplicates);
+        $data['meta']['errors'] = count($this->errors);
         if (count($this->headers)) {
             $data['headers'] = $this->headers;
+        }
+        if (count($this->duplicates)) {
+            $data['duplicates'] = $this->duplicates;
+        }
+        if (count($this->errors)) {
+            $data['errors'] = $this->errors;
         }
         if (count($this->chunks)) {
             $data['meta']['chunks'] = count($this->chunks);
