@@ -324,6 +324,7 @@ class Document {
         $tick = $this->tick();
 
         // TODO
+        echo "TEST" . PHP_EOL;
 
         $this->timer($tick, __FUNCTION__);
     }
