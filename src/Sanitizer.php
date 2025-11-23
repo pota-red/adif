@@ -114,8 +114,6 @@ class Sanitizer {
                 case 'rst_sent':
                     $v = trim(str_replace(['-','_',' '], '', $v));
                     break;
-                case 'tx_pwr':
-                case 'rx_pwr':
                     $v = substr(trim(preg_replace('/\D/', '', $v)), 0, 5);
                     break;
                 case 'freq':
