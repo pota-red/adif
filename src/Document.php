@@ -322,9 +322,73 @@ class Document {
 
     public function unroll_pota_refs() : void {
         $tick = $this->tick();
+        foreach ($this->entries as $i => $entry) {
 
-        // TODO
+            // both sides are in -fers
+            if (strpos($entry['my_pota_ref'], ',') && strpos($entry['pota_ref'], ',')) {
+                unset($this->entries[$i]);
+                $new_entry = $entry;
+                foreach (explode(',', $entry['my_pota_ref']) as $mpr) {
+                    list ($myref, $mystate) = explode('@', $mpr);
+                    if (isset($mystate)) {
+                        $new_entry['my_state'] = trim($mystate);
+                    }
+                    $new_entry['my_pota_ref'] = trim($myref);
 
+                    foreach (explode(',', $entry['pota_ref']) as $pr) {
+                        list ($theirref, $theirstate) = explode('@', $pr);
+                        if (isset($theirstate)) {
+                            $new_entry['state'] = trim($theirstate);
+                        }
+                        $new_entry['pota_ref'] = trim($theirref);
+                        $this->addEntry($new_entry);
+                    }
+                }
+            }
+
+            // only activator side in -fer
+            elseif (strpos($entry['my_pota_ref'], ',')) {
+                unset($this->entries[$i]);
+                $new_entry = $entry;
+                foreach (explode(',', $entry['my_pota_ref']) as $mpr) {
+                    list ($myref, $mystate) = explode('@', $mpr);
+                    if (isset($mystate)) {
+                        $new_entry['my_state'] = trim($mystate);
+                    }
+                    $new_entry['my_pota_ref'] = trim($myref);
+
+                    // check for state specified in hunted side
+                    list ($theirref, $theirstate) = explode('@', $entry['pota_ref']);
+                    if (isset($theirstate)) {
+                        $new_entry['state'] = trim($theirstate);
+                        $new_entry['pota_ref'] = trim($theirref);
+                    }
+                    $this->addEntry($new_entry);
+                }
+            }
+
+            // only contacted side in -fer
+            elseif (strpos($entry['pota_ref'], ',')) {
+                unset($this->entries[$i]);
+                $new_entry = $entry;
+                foreach (explode(',', $entry['pota_ref']) as $pr) {
+                    list ($theirref, $theirstate) = explode('@', $pr);
+                    if (isset($$theirstate)) {
+                        $new_entry['state'] = trim($theirstate);
+                    }
+                    $new_entry['pota_ref'] = trim($theirref);
+
+                    // check for state specified in activator side
+                    list ($myref, $mystate) = explode('@', $entry['my_pota_ref']);
+                    if (isset($mystate)) {
+                        $new_entry['my_state'] = trim($mystate);
+                        $new_entry['my_pota_ref'] = trim($myref);
+                    }
+
+                    $this->addEntry($new_entry);
+                }
+            }
+        }
         $this->timer($tick, __FUNCTION__);
     }
 
