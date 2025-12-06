@@ -329,14 +329,18 @@ class Document {
                 unset($this->entries[$i]);
                 $new_entry = $entry;
                 foreach (explode(',', $entry['my_pota_ref']) as $mpr) {
-                    list ($myref, $mystate) = explode('@', $mpr);
+                    $mprparts = explode('@', $mpr);
+                    $myref = $mprparts[0];
+                    $mystate = $mprparts[1] ?? null;
                     if (isset($mystate)) {
                         $new_entry['my_state'] = trim($mystate);
                     }
                     $new_entry['my_pota_ref'] = trim($myref);
 
                     foreach (explode(',', $entry['pota_ref']) as $pr) {
-                        list ($theirref, $theirstate) = explode('@', $pr);
+                        $prparts = explode('@', $pr);
+                        $theirref = $prparts[0];
+                        $theirstate = $prparts[1] ?? null;
                         if (isset($theirstate)) {
                             $new_entry['state'] = trim($theirstate);
                         }
@@ -351,7 +355,9 @@ class Document {
                 unset($this->entries[$i]);
                 $new_entry = $entry;
                 foreach (explode(',', $entry['my_pota_ref']) as $mpr) {
-                    list ($myref, $mystate) = explode('@', $mpr);
+                    $mprparts = explode('@', $mpr);
+                    $myref = $mprparts[0];
+                    $mystate = $mprparts[1] ?? null;
                     if (isset($mystate)) {
                         $new_entry['my_state'] = trim($mystate);
                     }
@@ -359,7 +365,9 @@ class Document {
 
                     // check for state specified in hunted side
                     if (isset($entry['pota_ref'])) {
-                        list ($theirref, $theirstate) = explode('@', $entry['pota_ref']);
+                        $prparts = explode('@', $entry['pota_ref']);
+                        $theirref = $prparts[0];
+                        $theirstate = $prparts[1] ?? null;
                         if (isset($theirstate)) {
                             $new_entry['state'] = trim($theirstate);
                             $new_entry['pota_ref'] = trim($theirref);
@@ -374,7 +382,9 @@ class Document {
                 unset($this->entries[$i]);
                 $new_entry = $entry;
                 foreach (explode(',', $entry['pota_ref']) as $pr) {
-                    list ($theirref, $theirstate) = explode('@', $pr);
+                    $prparts = explode('@', $pr);
+                    $theirref = $prparts[0];
+                    $theirstate = $prparts[1] ?? null;
                     if (isset($$theirstate)) {
                         $new_entry['state'] = trim($theirstate);
                     }
@@ -382,7 +392,9 @@ class Document {
 
                     // check for state specified in activator side
                     if (isset($entry['my_pota_ref'])) {
-                        list ($myref, $mystate) = explode('@', $entry['my_pota_ref']);
+                        $mprparts = explode('@', $entry['my_pota_ref']);
+                        $myref = $mprparts[0];
+                        $mystate = $mprparts[1] ?? null;
                         if (isset($mystate)) {
                             $new_entry['my_state'] = trim($mystate);
                             $new_entry['my_pota_ref'] = trim($myref);
