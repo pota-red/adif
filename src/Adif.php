@@ -10,7 +10,8 @@ use Pota\Adif\Validator;
 
 class Adif {
 
-    public const int CHUNK_MAX_SIZE = 800000;
+    // Firestore MongoDB max doc size
+    public const int CHUNK_MAX_SIZE = 4194304;
     public const int MORPH_ADIF_STRICT = 1;
     public const int MORPH_POTA_ONLY = 2;
     public const int MORPH_POTA_REFS = 3;
