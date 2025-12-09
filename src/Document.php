@@ -216,6 +216,10 @@ class Document {
         }
         $this->count = count($this->entries);
     }
+    public function removeEntry(int $key) : void {
+        unset($this->entries[$key]);
+        $this->count = count($this->entries);
+    }
 
     public function getEntries() : array {
         return $this->entries;
