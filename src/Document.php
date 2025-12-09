@@ -330,7 +330,7 @@ class Document {
 
             // both sides are in -fers
             if ( (isset($entry['my_pota_ref']) && strpos($entry['my_pota_ref'], ',')) && (isset($entry['pota_ref']) && strpos($entry['pota_ref'], ','))) {
-                unset($this->entries[$i]);
+                $this->removeEntry($i);
                 $new_entry = $entry;
                 foreach (explode(',', $entry['my_pota_ref']) as $mpr) {
                     $mprparts = explode('@', $mpr);
@@ -356,7 +356,7 @@ class Document {
 
             // only activator side in -fer
             elseif (isset($entry['my_pota_ref']) && strpos($entry['my_pota_ref'], ',')) {
-                unset($this->entries[$i]);
+                $this->removeEntry($i);
                 $new_entry = $entry;
                 foreach (explode(',', $entry['my_pota_ref']) as $mpr) {
                     $mprparts = explode('@', $mpr);
@@ -383,7 +383,7 @@ class Document {
 
             // only contacted side in -fer
             elseif (isset($entry['pota_ref']) && strpos($entry['pota_ref'], ',')) {
-                unset($this->entries[$i]);
+                $this->removeEntry($i);
                 $new_entry = $entry;
                 foreach (explode(',', $entry['pota_ref']) as $pr) {
                     $prparts = explode('@', $pr);
