@@ -73,11 +73,7 @@ class Sanitizer {
                 case 'cnty':
                 case 'submode':
                 case 'state':
-                    $v = trim(strtoupper($v));
-                    break;
                 case 'my_state':
-                    $v = trim(strtoupper($v));
-                    break;
                 case 'sig':
                 case 'my_sig':
                 case 'gridsquare':
