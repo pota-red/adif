@@ -323,7 +323,8 @@ class Spec {
     }
 
     public static function isPotaRef(string $text) : bool {
-        return preg_match('/([A-z0-9]+-[0-9]{4,})(@([A-z0-9]+-[A-Z0-9]+))?/', $text);
+        return preg_match('/^([A-z0-9]+-[0-9]{4,})(@[A-z0-9]+(-[A-Z0-9]+)?)?$/', $text);
+       // return preg_match('/([A-z0-9]+-[0-9]{4,})(@([A-z0-9]+-[A-Z0-9]+))?/', $text);
     }
 
     public static function isIotaRef(string $text) : bool {
