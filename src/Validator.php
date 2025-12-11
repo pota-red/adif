@@ -164,23 +164,12 @@ class Validator {
                         }
                     }
                     break;
+                case 'my_lat':
+                case 'lat':
+                case 'my_lon':
+                case 'lon':
                 case 'rst_rcvd':
                 case 'rst_sent':
-                    if (!Spec::isRst($v)) {
-                        $error = $k;
-                    }
-                    break;
-                case 'lat':
-                case 'my_lat':
-                    if (!Spec::isLat($v)) {
-                        $error = $k;
-                    }
-                    break;
-                case 'lon':
-                case 'my_lon':
-                    if (!Spec::isLon($v)) {
-                        $error = $k;
-                    }
                     break;
                 case 'clublog_qso_upload_status':
                 case 'hamlogeu_qso_upload_status':
