@@ -5,20 +5,29 @@ namespace Pota\Adif;
 class Sanitizer {
 
     public static function entry(array $fields) : array {
-        if (array_key_exists('station_callsign', $fields) && !array_key_exists('operator', $fields)) {
+
+        if (isset($fields['station_callsign']) && !isset($fields['operator'])) {
             $fields['operator'] = $fields['station_callsign'];
         }
-        if (array_key_exists('my_sig', $fields) && $fields['my_sig'] == 'pota' && array_key_exists('my_pota_ref', $fields) && array_key_exists('my_sig_info', $fields) && $fields['my_sig_info'] == $fields['my_pota_ref']) {
-            unset($fields['my_sig'], $fields['my_sig_info']);
+
+        // prefer my_pota_ref and pota_ref over my_sig_info and sig_info
+        if (isset($fields['my_sig_info']) && isset($fields['my_pota_ref'])) {
+            unset($fields['my_sig_info']);
         }
-        if (array_key_exists('my_sig', $fields) && array_key_exists('my_sig_info', $fields) && $fields['my_sig'] == 'pota' && !array_key_exists('my_pota_ref', $fields)) {
+        if (isset($fields['sig_info']) && isset($fields['pota_ref'])) {
+            unset($fields['sig_info']);
+        }
+
+        // mangle my_sig_info and sig_info to end up with only my_pota_ref and pota_ref if these are pota refs
+        if (isset($fields['my_sig_info']) && Spec::isPotaRef($fields['my_sig_info'])) {
             $fields['my_pota_ref'] = $fields['my_sig_info'];
-            unset($fields['my_sig'], $fields['my_sig_info']);
+            unset($fields['my_sig_info']);
         }
-        if (array_key_exists('sig', $fields) && array_key_exists('sig_info', $fields) && $fields['sig'] == 'pota' && !array_key_exists('pota_ref', $fields)) {
+        if (isset($fields['sig_info']) && Spec::isPotaRef($fields['sig_info'])) {
             $fields['pota_ref'] = $fields['sig_info'];
-            unset($fields['sig'], $fields['sig_info']);
+            unset($fields['sig_info']);
         }
+
         foreach ($fields as $k => $v) {
             $k = trim(strtolower($k));
             switch ($k) {
