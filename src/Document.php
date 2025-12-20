@@ -449,9 +449,9 @@ class Document {
         foreach ($this->sources as $s) {
             $hs[] = 'Source [' . implode(', ', $s) . ']' . PHP_EOL;
         }
-        $hs[] = $this->generateAdifKeyValue('adif_version', '3.1.5');
+        $hs[] = $this->generateAdifKeyValue('adif_version', '3.1.6');
         $hs[] = $this->generateAdifKeyValue('created_timestamp', date('Ymd His'));
-        $hs[] = $this->generateAdifKeyValue('programid', 'RFingAround-Adif');
+        $hs[] = $this->generateAdifKeyValue('programid', 'POTA-ADIF');
         $hs[] = $this->generateAdifKeyValue('programversion', '2.0.0');
         return trim(implode($hs)) . PHP_EOL . '<eoh>' . PHP_EOL . PHP_EOL;
     }
