@@ -66,6 +66,7 @@ class Document {
         if (!empty($name) && array_key_exists($name, $this->timers)) {
             return $this->timers[$name];
         }
+        $this->timers['total'] = $this->sumTimers();
         return $this->timers;
     }
 
