@@ -115,7 +115,7 @@ class Document {
             list($h, $d) = preg_split('/<eoh>/i', $this->raw, 2);
             $this->headers = $this->parseHeaders($h);
             $this->entries = $this->parseEntries($d);
-        } else if (preg_match('/<eor>/i', $this->raw) && str_starts_with($this->raw, '<')) {
+        } else if (preg_match('/<eor>/i', $this->raw) && str_starts_with(trim($this->raw), '<')) {
             $this->entries = $this->parseEntries($this->raw);
         } else {
             throw new \Exception("Malformed input");
