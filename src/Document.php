@@ -338,18 +338,18 @@ class Document {
                     $myref = $mprparts[0];
                     $mystate = $mprparts[1] ?? null;
                     if (isset($mystate)) {
-                        $new_entry['my_state'] = trim($mystate);
+                        $new_entry['pota_my_location'] = trim($mystate);
                     }
-                    $new_entry['my_pota_ref'] = trim($myref);
+                    $new_entry['pota_my_park_ref'] = trim($myref);
 
                     foreach (explode(',', $entry['pota_ref']) as $pr) {
                         $prparts = explode('@', $pr);
                         $theirref = $prparts[0];
                         $theirstate = $prparts[1] ?? null;
                         if (isset($theirstate)) {
-                            $new_entry['state'] = trim($theirstate);
+                            $new_entry['pota_location'] = trim($theirstate);
                         }
-                        $new_entry['pota_ref'] = trim($theirref);
+                        $new_entry['pota_park_ref'] = trim($theirref);
                         $this->addEntry($new_entry);
                     }
                 }
@@ -364,9 +364,9 @@ class Document {
                     $myref = $mprparts[0];
                     $mystate = $mprparts[1] ?? null;
                     if (isset($mystate)) {
-                        $new_entry['my_state'] = trim($mystate);
+                        $new_entry['pota_my_location'] = trim($mystate);
                     }
-                    $new_entry['my_pota_ref'] = trim($myref);
+                    $new_entry['pota_my_park_ref'] = trim($myref);
 
                     // check for state specified in hunted side
                     if (isset($entry['pota_ref'])) {
@@ -374,8 +374,8 @@ class Document {
                         $theirref = $prparts[0];
                         $theirstate = $prparts[1] ?? null;
                         if (isset($theirstate)) {
-                            $new_entry['state'] = trim($theirstate);
-                            $new_entry['pota_ref'] = trim($theirref);
+                            $new_entry['pota_location'] = trim($theirstate);
+                            $new_entry['pota_park_ref'] = trim($theirref);
                         }
                     }
                     $this->addEntry($new_entry);
@@ -391,9 +391,9 @@ class Document {
                     $theirref = $prparts[0];
                     $theirstate = $prparts[1] ?? null;
                     if (isset($$theirstate)) {
-                        $new_entry['state'] = trim($theirstate);
+                        $new_entry['pota_location'] = trim($theirstate);
                     }
-                    $new_entry['pota_ref'] = trim($theirref);
+                    $new_entry['pota_park_ref'] = trim($theirref);
 
                     // check for state specified in activator side
                     if (isset($entry['my_pota_ref'])) {
@@ -401,8 +401,8 @@ class Document {
                         $myref = $mprparts[0];
                         $mystate = $mprparts[1] ?? null;
                         if (isset($mystate)) {
-                            $new_entry['my_state'] = trim($mystate);
-                            $new_entry['my_pota_ref'] = trim($myref);
+                            $new_entry['pota_my_location'] = trim($mystate);
+                            $new_entry['pota_park_ref'] = trim($myref);
                         }
                     }
                     $this->addEntry($new_entry);
