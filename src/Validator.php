@@ -10,6 +10,11 @@ class Validator {
         $found_required = [];
         $self = [];
         foreach ($fields as $k => $v) {
+            if (is_null($v)) {
+                unset($fields[$k]);
+            }
+        }
+        foreach ($fields as $k => $v) {
             $k = trim(strtolower($k));
             if (in_array($k, $required)) {
                 $found_required[] = $k;
