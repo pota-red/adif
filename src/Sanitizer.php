@@ -75,6 +75,10 @@ class Sanitizer {
                 case 'call':
                 case 'pota_ref':
                 case 'my_pota_ref':
+                case 'pota_my_park_ref':
+                case 'pota_my_location':
+                case 'pota_park_ref':
+                case 'pota_location':
                 case 'sig_info':
                 case 'my_sig_info':
                 case 'operator':
