@@ -375,8 +375,9 @@ class Document {
                         $theirstate = $prparts[1] ?? null;
                         if (isset($theirstate)) {
                             $new_entry['pota_location'] = trim($theirstate);
-                            $new_entry['pota_park_ref'] = trim($theirref);
                         }
+                        $new_entry['pota_park_ref'] = trim($theirref);
+
                     }
                     $this->addEntry($new_entry);
                 }
@@ -402,10 +403,18 @@ class Document {
                         $mystate = $mprparts[1] ?? null;
                         if (isset($mystate)) {
                             $new_entry['pota_my_location'] = trim($mystate);
-                            $new_entry['pota_park_ref'] = trim($myref);
                         }
+                        $new_entry['pota_my_park_ref'] = trim($myref);
                     }
                     $this->addEntry($new_entry);
+                }
+            }
+            else {
+                if (isset($entry['my_pota_ref'])) {
+                    $this->entries[$i]['pota_park_ref'] = $entry['my_pota_ref'];
+                }
+                if (isset($entry['pota_ref'])) {
+                    $this->entries[$i]['pota_park_ref'] = $entry['my_pota_ref'];
                 }
             }
         }
