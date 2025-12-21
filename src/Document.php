@@ -411,7 +411,7 @@ class Document {
             }
             else {
                 if (isset($entry['my_pota_ref'])) {
-                    $this->entries[$i]['pota_park_ref'] = $entry['my_pota_ref'];
+                    $this->entries[$i]['pota_my_park_ref'] = $entry['my_pota_ref'];
                 }
                 if (isset($entry['pota_ref'])) {
                     $this->entries[$i]['pota_park_ref'] = $entry['my_pota_ref'];
