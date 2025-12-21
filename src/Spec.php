@@ -178,7 +178,9 @@ class Spec {
         'my_lat', 'my_lon', 'my_pota_ref', 'my_rig', 'my_sig', 'my_sig_info', 'my_state', 'operator', 'pota_ref', 'qso_date', 'rst_rcvd', 'rst_sent',
         'rx_pwr', 'sat_mode', 'sat_name', 'sig', 'sig_info', 'state', 'station_callsign', 'submode', 'time_on', 'tx_pwr', 'my_sig', 'my_sig_info'];
 
-    public static array $pota_unique = ['band', 'call', 'mode', 'my_pota_ref', 'my_sig_info', 'operator', 'pota_ref', 'qso_date', 'sig_info', 'submode'];
+    //public static array $pota_unique = ['band', 'call', 'mode', 'my_pota_ref', 'my_sig_info', 'operator', 'pota_ref', 'qso_date', 'sig_info', 'submode'];
+    public static array $pota_unique = ['band', 'call', 'mode', 'operator', 'submode', 'qso_date',
+        'pota_my_park_ref', 'pota_my_location', 'pota_park_ref', 'pota_location'];
 
     public static array $pota_optional = ['band_rx', 'cnty', 'freq_rx', 'gridsquare', 'my_antenna', 'my_gridsquare', 'my_lat', 'my_lon', 'my_rig', 'my_sig',
         'my_sig_info', 'my_state', 'pota_ref', 'rst_rcvd', 'rst_sent', 'rx_pwr', 'sat_mode', 'sat_name', 'sig', 'sig_info', 'state', 'station_callsign',
