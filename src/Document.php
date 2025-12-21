@@ -409,6 +409,27 @@ class Document {
                     $this->addEntry($new_entry);
                 }
             }
+            // single activator park, with @loc code
+            elseif (isset($entry['my_pota_ref']) && strpos($entry['my_pota_ref'], '@')) {
+                $mprparts = explode('@', $entry['my_pota_ref']);
+                $myref = $mprparts[0];
+                $mystate = $mprparts[1] ?? null;
+                if (isset($mystate)) {
+                    $this->entries[$i]['pota_my_location'] = trim($mystate);
+                }
+                $this->entries[$i]['pota_my_pota_ref'] = trim($myref);
+            }
+            // single hunted-side park, with @loc code
+            elseif (isset($entry['pota_ref']) && strpos($entry['pota_ref'], '@')) {
+                $mprparts = explode('@', $entry['pota_ref']);
+                $theirref = $mprparts[0];
+                $theirstate = $mprparts[1] ?? null;
+                if (isset($theirstate)) {
+                    $this->entries[$i]['pota_location'] = trim($theirstate);
+                }
+                $this->entries[$i]['pota_pota_ref'] = trim($theirref);
+            }
+            // single park, no @loc code
             else {
                 if (isset($entry['my_pota_ref'])) {
                     $this->entries[$i]['pota_my_park_ref'] = $entry['my_pota_ref'];
