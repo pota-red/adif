@@ -230,7 +230,7 @@ class Validator {
                         $error = $k;
                     }
                     break;
-                case 'pota_park__ref':
+                case 'pota_park_ref':
                 case 'pota_my_park_ref':
                     if (!Spec::isPotaRef($v)) {
                         $error = $k;

@@ -329,10 +329,31 @@ class Document {
         $tick = $this->tick();
         foreach ($this->entries as $i => $entry) {
 
+            $isMySigInfo = isset($entry['my_sig_info']);
+            $isSigInfo = isset($entry['sig_info']);
+            $isMyPotaRef = isset($entry['my_pota_ref']);
+            $isPotaRef = isset($entry['pota_ref']);
+
+            // mangle my_sig_info into my_pota_ref
+            if ($isMySigInfo && !$isMyPotaRef) {
+                $entry['my_pota_ref'] = $entry['my_sig_info'];
+            }
+            // mangle sig_info into pota_ref
+            if ($isSigInfo && !$isPotaRef) {
+                $entry['pota_ref'] = $entry['sig_info'];
+            }
+
+            $isActivatorFer = isset($entry['my_pota_ref']) && strpos($entry['my_pota_ref'], ',');
+            $isHunterFer = isset($entry['pota_ref']) && strpos($entry['pota_ref'], ',');
+            $isActivatorLoc = isset($entry['my_pota_ref']) && strpos($entry['my_pota_ref'], '@');
+            $isHunterLoc = isset($entry['pota_ref']) && strpos($entry['pota_ref'], '@');
+
             // both sides are in -fers
-            if ( (isset($entry['my_pota_ref']) && strpos($entry['my_pota_ref'], ',')) && (isset($entry['pota_ref']) && strpos($entry['pota_ref'], ','))) {
+            if ($isActivatorFer && $isHunterFer) {
                 $this->removeEntry($i);
                 $new_entry = $entry;
+                $new_entry['pota_unrolled_from_rec'] = $i;
+
                 foreach (explode(',', $entry['my_pota_ref']) as $mpr) {
                     $mprparts = explode('@', $mpr);
                     $myref = $mprparts[0];
@@ -356,9 +377,10 @@ class Document {
             }
 
             // only activator side in -fer
-            elseif (isset($entry['my_pota_ref']) && strpos($entry['my_pota_ref'], ',')) {
+            elseif ($isActivatorFer && !$isHunterFer) {
                 $this->removeEntry($i);
                 $new_entry = $entry;
+                $new_entry['pota_unrolled_from_rec'] = $i;
                 foreach (explode(',', $entry['my_pota_ref']) as $mpr) {
                     $mprparts = explode('@', $mpr);
                     $myref = $mprparts[0];
@@ -383,15 +405,17 @@ class Document {
                 }
             }
 
-            // only contacted side in -fer
-            elseif (isset($entry['pota_ref']) && strpos($entry['pota_ref'], ',')) {
+            // only hunter side in -fer
+            elseif ($isHunterFer && !$isActivatorFer) {
                 $this->removeEntry($i);
                 $new_entry = $entry;
+                $new_entry['pota_unrolled_from_rec'] = $i;
+
                 foreach (explode(',', $entry['pota_ref']) as $pr) {
                     $prparts = explode('@', $pr);
                     $theirref = $prparts[0];
                     $theirstate = $prparts[1] ?? null;
-                    if (isset($$theirstate)) {
+                    if (isset($theirstate)) {
                         $new_entry['pota_location'] = trim($theirstate);
                     }
                     $new_entry['pota_park_ref'] = trim($theirref);
@@ -409,33 +433,38 @@ class Document {
                     $this->addEntry($new_entry);
                 }
             }
-            // single activator park, with @loc code
-            elseif (isset($entry['my_pota_ref']) && strpos($entry['my_pota_ref'], '@')) {
-                $mprparts = explode('@', $entry['my_pota_ref']);
-                $myref = $mprparts[0];
-                $mystate = $mprparts[1] ?? null;
-                if (isset($mystate)) {
-                    $this->entries[$i]['pota_my_location'] = trim($mystate);
+
+            // neither side in -fers, check for @locs
+            elseif (!$isActivatorFer && !$isHunterFer) {
+                if ($isActivatorLoc) {
+                    $mprparts = explode('@', $entry['my_pota_ref']);
+                    $myref = $mprparts[0];
+                    $mystate = $mprparts[1] ?? null;
+                    if (isset($mystate)) {
+                        $this->entries[$i]['pota_my_location'] = trim($mystate);
+                    }
+                    $this->entries[$i]['pota_unrolled_from_rec'] = $i;
+                    $this->entries[$i]['pota_my_park_ref'] = trim($myref);
+                } else {
+                    // no -fer, no @log
+                    if (isset($entry['my_pota_ref'])) {
+                        $this->entries[$i]['pota_my_park_ref'] = $entry['my_pota_ref'];
+                    }
                 }
-                $this->entries[$i]['pota_my_pota_ref'] = trim($myref);
-            }
-            // single hunted-side park, with @loc code
-            elseif (isset($entry['pota_ref']) && strpos($entry['pota_ref'], '@')) {
-                $mprparts = explode('@', $entry['pota_ref']);
-                $theirref = $mprparts[0];
-                $theirstate = $mprparts[1] ?? null;
-                if (isset($theirstate)) {
-                    $this->entries[$i]['pota_location'] = trim($theirstate);
-                }
-                $this->entries[$i]['pota_pota_ref'] = trim($theirref);
-            }
-            // single park, no @loc code
-            else {
-                if (isset($entry['my_pota_ref'])) {
-                    $this->entries[$i]['pota_my_park_ref'] = $entry['my_pota_ref'];
-                }
-                if (isset($entry['pota_ref'])) {
-                    $this->entries[$i]['pota_park_ref'] = $entry['pota_ref'];
+                if ($isHunterLoc) {
+                    $mprparts = explode('@', $entry['pota_ref']);
+                    $theirref = $mprparts[0];
+                    $theirstate = $mprparts[1] ?? null;
+                    if (isset($theirstate)) {
+                        $this->entries[$i]['pota_location'] = trim($theirstate);
+                    }
+                    $this->entries[$i]['pota_unrolled_from_rec'] = $i;
+                    $this->entries[$i]['pota_park_ref'] = trim($theirref);
+                } else {
+                    // no -fer, no @log
+                    if (isset($entry['pota_ref'])) {
+                        $this->entries[$i]['pota_park_ref'] = $entry['pota_ref'];
+                    }
                 }
             }
         }
