@@ -175,6 +175,8 @@ class Validator {
                 case 'lon':
                 case 'rst_rcvd':
                 case 'rst_sent':
+                case 'pota_ref':
+                case 'my_pota_ref':
                     break;
                 case 'clublog_qso_upload_status':
                 case 'hamlogeu_qso_upload_status':
@@ -228,8 +230,8 @@ class Validator {
                         $error = $k;
                     }
                     break;
-                case 'pota_ref':
-                case 'my_pota_ref':
+                case 'pota_park__ref':
+                case 'pota_my_park_ref':
                     if (!Spec::isPotaRef($v)) {
                         $error = $k;
                     }
