@@ -172,7 +172,7 @@ class Spec {
         'RPT' => 'Terrestrial or atmospheric repeater or transponder', 'RS' => 'Rain scatter', 'SAT' => 'Satellite', 'TEP' => 'Trans-equatorial',
         'TR' => 'Tropospheric ducting'];
 
-    public static array $base_fields = ['band', 'call', 'mode', 'operator', 'qso_date', 'time_on'];
+    public static array $base_fields = ['band', 'call', 'mode', 'operator', 'qso_date', 'time_on', 'pota_my_park_ref'];
 
     public static array $pota_fields = ['band', 'band_rx', 'call', 'cnty', 'freq', 'freq_rx', 'gridsquare', 'mode', 'my_antenna', 'my_gridsquare',
         'my_lat', 'my_lon', 'my_pota_ref', 'my_rig', 'my_sig', 'my_sig_info', 'my_state', 'operator', 'pota_ref', 'qso_date', 'rst_rcvd', 'rst_sent',
