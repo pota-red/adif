@@ -79,12 +79,12 @@ class Document {
         }
     }
 
-    public function sumTimers() {
+    public function sumTimers() : float {
         $sum = 0;
         foreach ($this->timers as $value) {
             $sum += $value;
         }
-        return $sum;
+        return round($sum, 3);
     }
 
     public function fromFile(string $path) : void {
