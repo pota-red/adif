@@ -265,7 +265,7 @@ class Validator {
         if (count($found_required) != count($required)) {
             foreach ($required as $k) {
                 if (!in_array($k, $found_required)) {
-                    $error = $k;
+                    $errors[] = $k;
                 }
             }
         }
