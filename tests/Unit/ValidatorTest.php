@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Pota\Adif\Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 use Pota\Adif\Validator;
 
 final class ValidatorTest extends TestCase
 {
     // Valid complete entry
-    public function testValidCompleteEntry(): void
+    public function test_valid_complete_entry(): void
     {
         $entry = $this->getValidEntry();
 
@@ -21,7 +21,7 @@ final class ValidatorTest extends TestCase
 
     // Missing required fields
     #[DataProvider('missingRequiredFieldProvider')]
-    public function testDetectsMissingRequiredFields(array $entry, array $expectedMissingFields): void
+    public function test_detects_missing_required_fields(array $entry, array $expectedMissingFields): void
     {
         $result = Validator::entry($entry);
 
@@ -36,25 +36,25 @@ final class ValidatorTest extends TestCase
         return [
             'missing band' => [
                 ['call' => 'K1ABC', 'mode' => 'SSB', 'operator' => 'W1AW', 'qso_date' => '20231225', 'time_on' => '1234', 'pota_my_park_ref' => 'US-0001'],
-                ['band']
+                ['band'],
             ],
             'missing call' => [
                 ['band' => '20M', 'mode' => 'SSB', 'operator' => 'W1AW', 'qso_date' => '20231225', 'time_on' => '1234', 'pota_my_park_ref' => 'US-0001'],
-                ['call']
+                ['call'],
             ],
             'missing mode' => [
                 ['band' => '20M', 'call' => 'K1ABC', 'operator' => 'W1AW', 'qso_date' => '20231225', 'time_on' => '1234', 'pota_my_park_ref' => 'US-0001'],
-                ['mode']
+                ['mode'],
             ],
             'missing multiple' => [
                 ['call' => 'K1ABC', 'operator' => 'W1AW'],
-                ['band', 'mode', 'qso_date', 'time_on', 'pota_my_park_ref']
+                ['band', 'mode', 'qso_date', 'time_on', 'pota_my_park_ref'],
             ],
         ];
     }
 
     // Self-QSO detection (@self error)
-    public function testDetectsSelfQso(): void
+    public function test_detects_self_qso(): void
     {
         $entry = [
             'band' => '20M',
@@ -71,7 +71,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('@self', $result);
     }
 
-    public function testAllowsDifferentCallAndOperator(): void
+    public function test_allows_different_call_and_operator(): void
     {
         $entry = $this->getValidEntry();
 
@@ -81,7 +81,7 @@ final class ValidatorTest extends TestCase
 
     // Age validation
     #[DataProvider('invalidAgeProvider')]
-    public function testDetectsInvalidAge(mixed $age): void
+    public function test_detects_invalid_age(mixed $age): void
     {
         $entry = $this->getValidEntry(['age' => $age]);
 
@@ -99,7 +99,7 @@ final class ValidatorTest extends TestCase
         ];
     }
 
-    public function testAcceptsValidAge(): void
+    public function test_accepts_valid_age(): void
     {
         $entry = $this->getValidEntry(['age' => 42]);
         $result = Validator::entry($entry);
@@ -108,7 +108,7 @@ final class ValidatorTest extends TestCase
 
     // Antenna azimuth validation
     #[DataProvider('invalidAntAzProvider')]
-    public function testDetectsInvalidAntennaAzimuth(mixed $az): void
+    public function test_detects_invalid_antenna_azimuth(mixed $az): void
     {
         $entry = $this->getValidEntry(['ant_az' => $az]);
 
@@ -126,7 +126,7 @@ final class ValidatorTest extends TestCase
         ];
     }
 
-    public function testAcceptsValidAntennaAzimuth(): void
+    public function test_accepts_valid_antenna_azimuth(): void
     {
         $entry = $this->getValidEntry(['ant_az' => 180]);
         $result = Validator::entry($entry);
@@ -135,7 +135,7 @@ final class ValidatorTest extends TestCase
 
     // Antenna elevation validation
     #[DataProvider('invalidAntElProvider')]
-    public function testDetectsInvalidAntennaElevation(mixed $el): void
+    public function test_detects_invalid_antenna_elevation(mixed $el): void
     {
         $entry = $this->getValidEntry(['ant_el' => $el]);
 
@@ -152,7 +152,7 @@ final class ValidatorTest extends TestCase
         ];
     }
 
-    public function testAcceptsValidAntennaElevation(): void
+    public function test_accepts_valid_antenna_elevation(): void
     {
         $entry = $this->getValidEntry(['ant_el' => 45]);
         $result = Validator::entry($entry);
@@ -160,7 +160,7 @@ final class ValidatorTest extends TestCase
     }
 
     // Band validation
-    public function testDetectsInvalidBand(): void
+    public function test_detects_invalid_band(): void
     {
         $entry = $this->getValidEntry(['band' => 'INVALID']);
 
@@ -169,7 +169,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('band', $result);
     }
 
-    public function testAcceptsValidBand(): void
+    public function test_accepts_valid_band(): void
     {
         $entry = $this->getValidEntry(['band' => '40M']);
         $result = Validator::entry($entry);
@@ -177,7 +177,7 @@ final class ValidatorTest extends TestCase
     }
 
     // Mode validation
-    public function testDetectsInvalidMode(): void
+    public function test_detects_invalid_mode(): void
     {
         $entry = $this->getValidEntry(['mode' => 'INVALID']);
 
@@ -187,7 +187,7 @@ final class ValidatorTest extends TestCase
     }
 
     // Submode validation
-    public function testDetectsInvalidSubmode(): void
+    public function test_detects_invalid_submode(): void
     {
         $entry = $this->getValidEntry(['submode' => 'INVALID']);
 
@@ -196,7 +196,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('submode', $result);
     }
 
-    public function testAcceptsValidSubmode(): void
+    public function test_accepts_valid_submode(): void
     {
         $entry = $this->getValidEntry(['mode' => 'SSB', 'submode' => 'USB']);
         $result = Validator::entry($entry);
@@ -204,7 +204,7 @@ final class ValidatorTest extends TestCase
     }
 
     // Date validation
-    public function testDetectsInvalidQsoDate(): void
+    public function test_detects_invalid_qso_date(): void
     {
         $entry = $this->getValidEntry(['qso_date' => '20231332']);
 
@@ -214,7 +214,7 @@ final class ValidatorTest extends TestCase
     }
 
     // Time validation
-    public function testDetectsInvalidTimeOn(): void
+    public function test_detects_invalid_time_on(): void
     {
         $entry = $this->getValidEntry(['time_on' => '2500']);
 
@@ -224,7 +224,7 @@ final class ValidatorTest extends TestCase
     }
 
     // Frequency validation
-    public function testDetectsInvalidFrequency(): void
+    public function test_detects_invalid_frequency(): void
     {
         $entry = $this->getValidEntry(['freq' => '999.999']);
 
@@ -233,14 +233,14 @@ final class ValidatorTest extends TestCase
         $this->assertContains('freq', $result);
     }
 
-    public function testAcceptsValidFrequency(): void
+    public function test_accepts_valid_frequency(): void
     {
         $entry = $this->getValidEntry(['freq' => '14.074']);
         $result = Validator::entry($entry);
         $this->assertTrue($result);
     }
 
-    public function testValidatesFrequencyAgainstBand(): void
+    public function test_validates_frequency_against_band(): void
     {
         $entry = $this->getValidEntry(['band' => '20M', 'freq' => '7.074']); // 40m freq with 20m band
 
@@ -250,7 +250,7 @@ final class ValidatorTest extends TestCase
     }
 
     // Gridsquare validation
-    public function testDetectsInvalidGridsquare(): void
+    public function test_detects_invalid_gridsquare(): void
     {
         $entry = $this->getValidEntry(['gridsquare' => 'INVALID']);
 
@@ -259,7 +259,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('gridsquare', $result);
     }
 
-    public function testAcceptsValidGridsquare(): void
+    public function test_accepts_valid_gridsquare(): void
     {
         $entry = $this->getValidEntry(['gridsquare' => 'FN31PR']);
         $result = Validator::entry($entry);
@@ -267,14 +267,14 @@ final class ValidatorTest extends TestCase
     }
 
     // VUCC grids validation (multiple grids)
-    public function testAcceptsValidVuccGrids(): void
+    public function test_accepts_valid_vucc_grids(): void
     {
         $entry = $this->getValidEntry(['vucc_grids' => 'FN31,FN32,FN41,FN42']);
         $result = Validator::entry($entry);
         $this->assertTrue($result);
     }
 
-    public function testDetectsInvalidVuccGrids(): void
+    public function test_detects_invalid_vucc_grids(): void
     {
         $entry = $this->getValidEntry(['vucc_grids' => 'FN31,INVALID,FN41']);
 
@@ -284,14 +284,14 @@ final class ValidatorTest extends TestCase
     }
 
     // POTA reference validation
-    public function testAcceptsValidPotaMyParkRef(): void
+    public function test_accepts_valid_pota_my_park_ref(): void
     {
         $entry = $this->getValidEntry(['pota_my_park_ref' => 'US-0001']);
         $result = Validator::entry($entry);
         $this->assertTrue($result);
     }
 
-    public function testDetectsInvalidPotaMyParkRef(): void
+    public function test_detects_invalid_pota_my_park_ref(): void
     {
         $entry = $this->getValidEntry(['pota_my_park_ref' => 'US-001']); // Too few digits
 
@@ -300,7 +300,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('pota_my_park_ref', $result);
     }
 
-    public function testAcceptsValidPotaParkRef(): void
+    public function test_accepts_valid_pota_park_ref(): void
     {
         $entry = $this->getValidEntry(['pota_park_ref' => 'CA-0123']);
         $result = Validator::entry($entry);
@@ -308,14 +308,14 @@ final class ValidatorTest extends TestCase
     }
 
     // SOTA reference validation
-    public function testAcceptsValidSotaRef(): void
+    public function test_accepts_valid_sota_ref(): void
     {
         $entry = $this->getValidEntry(['sota_ref' => 'W7W/LC-001']);
         $result = Validator::entry($entry);
         $this->assertTrue($result);
     }
 
-    public function testDetectsInvalidSotaRef(): void
+    public function test_detects_invalid_sota_ref(): void
     {
         $entry = $this->getValidEntry(['sota_ref' => 'INVALID']);
 
@@ -325,14 +325,14 @@ final class ValidatorTest extends TestCase
     }
 
     // IOTA reference validation
-    public function testAcceptsValidIotaRef(): void
+    public function test_accepts_valid_iota_ref(): void
     {
         $entry = $this->getValidEntry(['iota' => 'NA-001']);
         $result = Validator::entry($entry);
         $this->assertTrue($result);
     }
 
-    public function testDetectsInvalidIotaRef(): void
+    public function test_detects_invalid_iota_ref(): void
     {
         $entry = $this->getValidEntry(['iota' => 'INVALID']);
 
@@ -342,14 +342,14 @@ final class ValidatorTest extends TestCase
     }
 
     // WWFF reference validation
-    public function testAcceptsValidWwffRef(): void
+    public function test_accepts_valid_wwff_ref(): void
     {
         $entry = $this->getValidEntry(['wwff_ref' => 'USFF-0001']);
         $result = Validator::entry($entry);
         $this->assertTrue($result);
     }
 
-    public function testDetectsInvalidWwffRef(): void
+    public function test_detects_invalid_wwff_ref(): void
     {
         $entry = $this->getValidEntry(['wwff_ref' => 'INVALID']);
 
@@ -360,7 +360,7 @@ final class ValidatorTest extends TestCase
 
     // K-index validation
     #[DataProvider('invalidKIndexProvider')]
-    public function testDetectsInvalidKIndex(mixed $k): void
+    public function test_detects_invalid_k_index(mixed $k): void
     {
         $entry = $this->getValidEntry(['k_index' => $k]);
 
@@ -377,7 +377,7 @@ final class ValidatorTest extends TestCase
         ];
     }
 
-    public function testAcceptsValidKIndex(): void
+    public function test_accepts_valid_k_index(): void
     {
         $entry = $this->getValidEntry(['k_index' => 5]);
         $result = Validator::entry($entry);
@@ -386,7 +386,7 @@ final class ValidatorTest extends TestCase
 
     // SFI validation
     #[DataProvider('invalidSfiProvider')]
-    public function testDetectsInvalidSfi(mixed $sfi): void
+    public function test_detects_invalid_sfi(mixed $sfi): void
     {
         $entry = $this->getValidEntry(['sfi' => $sfi]);
 
@@ -403,7 +403,7 @@ final class ValidatorTest extends TestCase
         ];
     }
 
-    public function testAcceptsValidSfi(): void
+    public function test_accepts_valid_sfi(): void
     {
         $entry = $this->getValidEntry(['sfi' => 150]);
         $result = Validator::entry($entry);
@@ -411,7 +411,7 @@ final class ValidatorTest extends TestCase
     }
 
     // A-index validation
-    public function testDetectsInvalidAIndex(): void
+    public function test_detects_invalid_a_index(): void
     {
         $entry = $this->getValidEntry(['a_index' => 401]);
 
@@ -420,7 +420,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('a_index', $result);
     }
 
-    public function testAcceptsValidAIndex(): void
+    public function test_accepts_valid_a_index(): void
     {
         $entry = $this->getValidEntry(['a_index' => 10]);
         $result = Validator::entry($entry);
@@ -428,7 +428,7 @@ final class ValidatorTest extends TestCase
     }
 
     // DXCC validation
-    public function testDetectsInvalidDxcc(): void
+    public function test_detects_invalid_dxcc(): void
     {
         $entry = $this->getValidEntry(['dxcc' => '9999']);
 
@@ -437,7 +437,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('dxcc', $result);
     }
 
-    public function testAcceptsValidDxcc(): void
+    public function test_accepts_valid_dxcc(): void
     {
         $entry = $this->getValidEntry(['dxcc' => '291']);
         $result = Validator::entry($entry);
@@ -445,7 +445,7 @@ final class ValidatorTest extends TestCase
     }
 
     // Continent validation
-    public function testDetectsInvalidContinent(): void
+    public function test_detects_invalid_continent(): void
     {
         $entry = $this->getValidEntry(['cont' => 'XX']);
 
@@ -454,7 +454,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('cont', $result);
     }
 
-    public function testAcceptsValidContinent(): void
+    public function test_accepts_valid_continent(): void
     {
         $entry = $this->getValidEntry(['cont' => 'NA']);
         $result = Validator::entry($entry);
@@ -462,7 +462,7 @@ final class ValidatorTest extends TestCase
     }
 
     // Propagation mode validation
-    public function testDetectsInvalidPropMode(): void
+    public function test_detects_invalid_prop_mode(): void
     {
         $entry = $this->getValidEntry(['prop_mode' => 'INVALID']);
 
@@ -471,7 +471,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('prop_mode', $result);
     }
 
-    public function testAcceptsValidPropMode(): void
+    public function test_accepts_valid_prop_mode(): void
     {
         $entry = $this->getValidEntry(['prop_mode' => 'ES']);
         $result = Validator::entry($entry);
@@ -479,7 +479,7 @@ final class ValidatorTest extends TestCase
     }
 
     // QSO status validations
-    public function testDetectsInvalidQsoUploadStatus(): void
+    public function test_detects_invalid_qso_upload_status(): void
     {
         $entry = $this->getValidEntry(['clublog_qso_upload_status' => 'X']);
 
@@ -488,7 +488,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('clublog_qso_upload_status', $result);
     }
 
-    public function testDetectsInvalidQsoDownloadStatus(): void
+    public function test_detects_invalid_qso_download_status(): void
     {
         $entry = $this->getValidEntry(['qrzcom_qso_download_status' => 'X']);
 
@@ -497,7 +497,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('qrzcom_qso_download_status', $result);
     }
 
-    public function testDetectsInvalidQslRcvd(): void
+    public function test_detects_invalid_qsl_rcvd(): void
     {
         $entry = $this->getValidEntry(['qsl_rcvd' => 'X']);
 
@@ -506,7 +506,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('qsl_rcvd', $result);
     }
 
-    public function testDetectsInvalidQslSent(): void
+    public function test_detects_invalid_qsl_sent(): void
     {
         $entry = $this->getValidEntry(['qsl_sent' => 'X']);
 
@@ -515,7 +515,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('qsl_sent', $result);
     }
 
-    public function testDetectsInvalidQslVia(): void
+    public function test_detects_invalid_qsl_via(): void
     {
         $entry = $this->getValidEntry(['qsl_rcvd_via' => 'X']);
 
@@ -525,7 +525,7 @@ final class ValidatorTest extends TestCase
     }
 
     // Power/distance validations
-    public function testDetectsNegativeTxPwr(): void
+    public function test_detects_negative_tx_pwr(): void
     {
         $entry = $this->getValidEntry(['tx_pwr' => -10]);
 
@@ -534,7 +534,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('tx_pwr', $result);
     }
 
-    public function testDetectsNegativeDistance(): void
+    public function test_detects_negative_distance(): void
     {
         $entry = $this->getValidEntry(['distance' => -100]);
 
@@ -544,7 +544,7 @@ final class ValidatorTest extends TestCase
     }
 
     // CQ Zone validation
-    public function testDetectsInvalidCqZone(): void
+    public function test_detects_invalid_cq_zone(): void
     {
         $entry = $this->getValidEntry(['my_cq_zone' => 50]);
 
@@ -553,7 +553,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('my_cq_zone', $result);
     }
 
-    public function testAcceptsValidCqZone(): void
+    public function test_accepts_valid_cq_zone(): void
     {
         $entry = $this->getValidEntry(['my_cq_zone' => 3]);
         $result = Validator::entry($entry);
@@ -561,7 +561,7 @@ final class ValidatorTest extends TestCase
     }
 
     // ITU Zone validation
-    public function testDetectsInvalidItuZone(): void
+    public function test_detects_invalid_itu_zone(): void
     {
         $entry = $this->getValidEntry(['my_itu_zone' => 100]);
 
@@ -571,7 +571,7 @@ final class ValidatorTest extends TestCase
     }
 
     // Null field handling
-    public function testRemovesNullFields(): void
+    public function test_removes_null_fields(): void
     {
         $entry = $this->getValidEntry(['optional_field' => null]);
         $result = Validator::entry($entry);
@@ -579,7 +579,7 @@ final class ValidatorTest extends TestCase
     }
 
     // Duration validation tests
-    public function testDurationValidationAcceptsReasonableQsoRate(): void
+    public function test_duration_validation_accepts_reasonable_qso_rate(): void
     {
         $entries = [
             ['qso_date' => '20231225', 'time_on' => '120000'],
@@ -591,7 +591,7 @@ final class ValidatorTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testDurationValidationRejectsUnrealisticQsoRate(): void
+    public function test_duration_validation_rejects_unrealistic_qso_rate(): void
     {
         // 10 QSOs at same timestamp = infinite QPS > 5 QPS limit
         $entries = [];
@@ -603,7 +603,7 @@ final class ValidatorTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function testDurationValidationWithSpreadOutQsos(): void
+    public function test_duration_validation_with_spread_out_qsos(): void
     {
         $entries = [];
         for ($i = 0; $i < 50; $i++) {
@@ -616,7 +616,7 @@ final class ValidatorTest extends TestCase
     }
 
     // Antenna path validation (covering lines 44-48)
-    public function testDetectsInvalidAntPath(): void
+    public function test_detects_invalid_ant_path(): void
     {
         $entry = $this->getValidEntry(['ant_path' => 'INVALID']);
 
@@ -625,7 +625,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('ant_path', $result);
     }
 
-    public function testAcceptsValidAntPath(): void
+    public function test_accepts_valid_ant_path(): void
     {
         $entry = $this->getValidEntry(['ant_path' => 'S']); // Short path
         $result = Validator::entry($entry);
@@ -633,7 +633,7 @@ final class ValidatorTest extends TestCase
     }
 
     #[DataProvider('validAntPathProvider')]
-    public function testAcceptsAllValidAntPaths(string $path): void
+    public function test_accepts_all_valid_ant_paths(string $path): void
     {
         $entry = $this->getValidEntry(['ant_path' => $path]);
         $result = Validator::entry($entry);
@@ -651,7 +651,7 @@ final class ValidatorTest extends TestCase
     }
 
     // ARRL Section validation (covering lines 49-54)
-    public function testDetectsInvalidArrlSection(): void
+    public function test_detects_invalid_arrl_section(): void
     {
         $entry = $this->getValidEntry(['arrl_sect' => 'INVALID']);
 
@@ -660,7 +660,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('arrl_sect', $result);
     }
 
-    public function testDetectsInvalidMyArrlSection(): void
+    public function test_detects_invalid_my_arrl_section(): void
     {
         $entry = $this->getValidEntry(['my_arrl_sect' => 'INVALID']);
 
@@ -669,14 +669,14 @@ final class ValidatorTest extends TestCase
         $this->assertContains('my_arrl_sect', $result);
     }
 
-    public function testAcceptsValidArrlSection(): void
+    public function test_accepts_valid_arrl_section(): void
     {
         $entry = $this->getValidEntry(['arrl_sect' => 'CT']); // Connecticut
         $result = Validator::entry($entry);
         $this->assertTrue($result);
     }
 
-    public function testAcceptsValidMyArrlSection(): void
+    public function test_accepts_valid_my_arrl_section(): void
     {
         $entry = $this->getValidEntry(['my_arrl_sect' => 'ENY']); // Eastern New York
         $result = Validator::entry($entry);
@@ -685,7 +685,7 @@ final class ValidatorTest extends TestCase
 
     // Altitude validation (covering lines 74-79)
     #[DataProvider('invalidAltitudeProvider')]
-    public function testDetectsInvalidAltitude(mixed $altitude): void
+    public function test_detects_invalid_altitude(mixed $altitude): void
     {
         $entry = $this->getValidEntry(['altitude' => $altitude]);
 
@@ -695,7 +695,7 @@ final class ValidatorTest extends TestCase
     }
 
     #[DataProvider('invalidAltitudeProvider')]
-    public function testDetectsInvalidMyAltitude(mixed $altitude): void
+    public function test_detects_invalid_my_altitude(mixed $altitude): void
     {
         $entry = $this->getValidEntry(['my_altitude' => $altitude]);
 
@@ -712,21 +712,21 @@ final class ValidatorTest extends TestCase
         ];
     }
 
-    public function testAcceptsValidAltitude(): void
+    public function test_accepts_valid_altitude(): void
     {
         $entry = $this->getValidEntry(['altitude' => 1000]);
         $result = Validator::entry($entry);
         $this->assertTrue($result);
     }
 
-    public function testAcceptsValidMyAltitude(): void
+    public function test_accepts_valid_my_altitude(): void
     {
         $entry = $this->getValidEntry(['my_altitude' => -50]); // Below sea level is valid
         $result = Validator::entry($entry);
         $this->assertTrue($result);
     }
 
-    public function testAcceptsNegativeAltitude(): void
+    public function test_accepts_negative_altitude(): void
     {
         $entry = $this->getValidEntry(['altitude' => -100]); // Death Valley, etc.
         $result = Validator::entry($entry);
@@ -735,7 +735,7 @@ final class ValidatorTest extends TestCase
 
     // NR Bursts/Pings validation (covering lines 90-95)
     #[DataProvider('invalidNrBurstsProvider')]
-    public function testDetectsInvalidNrBursts(mixed $value): void
+    public function test_detects_invalid_nr_bursts(mixed $value): void
     {
         $entry = $this->getValidEntry(['nr_bursts' => $value]);
 
@@ -745,7 +745,7 @@ final class ValidatorTest extends TestCase
     }
 
     #[DataProvider('invalidNrBurstsProvider')]
-    public function testDetectsInvalidNrPings(mixed $value): void
+    public function test_detects_invalid_nr_pings(mixed $value): void
     {
         $entry = $this->getValidEntry(['nr_pings' => $value]);
 
@@ -763,14 +763,14 @@ final class ValidatorTest extends TestCase
         ];
     }
 
-    public function testAcceptsValidNrBursts(): void
+    public function test_accepts_valid_nr_bursts(): void
     {
         $entry = $this->getValidEntry(['nr_bursts' => 5]);
         $result = Validator::entry($entry);
         $this->assertTrue($result);
     }
 
-    public function testAcceptsValidNrPings(): void
+    public function test_accepts_valid_nr_pings(): void
     {
         $entry = $this->getValidEntry(['nr_pings' => 10]);
         $result = Validator::entry($entry);
@@ -778,7 +778,7 @@ final class ValidatorTest extends TestCase
     }
 
     // Freq RX validation with band_rx (covering lines 111-115)
-    public function testDetectsInvalidFreqRx(): void
+    public function test_detects_invalid_freq_rx(): void
     {
         $entry = $this->getValidEntry(['freq_rx' => '999.999']);
 
@@ -787,7 +787,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('freq_rx', $result);
     }
 
-    public function testDetectsFreqRxBandRxMismatch(): void
+    public function test_detects_freq_rx_band_rx_mismatch(): void
     {
         $entry = $this->getValidEntry([
             'band_rx' => '20M',
@@ -799,7 +799,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('freq_rx', $result);
     }
 
-    public function testAcceptsValidFreqRxWithBandRx(): void
+    public function test_accepts_valid_freq_rx_with_band_rx(): void
     {
         $entry = $this->getValidEntry([
             'band_rx' => '40M',
@@ -809,7 +809,7 @@ final class ValidatorTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testAcceptsValidFreqRxWithoutBandRx(): void
+    public function test_accepts_valid_freq_rx_without_band_rx(): void
     {
         $entry = $this->getValidEntry(['freq_rx' => '14.074']);
         $result = Validator::entry($entry);
@@ -817,7 +817,7 @@ final class ValidatorTest extends TestCase
     }
 
     // Band RX validation (covering lines 116-121)
-    public function testDetectsInvalidBandRx(): void
+    public function test_detects_invalid_band_rx(): void
     {
         $entry = $this->getValidEntry(['band_rx' => 'INVALID']);
 
@@ -826,7 +826,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('band_rx', $result);
     }
 
-    public function testAcceptsValidBandRx(): void
+    public function test_accepts_valid_band_rx(): void
     {
         $entry = $this->getValidEntry(['band_rx' => '40M']);
         $result = Validator::entry($entry);
@@ -834,7 +834,7 @@ final class ValidatorTest extends TestCase
     }
 
     // My WWFF Ref validation (covering line 253)
-    public function testDetectsInvalidMyWwffRef(): void
+    public function test_detects_invalid_my_wwff_ref(): void
     {
         $entry = $this->getValidEntry(['my_wwff_ref' => 'INVALID']);
 
@@ -843,7 +843,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('my_wwff_ref', $result);
     }
 
-    public function testAcceptsValidMyWwffRef(): void
+    public function test_accepts_valid_my_wwff_ref(): void
     {
         $entry = $this->getValidEntry(['my_wwff_ref' => 'USFF-0001']);
         $result = Validator::entry($entry);
@@ -851,7 +851,7 @@ final class ValidatorTest extends TestCase
     }
 
     // My SOTA Ref validation
-    public function testDetectsInvalidMySotaRef(): void
+    public function test_detects_invalid_my_sota_ref(): void
     {
         $entry = $this->getValidEntry(['my_sota_ref' => 'INVALID']);
 
@@ -860,7 +860,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('my_sota_ref', $result);
     }
 
-    public function testAcceptsValidMySotaRef(): void
+    public function test_accepts_valid_my_sota_ref(): void
     {
         $entry = $this->getValidEntry(['my_sota_ref' => 'W7W/LC-001']);
         $result = Validator::entry($entry);
@@ -868,7 +868,7 @@ final class ValidatorTest extends TestCase
     }
 
     // My IOTA Ref validation
-    public function testDetectsInvalidMyIotaRef(): void
+    public function test_detects_invalid_my_iota_ref(): void
     {
         $entry = $this->getValidEntry(['my_iota' => 'INVALID']);
 
@@ -877,7 +877,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('my_iota', $result);
     }
 
-    public function testAcceptsValidMyIotaRef(): void
+    public function test_accepts_valid_my_iota_ref(): void
     {
         $entry = $this->getValidEntry(['my_iota' => 'NA-001']);
         $result = Validator::entry($entry);
@@ -885,7 +885,7 @@ final class ValidatorTest extends TestCase
     }
 
     // My Gridsquare validation
-    public function testDetectsInvalidMyGridsquare(): void
+    public function test_detects_invalid_my_gridsquare(): void
     {
         $entry = $this->getValidEntry(['my_gridsquare' => 'INVALID']);
 
@@ -894,7 +894,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('my_gridsquare', $result);
     }
 
-    public function testAcceptsValidMyGridsquare(): void
+    public function test_accepts_valid_my_gridsquare(): void
     {
         $entry = $this->getValidEntry(['my_gridsquare' => 'FN31PR']);
         $result = Validator::entry($entry);
@@ -902,7 +902,7 @@ final class ValidatorTest extends TestCase
     }
 
     // My VUCC Grids validation
-    public function testDetectsInvalidMyVuccGrids(): void
+    public function test_detects_invalid_my_vucc_grids(): void
     {
         $entry = $this->getValidEntry(['my_vucc_grids' => 'FN31,INVALID,FN41']);
 
@@ -911,7 +911,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('my_vucc_grids', $result);
     }
 
-    public function testAcceptsValidMyVuccGrids(): void
+    public function test_accepts_valid_my_vucc_grids(): void
     {
         $entry = $this->getValidEntry(['my_vucc_grids' => 'FN31,FN32']);
         $result = Validator::entry($entry);
@@ -919,7 +919,7 @@ final class ValidatorTest extends TestCase
     }
 
     // My DXCC validation
-    public function testDetectsInvalidMyDxcc(): void
+    public function test_detects_invalid_my_dxcc(): void
     {
         $entry = $this->getValidEntry(['my_dxcc' => '9999']);
 
@@ -928,7 +928,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('my_dxcc', $result);
     }
 
-    public function testAcceptsValidMyDxcc(): void
+    public function test_accepts_valid_my_dxcc(): void
     {
         $entry = $this->getValidEntry(['my_dxcc' => '291']);
         $result = Validator::entry($entry);
@@ -937,7 +937,7 @@ final class ValidatorTest extends TestCase
 
     // Additional QSO upload status fields (covering all upload status variants)
     #[DataProvider('invalidQsoUploadStatusFieldsProvider')]
-    public function testDetectsInvalidQsoUploadStatusVariants(string $field): void
+    public function test_detects_invalid_qso_upload_status_variants(string $field): void
     {
         $entry = $this->getValidEntry([$field => 'X']);
 
@@ -958,7 +958,7 @@ final class ValidatorTest extends TestCase
 
     // Additional QSL received fields
     #[DataProvider('invalidQslRcvdFieldsProvider')]
-    public function testDetectsInvalidQslRcvdVariants(string $field): void
+    public function test_detects_invalid_qsl_rcvd_variants(string $field): void
     {
         $entry = $this->getValidEntry([$field => 'X']);
 
@@ -978,7 +978,7 @@ final class ValidatorTest extends TestCase
 
     // Additional QSL sent fields
     #[DataProvider('invalidQslSentFieldsProvider')]
-    public function testDetectsInvalidQslSentVariants(string $field): void
+    public function test_detects_invalid_qsl_sent_variants(string $field): void
     {
         $entry = $this->getValidEntry([$field => 'X']);
 
@@ -997,7 +997,7 @@ final class ValidatorTest extends TestCase
     }
 
     // QSL Sent Via validation
-    public function testDetectsInvalidQslSentVia(): void
+    public function test_detects_invalid_qsl_sent_via(): void
     {
         $entry = $this->getValidEntry(['qsl_sent_via' => 'X']);
 
@@ -1008,7 +1008,7 @@ final class ValidatorTest extends TestCase
 
     // Additional date fields (covering all date validation paths)
     #[DataProvider('invalidDateFieldsProvider')]
-    public function testDetectsInvalidDateVariants(string $field): void
+    public function test_detects_invalid_date_variants(string $field): void
     {
         $entry = $this->getValidEntry([$field => '20231332']);
 
@@ -1038,7 +1038,7 @@ final class ValidatorTest extends TestCase
     }
 
     // Time off validation
-    public function testDetectsInvalidTimeOff(): void
+    public function test_detects_invalid_time_off(): void
     {
         $entry = $this->getValidEntry(['time_off' => '2500']);
 
@@ -1047,7 +1047,7 @@ final class ValidatorTest extends TestCase
         $this->assertContains('time_off', $result);
     }
 
-    public function testAcceptsValidTimeOff(): void
+    public function test_accepts_valid_time_off(): void
     {
         $entry = $this->getValidEntry(['time_off' => '1300']);
         $result = Validator::entry($entry);
@@ -1056,7 +1056,7 @@ final class ValidatorTest extends TestCase
 
     // Additional numeric fields that must be non-negative
     #[DataProvider('nonNegativeNumericFieldsProvider')]
-    public function testDetectsNegativeValuesForNonNegativeFields(string $field): void
+    public function test_detects_negative_values_for_non_negative_fields(string $field): void
     {
         $entry = $this->getValidEntry([$field => -1]);
 
@@ -1066,7 +1066,7 @@ final class ValidatorTest extends TestCase
     }
 
     #[DataProvider('nonNegativeNumericFieldsProvider')]
-    public function testDetectsNonNumericValuesForNonNegativeFields(string $field): void
+    public function test_detects_non_numeric_values_for_non_negative_fields(string $field): void
     {
         $entry = $this->getValidEntry([$field => 'abc']);
 
@@ -1091,7 +1091,7 @@ final class ValidatorTest extends TestCase
 
     // Valid values for non-negative fields
     #[DataProvider('nonNegativeNumericFieldsProvider')]
-    public function testAcceptsValidValuesForNonNegativeFields(string $field): void
+    public function test_accepts_valid_values_for_non_negative_fields(string $field): void
     {
         $entry = $this->getValidEntry([$field => 100]);
         $result = Validator::entry($entry);
@@ -1099,7 +1099,7 @@ final class ValidatorTest extends TestCase
     }
 
     // POTA Park Ref (not my_park_ref) invalid test
-    public function testDetectsInvalidPotaParkRef(): void
+    public function test_detects_invalid_pota_park_ref(): void
     {
         $entry = $this->getValidEntry(['pota_park_ref' => 'US-001']); // Too few digits
 
@@ -1109,7 +1109,7 @@ final class ValidatorTest extends TestCase
     }
 
     // Duration with entries that trigger the else-if branch (stamp > last)
-    public function testDurationWithEntriesInAscendingOrder(): void
+    public function test_duration_with_entries_in_ascending_order(): void
     {
         // Entries in ascending order should trigger the else-if branch
         // where $stamp > $last is checked
@@ -1126,7 +1126,7 @@ final class ValidatorTest extends TestCase
     }
 
     // Duration with only one entry (edge case)
-    public function testDurationWithSingleEntry(): void
+    public function test_duration_with_single_entry(): void
     {
         $entries = [
             ['qso_date' => '20231225', 'time_on' => '120000'],
@@ -1139,7 +1139,7 @@ final class ValidatorTest extends TestCase
     }
 
     // Test with uppercase field names (case insensitivity)
-    public function testHandlesUppercaseFieldNames(): void
+    public function test_handles_uppercase_field_names(): void
     {
         $entry = [
             'BAND' => '20M',
@@ -1156,7 +1156,7 @@ final class ValidatorTest extends TestCase
     }
 
     // Test with mixed case field names
-    public function testHandlesMixedCaseFieldNames(): void
+    public function test_handles_mixed_case_field_names(): void
     {
         $entry = [
             'Band' => '20M',
@@ -1174,7 +1174,7 @@ final class ValidatorTest extends TestCase
 
     // Test that field names with whitespace are handled by the key processing
     // The Validator trims and lowercases field names, so ' band ' becomes 'band'
-    public function testHandlesFieldNamesWithWhitespace(): void
+    public function test_handles_field_names_with_whitespace(): void
     {
         $entry = [
             ' band ' => '20M',

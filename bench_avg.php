@@ -1,8 +1,9 @@
 <?php
+
 require_once 'vendor/autoload.php';
 
-use Pota\Adif\Document;
 use Pota\Adif\Adif;
+use Pota\Adif\Document;
 
 if ($argc < 2) {
     echo "Usage: php bench_avg.php <adif_file> [iterations]\n";
@@ -10,15 +11,15 @@ if ($argc < 2) {
 }
 
 $file = $argv[1];
-$iterations = isset($argv[2]) ? (int)$argv[2] : 10;
+$iterations = isset($argv[2]) ? (int) $argv[2] : 10;
 
-if (!file_exists($file)) {
+if (! file_exists($file)) {
     echo "File not found: $file\n";
     exit(1);
 }
 
 echo "Processing: $file\n";
-echo "File size: " . number_format(filesize($file)) . " bytes\n";
+echo 'File size: ' . number_format(filesize($file)) . " bytes\n";
 echo "Running $iterations iterations...\n\n";
 
 $all_timers = [];
@@ -26,16 +27,16 @@ $all_timers = [];
 for ($iter = 0; $iter < $iterations; $iter++) {
     $doc = new Document($file);
     $doc->setMode(Document::MODE_POTA);
-    
+
     $doc->parse();
     $doc->sanitize();
     $doc->validate();
     $doc->dedupe();
     $doc->morph(Adif::MORPH_POTA_REFS);
-    
+
     $timers = $doc->getTimers();
     foreach ($timers as $name => $ms) {
-        if (!isset($all_timers[$name])) {
+        if (! isset($all_timers[$name])) {
             $all_timers[$name] = [];
         }
         $all_timers[$name][] = $ms;

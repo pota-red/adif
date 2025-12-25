@@ -10,9 +10,9 @@ use Pota\Adif\Adif;
 final class PerformanceTest extends TestCase
 {
     // Dedupe performance tests - validates O(n) optimization
-    public function testDedupePerformanceSmallFile(): void
+    public function test_dedupe_performance_small_file(): void
     {
-        $adif = new Adif();
+        $adif = new Adif;
         $adif->loadFile(testDataPath('small.adi'));
         $adif->parse();
         $doc = $adif->merge();
@@ -25,9 +25,9 @@ final class PerformanceTest extends TestCase
         $this->assertLessThan(500, $duration, "Small file dedupe too slow: {$duration}ms");
     }
 
-    public function testDedupePerformanceMediumFile(): void
+    public function test_dedupe_performance_medium_file(): void
     {
-        $adif = new Adif();
+        $adif = new Adif;
         $adif->loadFile(testDataPath('medium.adi'));
         $adif->parse();
         $doc = $adif->merge();
@@ -40,9 +40,9 @@ final class PerformanceTest extends TestCase
         $this->assertLessThan(2000, $duration, "Medium file dedupe too slow: {$duration}ms");
     }
 
-    public function testDedupePerformanceDupesFile(): void
+    public function test_dedupe_performance_dupes_file(): void
     {
-        $adif = new Adif();
+        $adif = new Adif;
         $adif->loadFile(testDataPath('dupes.adi'));
         $adif->parse();
         $doc = $adif->merge();
@@ -56,10 +56,10 @@ final class PerformanceTest extends TestCase
         $this->assertTrue($doc->hasDupes());
     }
 
-    public function testMorphPerformanceOptimization(): void
+    public function test_morph_performance_optimization(): void
     {
         // Morph also uses hash-based lookups now
-        $adif = new Adif();
+        $adif = new Adif;
         $adif->loadFile(testDataPath('medium.adi'));
         $adif->parse();
         $doc = $adif->merge();
@@ -73,9 +73,9 @@ final class PerformanceTest extends TestCase
     }
 
     // Parse performance tests
-    public function testParsePerformanceSmallFile(): void
+    public function test_parse_performance_small_file(): void
     {
-        $adif = new Adif();
+        $adif = new Adif;
         $adif->loadFile(testDataPath('small.adi'));
 
         $start = microtime(true);
@@ -86,9 +86,9 @@ final class PerformanceTest extends TestCase
         $this->assertLessThan(500, $duration, "Small file parsing too slow: {$duration}ms");
     }
 
-    public function testParsePerformanceMediumFile(): void
+    public function test_parse_performance_medium_file(): void
     {
-        $adif = new Adif();
+        $adif = new Adif;
         $adif->loadFile(testDataPath('medium.adi'));
 
         $start = microtime(true);
@@ -100,9 +100,9 @@ final class PerformanceTest extends TestCase
     }
 
     // Sanitize performance tests
-    public function testSanitizePerformanceMediumFile(): void
+    public function test_sanitize_performance_medium_file(): void
     {
-        $adif = new Adif();
+        $adif = new Adif;
         $adif->loadFile(testDataPath('medium.adi'));
         $adif->parse();
         $doc = $adif->merge();
@@ -116,9 +116,9 @@ final class PerformanceTest extends TestCase
     }
 
     // Validate performance tests
-    public function testValidatePerformanceMediumFile(): void
+    public function test_validate_performance_medium_file(): void
     {
-        $adif = new Adif();
+        $adif = new Adif;
         $adif->loadFile(testDataPath('medium.adi'));
         $adif->parse();
         $doc = $adif->merge();
@@ -133,9 +133,9 @@ final class PerformanceTest extends TestCase
     }
 
     // Complete workflow performance
-    public function testCompleteWorkflowPerformanceMediumFile(): void
+    public function test_complete_workflow_performance_medium_file(): void
     {
-        $adif = new Adif();
+        $adif = new Adif;
         $adif->loadFile(testDataPath('medium.adi'));
 
         $start = microtime(true);
@@ -152,9 +152,9 @@ final class PerformanceTest extends TestCase
     }
 
     // Output generation performance
-    public function testToAdifPerformance(): void
+    public function test_to_adif_performance(): void
     {
-        $adif = new Adif();
+        $adif = new Adif;
         $adif->loadFile(testDataPath('medium.adi'));
         $adif->parse();
         $doc = $adif->merge();
@@ -167,9 +167,9 @@ final class PerformanceTest extends TestCase
         $this->assertNotEmpty($output);
     }
 
-    public function testToJsonPerformance(): void
+    public function test_to_json_performance(): void
     {
-        $adif = new Adif();
+        $adif = new Adif;
         $adif->loadFile(testDataPath('medium.adi'));
         $adif->parse();
         $doc = $adif->merge();
@@ -183,11 +183,11 @@ final class PerformanceTest extends TestCase
     }
 
     // Memory usage test
-    public function testMemoryUsageMediumFile(): void
+    public function test_memory_usage_medium_file(): void
     {
         $beforeMemory = memory_get_usage(true);
 
-        $adif = new Adif();
+        $adif = new Adif;
         $adif->loadFile(testDataPath('medium.adi'));
         $adif->parse();
         $doc = $adif->merge();
@@ -201,14 +201,14 @@ final class PerformanceTest extends TestCase
     }
 
     // Large file tests (optional - only run if large.adi exists)
-    public function testParsePerformanceLargeFile(): void
+    public function test_parse_performance_large_file(): void
     {
         $path = testDataPath('large.adi');
-        if (!file_exists($path)) {
+        if (! file_exists($path)) {
             $this->markTestSkipped('large.adi not available');
         }
 
-        $adif = new Adif();
+        $adif = new Adif;
         $adif->loadFile($path);
 
         $start = microtime(true);
@@ -219,14 +219,14 @@ final class PerformanceTest extends TestCase
         $this->assertLessThan(5000, $duration, "Large file parsing too slow: {$duration}ms");
     }
 
-    public function testDedupePerformanceLargeFile(): void
+    public function test_dedupe_performance_large_file(): void
     {
         $path = testDataPath('large.adi');
-        if (!file_exists($path)) {
+        if (! file_exists($path)) {
             $this->markTestSkipped('large.adi not available');
         }
 
-        $adif = new Adif();
+        $adif = new Adif;
         $adif->loadFile($path);
         $adif->parse();
         $doc = $adif->merge();

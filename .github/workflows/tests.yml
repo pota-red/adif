@@ -40,9 +40,8 @@ jobs:
       - name: Run PHPStan
         run: composer phpstan
 
-      - name: Check code style
-        run: composer cs
-        continue-on-error: true
+      - name: Check code style (Pint)
+        run: composer pint:check
 
       - name: Run tests with coverage
         run: |

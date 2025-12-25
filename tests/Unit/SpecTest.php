@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Pota\Adif\Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 use Pota\Adif\Spec;
 
 final class SpecTest extends TestCase
 {
     // isField tests
-    public function testIsFieldWithValidFields(): void
+    public function test_is_field_with_valid_fields(): void
     {
         $this->assertTrue(Spec::isField('band'));
         $this->assertTrue(Spec::isField('call'));
@@ -23,14 +23,14 @@ final class SpecTest extends TestCase
         $this->assertTrue(Spec::isField('time_on'));
     }
 
-    public function testIsFieldWithUppercaseInput(): void
+    public function test_is_field_with_uppercase_input(): void
     {
         $this->assertTrue(Spec::isField('BAND'));
         $this->assertTrue(Spec::isField('CALL'));
         $this->assertTrue(Spec::isField('MODE'));
     }
 
-    public function testIsFieldWithInvalidFields(): void
+    public function test_is_field_with_invalid_fields(): void
     {
         $this->assertFalse(Spec::isField('invalid_field'));
         $this->assertFalse(Spec::isField('not_a_field'));
@@ -39,7 +39,7 @@ final class SpecTest extends TestCase
 
     // isBand tests
     #[DataProvider('validBandProvider')]
-    public function testIsBandWithValidBands(string $band): void
+    public function test_is_band_with_valid_bands(string $band): void
     {
         $this->assertTrue(Spec::isBand($band));
     }
@@ -65,7 +65,7 @@ final class SpecTest extends TestCase
     }
 
     #[DataProvider('invalidBandProvider')]
-    public function testIsBandWithInvalidBands(string $band): void
+    public function test_is_band_with_invalid_bands(string $band): void
     {
         $this->assertFalse(Spec::isBand($band));
     }
@@ -82,7 +82,7 @@ final class SpecTest extends TestCase
 
     // isMode tests
     #[DataProvider('validModeProvider')]
-    public function testIsModeWithValidModes(string $mode): void
+    public function test_is_mode_with_valid_modes(string $mode): void
     {
         $this->assertTrue(Spec::isMode($mode));
     }
@@ -104,7 +104,7 @@ final class SpecTest extends TestCase
         ];
     }
 
-    public function testIsModeWithInvalidModes(): void
+    public function test_is_mode_with_invalid_modes(): void
     {
         $this->assertFalse(Spec::isMode('INVALID'));
         $this->assertFalse(Spec::isMode('XXX'));
@@ -113,7 +113,7 @@ final class SpecTest extends TestCase
 
     // isSubMode tests
     #[DataProvider('validSubModeProvider')]
-    public function testIsSubModeWithValidSubModes(string $submode): void
+    public function test_is_sub_mode_with_valid_sub_modes(string $submode): void
     {
         $this->assertTrue(Spec::isSubMode($submode));
     }
@@ -133,7 +133,7 @@ final class SpecTest extends TestCase
         ];
     }
 
-    public function testIsSubModeWithInvalidSubModes(): void
+    public function test_is_sub_mode_with_invalid_sub_modes(): void
     {
         $this->assertFalse(Spec::isSubMode('INVALID'));
         $this->assertFalse(Spec::isSubMode('XXX'));
@@ -142,7 +142,7 @@ final class SpecTest extends TestCase
 
     // isContinent tests
     #[DataProvider('validContinentProvider')]
-    public function testIsContinentWithValidContinents(string $continent): void
+    public function test_is_continent_with_valid_continents(string $continent): void
     {
         $this->assertTrue(Spec::isContinent($continent));
     }
@@ -162,7 +162,7 @@ final class SpecTest extends TestCase
         ];
     }
 
-    public function testIsContinentWithInvalidContinents(): void
+    public function test_is_continent_with_invalid_continents(): void
     {
         $this->assertFalse(Spec::isContinent('XX'));
         $this->assertFalse(Spec::isContinent('NORTH'));
@@ -170,7 +170,7 @@ final class SpecTest extends TestCase
     }
 
     // isAntPath tests
-    public function testIsAntPathWithValidPaths(): void
+    public function test_is_ant_path_with_valid_paths(): void
     {
         $this->assertTrue(Spec::isAntPath('G')); // grayline
         $this->assertTrue(Spec::isAntPath('O')); // other
@@ -179,7 +179,7 @@ final class SpecTest extends TestCase
         $this->assertTrue(Spec::isAntPath('g')); // lowercase
     }
 
-    public function testIsAntPathWithInvalidPaths(): void
+    public function test_is_ant_path_with_invalid_paths(): void
     {
         $this->assertFalse(Spec::isAntPath('X'));
         $this->assertFalse(Spec::isAntPath(''));
@@ -188,7 +188,7 @@ final class SpecTest extends TestCase
 
     // isArrlSection tests
     #[DataProvider('validArrlSectionProvider')]
-    public function testIsArrlSectionWithValidSections(string $section): void
+    public function test_is_arrl_section_with_valid_sections(string $section): void
     {
         $this->assertTrue(Spec::isArrlSection($section));
     }
@@ -205,7 +205,7 @@ final class SpecTest extends TestCase
         ];
     }
 
-    public function testIsArrlSectionWithInvalidSections(): void
+    public function test_is_arrl_section_with_invalid_sections(): void
     {
         $this->assertFalse(Spec::isArrlSection('XXX'));
         $this->assertFalse(Spec::isArrlSection(''));
@@ -213,7 +213,7 @@ final class SpecTest extends TestCase
     }
 
     // isQsoUpload tests
-    public function testIsQsoUploadWithValidStatuses(): void
+    public function test_is_qso_upload_with_valid_statuses(): void
     {
         $this->assertTrue(Spec::isQsoUpload('Y'));
         $this->assertTrue(Spec::isQsoUpload('N'));
@@ -221,28 +221,28 @@ final class SpecTest extends TestCase
         $this->assertTrue(Spec::isQsoUpload('y')); // lowercase
     }
 
-    public function testIsQsoUploadWithInvalidStatuses(): void
+    public function test_is_qso_upload_with_invalid_statuses(): void
     {
         $this->assertFalse(Spec::isQsoUpload('X'));
         $this->assertFalse(Spec::isQsoUpload(''));
     }
 
     // isQsoDownload tests
-    public function testIsQsoDownloadWithValidStatuses(): void
+    public function test_is_qso_download_with_valid_statuses(): void
     {
         $this->assertTrue(Spec::isQsoDownload('Y'));
         $this->assertTrue(Spec::isQsoDownload('N'));
         $this->assertTrue(Spec::isQsoDownload('I'));
     }
 
-    public function testIsQsoDownloadWithInvalidStatuses(): void
+    public function test_is_qso_download_with_invalid_statuses(): void
     {
         $this->assertFalse(Spec::isQsoDownload('X'));
         $this->assertFalse(Spec::isQsoDownload(''));
     }
 
     // isQsoRcvd tests
-    public function testIsQsoRcvdWithValidStatuses(): void
+    public function test_is_qso_rcvd_with_valid_statuses(): void
     {
         $this->assertTrue(Spec::isQsoRcvd('Y'));
         $this->assertTrue(Spec::isQsoRcvd('N'));
@@ -250,14 +250,14 @@ final class SpecTest extends TestCase
         $this->assertTrue(Spec::isQsoRcvd('I'));
     }
 
-    public function testIsQsoRcvdWithInvalidStatuses(): void
+    public function test_is_qso_rcvd_with_invalid_statuses(): void
     {
         $this->assertFalse(Spec::isQsoRcvd('X'));
         $this->assertFalse(Spec::isQsoRcvd(''));
     }
 
     // isQsoSent tests
-    public function testIsQsoSentWithValidStatuses(): void
+    public function test_is_qso_sent_with_valid_statuses(): void
     {
         $this->assertTrue(Spec::isQsoSent('Y'));
         $this->assertTrue(Spec::isQsoSent('N'));
@@ -266,7 +266,7 @@ final class SpecTest extends TestCase
         $this->assertTrue(Spec::isQsoSent('I'));
     }
 
-    public function testIsQsoSentWithInvalidStatuses(): void
+    public function test_is_qso_sent_with_invalid_statuses(): void
     {
         $this->assertFalse(Spec::isQsoSent('X'));
         $this->assertFalse(Spec::isQsoSent(''));
@@ -275,13 +275,13 @@ final class SpecTest extends TestCase
     // isQslVia tests
     // Note: The enum uses lowercase keys for d, e, m but the function uppercases input
     // This means only 'B' works correctly - the lowercase keys are effectively broken
-    public function testIsQslViaWithValidMethods(): void
+    public function test_is_qsl_via_with_valid_methods(): void
     {
         $this->assertTrue(Spec::isQslVia('B')); // bureau - uppercase key works
         $this->assertTrue(Spec::isQslVia('b')); // lowercase input also works (uppercased to B)
     }
 
-    public function testIsQslViaLowercaseKeysDontMatchDueToUppercase(): void
+    public function test_is_qsl_via_lowercase_keys_dont_match_due_to_uppercase(): void
     {
         // These return false because isQslVia() uppercases input
         // but enum keys 'd', 'e', 'm' are lowercase in the array
@@ -290,21 +290,21 @@ final class SpecTest extends TestCase
         $this->assertFalse(Spec::isQslVia('m')); // enum has 'm' but function looks for 'M'
     }
 
-    public function testIsQslViaWithInvalidMethods(): void
+    public function test_is_qsl_via_with_invalid_methods(): void
     {
         $this->assertFalse(Spec::isQslVia('X'));
         $this->assertFalse(Spec::isQslVia(''));
     }
 
     // isQslMedium tests
-    public function testIsQslMediumWithValidMediums(): void
+    public function test_is_qsl_medium_with_valid_mediums(): void
     {
         $this->assertTrue(Spec::isQslMedium('CARD'));
         $this->assertTrue(Spec::isQslMedium('EQSL'));
         $this->assertTrue(Spec::isQslMedium('LOTW'));
     }
 
-    public function testIsQslMediumWithInvalidMediums(): void
+    public function test_is_qsl_medium_with_invalid_mediums(): void
     {
         $this->assertFalse(Spec::isQslMedium('INVALID'));
         $this->assertFalse(Spec::isQslMedium(''));
@@ -312,7 +312,7 @@ final class SpecTest extends TestCase
 
     // isDxcc tests
     #[DataProvider('validDxccProvider')]
-    public function testIsDxccWithValidEntities(string $dxcc): void
+    public function test_is_dxcc_with_valid_entities(string $dxcc): void
     {
         $this->assertTrue(Spec::isDxcc($dxcc));
     }
@@ -328,7 +328,7 @@ final class SpecTest extends TestCase
         ];
     }
 
-    public function testIsDxccWithInvalidEntities(): void
+    public function test_is_dxcc_with_invalid_entities(): void
     {
         $this->assertFalse(Spec::isDxcc('9999'));
         $this->assertFalse(Spec::isDxcc('-1'));
@@ -336,7 +336,7 @@ final class SpecTest extends TestCase
 
     // isPropagation tests
     #[DataProvider('validPropagationProvider')]
-    public function testIsPropagationWithValidModes(string $prop): void
+    public function test_is_propagation_with_valid_modes(string $prop): void
     {
         $this->assertTrue(Spec::isPropagation($prop));
     }
@@ -353,7 +353,7 @@ final class SpecTest extends TestCase
         ];
     }
 
-    public function testIsPropagationWithInvalidModes(): void
+    public function test_is_propagation_with_invalid_modes(): void
     {
         $this->assertFalse(Spec::isPropagation('INVALID'));
         $this->assertFalse(Spec::isPropagation(''));
@@ -361,9 +361,9 @@ final class SpecTest extends TestCase
 
     // isLat tests
     #[DataProvider('validLatProvider')]
-    public function testIsLatWithValidLatitudes(string $lat): void
+    public function test_is_lat_with_valid_latitudes(string $lat): void
     {
-        $this->assertTrue((bool)Spec::isLat($lat));
+        $this->assertTrue((bool) Spec::isLat($lat));
     }
 
     public static function validLatProvider(): array
@@ -379,9 +379,9 @@ final class SpecTest extends TestCase
     }
 
     #[DataProvider('invalidLatProvider')]
-    public function testIsLatWithInvalidLatitudes(string $lat): void
+    public function test_is_lat_with_invalid_latitudes(string $lat): void
     {
-        $this->assertFalse((bool)Spec::isLat($lat));
+        $this->assertFalse((bool) Spec::isLat($lat));
     }
 
     public static function invalidLatProvider(): array
@@ -395,9 +395,9 @@ final class SpecTest extends TestCase
 
     // isLon tests
     #[DataProvider('validLonProvider')]
-    public function testIsLonWithValidLongitudes(string $lon): void
+    public function test_is_lon_with_valid_longitudes(string $lon): void
     {
-        $this->assertTrue((bool)Spec::isLon($lon));
+        $this->assertTrue((bool) Spec::isLon($lon));
     }
 
     public static function validLonProvider(): array
@@ -412,9 +412,9 @@ final class SpecTest extends TestCase
     }
 
     #[DataProvider('invalidLonProvider')]
-    public function testIsLonWithInvalidLongitudes(string $lon): void
+    public function test_is_lon_with_invalid_longitudes(string $lon): void
     {
-        $this->assertFalse((bool)Spec::isLon($lon));
+        $this->assertFalse((bool) Spec::isLon($lon));
     }
 
     public static function invalidLonProvider(): array
@@ -428,9 +428,9 @@ final class SpecTest extends TestCase
 
     // isMaidenhead tests
     #[DataProvider('validMaidenheadProvider')]
-    public function testIsMaidenheadWithValidGrids(string $grid): void
+    public function test_is_maidenhead_with_valid_grids(string $grid): void
     {
-        $this->assertTrue((bool)Spec::isMaidenhead($grid));
+        $this->assertTrue((bool) Spec::isMaidenhead($grid));
     }
 
     public static function validMaidenheadProvider(): array
@@ -445,9 +445,9 @@ final class SpecTest extends TestCase
     }
 
     #[DataProvider('invalidMaidenheadProvider')]
-    public function testIsMaidenheadWithInvalidGrids(string $grid): void
+    public function test_is_maidenhead_with_invalid_grids(string $grid): void
     {
-        $this->assertFalse((bool)Spec::isMaidenhead($grid));
+        $this->assertFalse((bool) Spec::isMaidenhead($grid));
     }
 
     public static function invalidMaidenheadProvider(): array
@@ -459,16 +459,16 @@ final class SpecTest extends TestCase
         ];
     }
 
-    public function testMaidenheadEmptyStringReturnsTrue(): void
+    public function test_maidenhead_empty_string_returns_true(): void
     {
         // Empty string is technically valid (length 0 is even and <= 12)
         // This is the actual behavior of the implementation
-        $this->assertTrue((bool)Spec::isMaidenhead(''));
+        $this->assertTrue((bool) Spec::isMaidenhead(''));
     }
 
     // isDate tests
     #[DataProvider('validDateProvider')]
-    public function testIsDateWithValidDates(string $date): void
+    public function test_is_date_with_valid_dates(string $date): void
     {
         $this->assertTrue(Spec::isDate($date));
     }
@@ -484,7 +484,7 @@ final class SpecTest extends TestCase
     }
 
     #[DataProvider('invalidDateProvider')]
-    public function testIsDateWithInvalidDates(string $date): void
+    public function test_is_date_with_invalid_dates(string $date): void
     {
         $this->assertFalse(Spec::isDate($date));
     }
@@ -502,7 +502,7 @@ final class SpecTest extends TestCase
 
     // isTime tests
     #[DataProvider('validTimeProvider')]
-    public function testIsTimeWithValidTimes(string $time): void
+    public function test_is_time_with_valid_times(string $time): void
     {
         $this->assertTrue(Spec::isTime($time));
     }
@@ -518,7 +518,7 @@ final class SpecTest extends TestCase
     }
 
     #[DataProvider('invalidTimeProvider')]
-    public function testIsTimeWithInvalidTimes(string $time): void
+    public function test_is_time_with_invalid_times(string $time): void
     {
         $this->assertFalse(Spec::isTime($time));
     }
@@ -535,7 +535,7 @@ final class SpecTest extends TestCase
 
     // isFreq tests
     #[DataProvider('validFreqProvider')]
-    public function testIsFreqWithValidFrequencies(string $freq, ?string $band): void
+    public function test_is_freq_with_valid_frequencies(string $freq, ?string $band): void
     {
         $this->assertTrue(Spec::isFreq($freq, $band));
     }
@@ -552,7 +552,7 @@ final class SpecTest extends TestCase
     }
 
     #[DataProvider('invalidFreqProvider')]
-    public function testIsFreqWithInvalidFrequencies(string $freq, ?string $band): void
+    public function test_is_freq_with_invalid_frequencies(string $freq, ?string $band): void
     {
         $this->assertFalse(Spec::isFreq($freq, $band));
     }
@@ -567,7 +567,7 @@ final class SpecTest extends TestCase
 
     // bandFromFreq tests
     #[DataProvider('freqToBandProvider')]
-    public function testBandFromFreq(string $freq, ?string $expectedBand): void
+    public function test_band_from_freq(string $freq, ?string $expectedBand): void
     {
         $this->assertEquals($expectedBand, Spec::bandFromFreq($freq));
     }
@@ -586,9 +586,9 @@ final class SpecTest extends TestCase
 
     // isPotaRef tests
     #[DataProvider('validPotaRefProvider')]
-    public function testIsPotaRefWithValidReferences(string $ref): void
+    public function test_is_pota_ref_with_valid_references(string $ref): void
     {
-        $this->assertTrue((bool)Spec::isPotaRef($ref));
+        $this->assertTrue((bool) Spec::isPotaRef($ref));
     }
 
     public static function validPotaRefProvider(): array
@@ -603,9 +603,9 @@ final class SpecTest extends TestCase
     }
 
     #[DataProvider('invalidPotaRefProvider')]
-    public function testIsPotaRefWithInvalidReferences(string $ref): void
+    public function test_is_pota_ref_with_invalid_references(string $ref): void
     {
-        $this->assertFalse((bool)Spec::isPotaRef($ref));
+        $this->assertFalse((bool) Spec::isPotaRef($ref));
     }
 
     public static function invalidPotaRefProvider(): array
@@ -619,7 +619,7 @@ final class SpecTest extends TestCase
 
     // isIotaRef tests
     #[DataProvider('validIotaRefProvider')]
-    public function testIsIotaRefWithValidReferences(string $ref): void
+    public function test_is_iota_ref_with_valid_references(string $ref): void
     {
         $this->assertTrue(Spec::isIotaRef($ref));
     }
@@ -634,7 +634,7 @@ final class SpecTest extends TestCase
         ];
     }
 
-    public function testIsIotaRefWithInvalidReferences(): void
+    public function test_is_iota_ref_with_invalid_references(): void
     {
         $this->assertFalse(Spec::isIotaRef('XX-001'));
         $this->assertFalse(Spec::isIotaRef('NA001'));
@@ -642,9 +642,9 @@ final class SpecTest extends TestCase
 
     // isWwffRef tests
     #[DataProvider('validWwffRefProvider')]
-    public function testIsWwffRefWithValidReferences(string $ref): void
+    public function test_is_wwff_ref_with_valid_references(string $ref): void
     {
-        $this->assertTrue((bool)Spec::isWwffRef($ref));
+        $this->assertTrue((bool) Spec::isWwffRef($ref));
     }
 
     public static function validWwffRefProvider(): array
@@ -656,17 +656,17 @@ final class SpecTest extends TestCase
         ];
     }
 
-    public function testIsWwffRefWithInvalidReferences(): void
+    public function test_is_wwff_ref_with_invalid_references(): void
     {
-        $this->assertFalse((bool)Spec::isWwffRef('US-0001')); // POTA format
-        $this->assertFalse((bool)Spec::isWwffRef('USFF0001')); // no dash
+        $this->assertFalse((bool) Spec::isWwffRef('US-0001')); // POTA format
+        $this->assertFalse((bool) Spec::isWwffRef('USFF0001')); // no dash
     }
 
     // isSotaRef tests
     #[DataProvider('validSotaRefProvider')]
-    public function testIsSotaRefWithValidReferences(string $ref): void
+    public function test_is_sota_ref_with_valid_references(string $ref): void
     {
-        $this->assertTrue((bool)Spec::isSotaRef($ref));
+        $this->assertTrue((bool) Spec::isSotaRef($ref));
     }
 
     public static function validSotaRefProvider(): array
@@ -678,20 +678,20 @@ final class SpecTest extends TestCase
         ];
     }
 
-    public function testIsSotaRefWithInvalidReferences(): void
+    public function test_is_sota_ref_with_invalid_references(): void
     {
-        $this->assertFalse((bool)Spec::isSotaRef('US-0001')); // POTA format
-        $this->assertFalse((bool)Spec::isSotaRef('W7WLC001')); // no separators
+        $this->assertFalse((bool) Spec::isSotaRef('US-0001')); // POTA format
+        $this->assertFalse((bool) Spec::isSotaRef('W7WLC001')); // no separators
     }
 
     // Static array tests
-    public function testBaseFieldsContainsRequiredFields(): void
+    public function test_base_fields_contains_required_fields(): void
     {
         $expected = ['band', 'call', 'mode', 'operator', 'qso_date', 'time_on', 'pota_my_park_ref'];
         $this->assertEquals($expected, Spec::$base_fields);
     }
 
-    public function testPotaFieldsIsNotEmpty(): void
+    public function test_pota_fields_is_not_empty(): void
     {
         $this->assertNotEmpty(Spec::$pota_fields);
         $this->assertContains('band', Spec::$pota_fields);
@@ -699,7 +699,7 @@ final class SpecTest extends TestCase
         $this->assertContains('pota_ref', Spec::$pota_fields);
     }
 
-    public function testEnumFieldContainsStandardFields(): void
+    public function test_enum_field_contains_standard_fields(): void
     {
         $this->assertContains('band', Spec::$enum_field);
         $this->assertContains('call', Spec::$enum_field);
@@ -708,7 +708,7 @@ final class SpecTest extends TestCase
         $this->assertContains('qso_date', Spec::$enum_field);
     }
 
-    public function testEnumBandContainsCommonBands(): void
+    public function test_enum_band_contains_common_bands(): void
     {
         $this->assertArrayHasKey('20M', Spec::$enum_band);
         $this->assertArrayHasKey('40M', Spec::$enum_band);
@@ -716,7 +716,7 @@ final class SpecTest extends TestCase
         $this->assertArrayHasKey('2M', Spec::$enum_band);
     }
 
-    public function testEnumModeContainsCommonModes(): void
+    public function test_enum_mode_contains_common_modes(): void
     {
         $this->assertArrayHasKey('SSB', Spec::$enum_mode);
         $this->assertArrayHasKey('CW', Spec::$enum_mode);

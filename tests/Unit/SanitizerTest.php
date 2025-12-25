@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Pota\Adif\Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 use Pota\Adif\Sanitizer;
 
 final class SanitizerTest extends TestCase
 {
     // Station callsign to operator copying
-    public function testCopiesStationCallsignToOperatorWhenMissing(): void
+    public function test_copies_station_callsign_to_operator_when_missing(): void
     {
         $fields = ['station_callsign' => 'W1AW', 'call' => 'K1ABC'];
         $result = Sanitizer::entry($fields);
@@ -19,7 +19,7 @@ final class SanitizerTest extends TestCase
         $this->assertEquals('W1AW', $result['operator']);
     }
 
-    public function testDoesNotOverrideExistingOperator(): void
+    public function test_does_not_override_existing_operator(): void
     {
         $fields = ['station_callsign' => 'W1AW', 'operator' => 'K1XYZ', 'call' => 'K1ABC'];
         $result = Sanitizer::entry($fields);
@@ -29,7 +29,7 @@ final class SanitizerTest extends TestCase
 
     // Integer field sanitization
     #[DataProvider('integerFieldProvider')]
-    public function testSanitizesIntegerFields(string $field, mixed $input, int $expected): void
+    public function test_sanitizes_integer_fields(string $field, mixed $input, int $expected): void
     {
         $fields = [$field => $input];
         $result = Sanitizer::entry($fields);
@@ -54,7 +54,7 @@ final class SanitizerTest extends TestCase
 
     // Float field sanitization
     #[DataProvider('floatFieldProvider')]
-    public function testSanitizesFloatFields(string $field, mixed $input, float $expected): void
+    public function test_sanitizes_float_fields(string $field, mixed $input, float $expected): void
     {
         $fields = [$field => $input];
         $result = Sanitizer::entry($fields);
@@ -72,7 +72,7 @@ final class SanitizerTest extends TestCase
 
     // Uppercase field sanitization
     #[DataProvider('uppercaseFieldProvider')]
-    public function testSanitizesUppercaseFields(string $field, string $input, string $expected): void
+    public function test_sanitizes_uppercase_fields(string $field, string $input, string $expected): void
     {
         $fields = [$field => $input];
         $result = Sanitizer::entry($fields);
@@ -97,7 +97,7 @@ final class SanitizerTest extends TestCase
     }
 
     // Mode/submode special handling
-    public function testConvertsUSBToSSBWithSubmode(): void
+    public function test_converts_usb_to_ssb_with_submode(): void
     {
         $fields = ['mode' => 'USB'];
         $result = Sanitizer::entry($fields);
@@ -106,7 +106,7 @@ final class SanitizerTest extends TestCase
         $this->assertEquals('USB', $result['submode']);
     }
 
-    public function testConvertsLSBToSSBWithSubmode(): void
+    public function test_converts_lsb_to_ssb_with_submode(): void
     {
         $fields = ['mode' => 'LSB'];
         $result = Sanitizer::entry($fields);
@@ -115,7 +115,7 @@ final class SanitizerTest extends TestCase
         $this->assertEquals('LSB', $result['submode']);
     }
 
-    public function testDoesNotConvertOtherModesToSSB(): void
+    public function test_does_not_convert_other_modes_to_ssb(): void
     {
         $fields = ['mode' => 'CW'];
         $result = Sanitizer::entry($fields);
@@ -124,7 +124,7 @@ final class SanitizerTest extends TestCase
         $this->assertArrayNotHasKey('submode', $result);
     }
 
-    public function testPreservesExistingSubmode(): void
+    public function test_preserves_existing_submode(): void
     {
         $fields = ['mode' => 'SSB', 'submode' => 'USB'];
         $result = Sanitizer::entry($fields);
@@ -135,7 +135,7 @@ final class SanitizerTest extends TestCase
 
     // Date field sanitization
     #[DataProvider('dateFieldProvider')]
-    public function testSanitizesDateFields(string $field, string $input, string $expected): void
+    public function test_sanitizes_date_fields(string $field, string $input, string $expected): void
     {
         $fields = [$field => $input];
         $result = Sanitizer::entry($fields);
@@ -155,7 +155,7 @@ final class SanitizerTest extends TestCase
 
     // Time field sanitization
     #[DataProvider('timeFieldProvider')]
-    public function testSanitizesTimeFields(string $field, string $input, string $expected): void
+    public function test_sanitizes_time_fields(string $field, string $input, string $expected): void
     {
         $fields = [$field => $input];
         $result = Sanitizer::entry($fields);
@@ -174,7 +174,7 @@ final class SanitizerTest extends TestCase
     }
 
     // Frequency field sanitization
-    public function testSanitizesFrequencyToSixDecimals(): void
+    public function test_sanitizes_frequency_to_six_decimals(): void
     {
         $fields = ['freq' => '14.074'];
         $result = Sanitizer::entry($fields);
@@ -182,7 +182,7 @@ final class SanitizerTest extends TestCase
         $this->assertEquals('14.074000', $result['freq']);
     }
 
-    public function testSanitizesFrequencyRxToSixDecimals(): void
+    public function test_sanitizes_frequency_rx_to_six_decimals(): void
     {
         $fields = ['freq_rx' => '14.1'];
         $result = Sanitizer::entry($fields);
@@ -190,7 +190,7 @@ final class SanitizerTest extends TestCase
         $this->assertEquals('14.100000', $result['freq_rx']);
     }
 
-    public function testHandlesWholeNumberFrequency(): void
+    public function test_handles_whole_number_frequency(): void
     {
         $fields = ['freq' => '14'];
         $result = Sanitizer::entry($fields);
@@ -199,7 +199,7 @@ final class SanitizerTest extends TestCase
     }
 
     // Band derivation from frequency
-    public function testDerivesBandFromFreqWhenBandInvalid(): void
+    public function test_derives_band_from_freq_when_band_invalid(): void
     {
         $fields = ['band' => 'INVALID', 'freq' => '14.074'];
         $result = Sanitizer::entry($fields);
@@ -207,7 +207,7 @@ final class SanitizerTest extends TestCase
         $this->assertEquals('20M', $result['band']);
     }
 
-    public function testDerivesBandRxFromFreqRxWhenBandRxInvalid(): void
+    public function test_derives_band_rx_from_freq_rx_when_band_rx_invalid(): void
     {
         $fields = ['band_rx' => 'XX', 'freq_rx' => '7.074'];
         $result = Sanitizer::entry($fields);
@@ -215,7 +215,7 @@ final class SanitizerTest extends TestCase
         $this->assertEquals('40M', $result['band_rx']);
     }
 
-    public function testDoesNotOverrideValidBand(): void
+    public function test_does_not_override_valid_band(): void
     {
         $fields = ['band' => '20M', 'freq' => '14.074'];
         $result = Sanitizer::entry($fields);
@@ -225,7 +225,7 @@ final class SanitizerTest extends TestCase
 
     // Single character field truncation
     #[DataProvider('singleCharFieldProvider')]
-    public function testTruncatesSingleCharacterFields(string $field, string $input, string $expected): void
+    public function test_truncates_single_character_fields(string $field, string $input, string $expected): void
     {
         $fields = [$field => $input];
         $result = Sanitizer::entry($fields);
@@ -245,7 +245,7 @@ final class SanitizerTest extends TestCase
     }
 
     // Continent truncation
-    public function testTruncatesContinentToTwoChars(): void
+    public function test_truncates_continent_to_two_chars(): void
     {
         $fields = ['cont' => 'NORTH'];
         $result = Sanitizer::entry($fields);
@@ -253,7 +253,7 @@ final class SanitizerTest extends TestCase
         $this->assertEquals('NO', $result['cont']);
     }
 
-    public function testPreservesTwoCharContinent(): void
+    public function test_preserves_two_char_continent(): void
     {
         $fields = ['cont' => 'NA'];
         $result = Sanitizer::entry($fields);
@@ -263,7 +263,7 @@ final class SanitizerTest extends TestCase
 
     // Boolean field sanitization
     #[DataProvider('booleanFieldProvider')]
-    public function testSanitizesBooleanFields(string $field, mixed $input, bool $expected): void
+    public function test_sanitizes_boolean_fields(string $field, mixed $input, bool $expected): void
     {
         $fields = [$field => $input];
         $result = Sanitizer::entry($fields);
@@ -282,37 +282,37 @@ final class SanitizerTest extends TestCase
     }
 
     // Filter method tests
-    public function testFilterRemovesOptionalFieldsWithErrors(): void
+    public function test_filter_removes_optional_fields_with_errors(): void
     {
         $fields = ['call' => 'W1AW', 'gridsquare' => 'INVALID', 'band' => '20M'];
         $errors = ['gridsquare'];
         $optional = ['gridsquare', 'my_gridsquare'];
 
-        list($cleanFields, $noErrors) = Sanitizer::filter($fields, $errors, $optional);
+        [$cleanFields, $noErrors] = Sanitizer::filter($fields, $errors, $optional);
 
         $this->assertArrayNotHasKey('gridsquare', $cleanFields);
         $this->assertTrue($noErrors);
     }
 
-    public function testFilterKeepsRequiredFieldsWithErrors(): void
+    public function test_filter_keeps_required_fields_with_errors(): void
     {
         $fields = ['call' => 'INVALID', 'band' => '20M'];
         $errors = ['call'];
         $optional = ['gridsquare'];
 
-        list($cleanFields, $noErrors) = Sanitizer::filter($fields, $errors, $optional);
+        [$cleanFields, $noErrors] = Sanitizer::filter($fields, $errors, $optional);
 
         $this->assertArrayHasKey('call', $cleanFields);
         $this->assertFalse($noErrors);
     }
 
-    public function testFilterHandlesMultipleOptionalErrors(): void
+    public function test_filter_handles_multiple_optional_errors(): void
     {
         $fields = ['call' => 'W1AW', 'gridsquare' => 'BAD', 'my_gridsquare' => 'BAD2', 'band' => '20M'];
         $errors = ['gridsquare', 'my_gridsquare'];
         $optional = ['gridsquare', 'my_gridsquare'];
 
-        list($cleanFields, $noErrors) = Sanitizer::filter($fields, $errors, $optional);
+        [$cleanFields, $noErrors] = Sanitizer::filter($fields, $errors, $optional);
 
         $this->assertArrayNotHasKey('gridsquare', $cleanFields);
         $this->assertArrayNotHasKey('my_gridsquare', $cleanFields);
@@ -320,7 +320,7 @@ final class SanitizerTest extends TestCase
     }
 
     // RST fields are not modified
-    public function testRstFieldsAreNotModified(): void
+    public function test_rst_fields_are_not_modified(): void
     {
         $fields = ['rst_sent' => '599', 'rst_rcvd' => '57'];
         $result = Sanitizer::entry($fields);
@@ -330,7 +330,7 @@ final class SanitizerTest extends TestCase
     }
 
     // Complete entry sanitization
-    public function testSanitizesCompleteEntry(): void
+    public function test_sanitizes_complete_entry(): void
     {
         $fields = [
             'band' => '20m',

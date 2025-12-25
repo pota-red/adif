@@ -2,34 +2,52 @@
 
 namespace Pota\Adif;
 
-class Document {
-
+class Document
+{
     public const int MODE_DEFAULT = 1;
+
     public const int MODE_POTA = 2;
 
     protected int $size = 0;
+
     public int $count = 0;
+
     protected string $path = '';
+
     public string $filename = '';
+
     protected array $headers = [];
+
     protected array $entries = [];
+
     protected array $duplicates = [];
+
     protected array $errors = [];
+
     private array $timers = [];
+
     private string $raw = '';
+
     private array $sources = [];
+
     private array $chunks = [];
+
     private int $first_entry = -1;
+
     private int $last_entry = -1;
+
     private array $overrides = [];
+
     private int $mode = self::MODE_DEFAULT;
+
     private bool $check_qps = true;
 
-    public function __construct(?string $data = null) {
-        if (!empty($data)) {
+    public function __construct(?string $data = null)
+    {
+        if (! empty($data)) {
             if (str_contains($data, '<eor>') || str_contains($data, '<EOR>')) {
                 $this->fromString($data);
-            } else if (is_file($data)) {
+            } elseif (is_file($data)) {
                 $this->fromFile($data);
             } else {
                 throw new \Exception('Unable to create instance of ' . __CLASS__);
@@ -37,57 +55,70 @@ class Document {
         }
     }
 
-    public function setMode(int $mode) : void {
+    public function setMode(int $mode): void
+    {
         if ($mode == self::MODE_DEFAULT || $mode == self::MODE_POTA) {
             $this->mode = $mode;
         }
     }
 
-    public function checkQps(bool $bool) : void {
+    public function checkQps(bool $bool): void
+    {
         $this->check_qps = $bool;
     }
 
-    public function overrideField(string $field, string $value) : void {
+    public function overrideField(string $field, string $value): void
+    {
         $field = trim(strtolower($field));
         $this->overrides[$field] = trim($value);
     }
 
-    private function tick() : int|float {
-            return hrtime(true);
+    private function tick(): int|float
+    {
+        return hrtime(true);
     }
 
-    private function timer($start, $name) : void {
+    private function timer(int|float $start, string $name): void
+    {
         $name = trim(strtolower($name));
         $this->timers[$name] = round(($this->tick() - $start) / 1e+6, 3);
     }
 
-    public function getTimers(?string $name = null) : array|string {
-        $name = trim(strtolower($name));
-        if (!empty($name) && array_key_exists($name, $this->timers)) {
-            return $this->timers[$name];
+    public function getTimers(?string $name = null): array|string
+    {
+        if (! is_null($name)) {
+            $name = trim(strtolower($name));
+            if (! empty($name) && array_key_exists($name, $this->timers)) {
+                return $this->timers[$name];
+            }
         }
         $this->timers['total'] = $this->sumTimers();
+
         return $this->timers;
     }
 
-    public function addTimer(string $name, float $value) : void {
+    public function addTimer(string $name, float $value): void
+    {
         $name = trim(strtolower($name));
-        if (!empty($name) && array_key_exists($name, $this->timers)) {
+        if (! empty($name) && array_key_exists($name, $this->timers)) {
             $this->timers[$name] += $value;
         } else {
             $this->timers[$name] = $value;
         }
     }
 
-    public function sumTimers() : float {
+    public function sumTimers(): float
+    {
         $sum = 0;
         foreach ($this->timers as $value) {
             $sum += $value;
         }
+
         return round($sum, 3);
     }
 
-    public function fromFile(string $path) : void {
+    public function fromFile(string $path): void
+    {
         if (is_file($path) && is_readable($path)) {
             $this->raw = file_get_contents($path);
             $this->path = dirname($path);
@@ -98,51 +129,58 @@ class Document {
         }
     }
 
-    public function fromString(string $text) : void {
+    public function fromString(string $text): void
+    {
         $this->raw = $text;
         $this->size = strlen($text);
     }
 
-    public function lint() : array {
+    public function lint(): array
+    {
         $tick = $this->tick();
         $result = Linter::lint($this->raw, $this->mode);
         $this->timer($tick, __FUNCTION__);
+
         return $result;
     }
 
-    public function parse() : void {
+    public function parse(): void
+    {
         $tick = $this->tick();
         if (preg_match('/<eoh>/i', $this->raw)) {
-            list($h, $d) = preg_split('/<eoh>/i', $this->raw, 2);
+            [$h, $d] = preg_split('/<eoh>/i', $this->raw, 2);
             $this->headers = $this->parseHeaders($h);
             $this->entries = $this->parseEntries($d);
-        } else if (preg_match('/<eor>/i', $this->raw) && str_starts_with(trim($this->raw), '<')) {
+        } elseif (preg_match('/<eor>/i', $this->raw) && str_starts_with(trim($this->raw), '<')) {
             $this->entries = $this->parseEntries($this->raw);
         } else {
-            throw new \Exception("Malformed input");
+            throw new \Exception('Malformed input');
         }
         $this->timer($tick, __FUNCTION__);
     }
 
-    #TODO: currently treating all header lines as strings for some reason
-    public function parseHeaders(string $text) : array {
+    // TODO: currently treating all header lines as strings for some reason
+    public function parseHeaders(string $text): array
+    {
         $data = [];
         if (preg_match_all('/<([a-z_]*):.+?>([a-z0-9_ -.\/:@]+)?|(.*)/i', $text, $hs)) {
             foreach ($hs[3] as $h) {
-                if (!empty($h)) {
+                if (! empty($h)) {
                     $data['strings'][] = trim($h);
                 }
             }
-            for ($i = 0; $i < count($hs[1]); $i ++) {
-                if (!empty($hs[1][$i])) {
+            for ($i = 0; $i < count($hs[1]); $i++) {
+                if (! empty($hs[1][$i])) {
                     $data[strtolower($hs[1][$i])] = trim($hs[2][$i]);
                 }
             }
         }
+
         return $data;
     }
 
-    public function parseEntries(string $text) : array {
+    public function parseEntries(string $text): array
+    {
         $first = time();
         $last = 0;
         $data = [];
@@ -151,14 +189,14 @@ class Document {
             $chunk = trim($chunk);
             if (preg_match_all('/<([a-z0-9_]*):.+?>([a-z0-9_ -.\/:@]+)?/i', $chunk, $fs)) {
                 $vs = [];
-                for ($i = 0; $i < count($fs[0]); $i ++) {
+                for ($i = 0; $i < count($fs[0]); $i++) {
                     $f = $fs[1][$i];
                     $v = trim($fs[2][$i]);
-                    if (!empty($v)) {
+                    if (! empty($v)) {
                         $vs[$f] = $v;
                     }
                 }
-                if (!empty($vs)) {
+                if (! empty($vs)) {
                     ksort($vs);
                     foreach ($this->overrides as $f => $v) {
                         $vs[$f] = $v;
@@ -180,33 +218,44 @@ class Document {
             }
         }
         $this->count = count($data);
+
         return $data;
     }
 
-    public function addSource(array $properties) : void {
+    public function addSource(array $properties): void
+    {
         $this->sources[] = $properties;
     }
 
-    public function addHeader(string ...$parts) : void {
+    public function addHeader(string ...$parts): void
+    {
         if (count($parts) == 1) {
             $this->headers[] = trim($parts[0]);
-        } else if (count($parts) == 2) {
+        } elseif (count($parts) == 2) {
             $this->headers[trim(strtolower($parts[0]))] = trim($parts[1]);
         }
     }
 
-    public function getHeaders(?string $header = null) : string|array {
+    public function getHeaders(?string $header = null): string|array
+    {
+        if (is_null($header)) {
+            return '';
+        }
+
         $header = trim(strtolower($header));
-        if (!empty($header)) {
+        if (! empty($header)) {
             if (array_key_exists($header, $this->headers)) {
                 return $this->headers[$header];
             }
+
             return '';
         }
+
         return $this->headers;
     }
 
-    public function addEntry(array $data) : void {
+    public function addEntry(array $data): void
+    {
         $ks = array_keys($data);
         if (is_numeric(array_shift($ks)) && is_numeric(array_pop($ks))) {
             foreach ($data as $entry) {
@@ -217,24 +266,30 @@ class Document {
         }
         $this->count = count($this->entries);
     }
-    public function removeEntry(int $key) : void {
+
+    public function removeEntry(int $key): void
+    {
         unset($this->entries[$key]);
         $this->count = count($this->entries);
     }
 
-    public function getEntries() : array {
+    public function getEntries(): array
+    {
         return $this->entries;
     }
 
-    public function getFirstEntry() : array|null {
+    public function getFirstEntry(): ?array
+    {
         return $this->first_entry > -1 ? $this->entries[$this->first_entry] : null;
     }
 
-    public function getLastEntry() : array|null {
+    public function getLastEntry(): ?array
+    {
         return $this->last_entry > -1 ? $this->entries[$this->last_entry] : null;
     }
 
-    public function sanitize() : void {
+    public function sanitize(): void
+    {
         $tick = $this->tick();
         foreach ($this->entries as $i => $entry) {
             $this->entries[$i] = Sanitizer::entry($entry);
@@ -242,13 +297,14 @@ class Document {
         $this->timer($tick, __FUNCTION__);
     }
 
-    public function validate() : void {
+    public function validate(): void
+    {
         $tick = $this->tick();
         foreach ($this->entries as $i => $entry) {
             $errors = Validator::entry($entry);
             if (is_array($errors)) {
                 if ($this->mode == self::MODE_POTA) {
-                    list($clean, $errors) = Sanitizer::filter($entry, $errors, Spec::$pota_optional);
+                    [$clean, $errors] = Sanitizer::filter($entry, $errors, Spec::$pota_optional);
                     $this->entries[$i] = $clean;
                 }
                 if (is_array($errors)) {
@@ -257,22 +313,25 @@ class Document {
             }
         }
         if ($this->check_qps) {
-            if (!Validator::duration($this->entries)) {
+            if (! Validator::duration($this->entries)) {
                 $this->errors['@'][] = 'qps';
             }
         }
         $this->timer($tick, __FUNCTION__);
     }
 
-    public function hasErrors() : bool {
+    public function hasErrors(): bool
+    {
         return count($this->errors) > 0;
     }
 
-    public function getErrors() : array {
+    public function getErrors(): array
+    {
         return $this->errors;
     }
 
-    public function dedupe() : void {
+    public function dedupe(): void
+    {
         $tick = $this->tick();
         $hashes = [];  // Use array keys as hash set for O(1) lookup
         foreach ($this->entries as $i => $entry) {
@@ -295,15 +354,18 @@ class Document {
         $this->timer($tick, __FUNCTION__);
     }
 
-    public function hasDupes() : bool {
+    public function hasDupes(): bool
+    {
         return count($this->duplicates) > 0;
     }
 
-    public function getDupes() : array {
+    public function getDupes(): array
+    {
         return $this->duplicates;
     }
 
-   public function morph(int $mode = Adif::MORPH_ADIF_STRICT) : void {
+    public function morph(int $mode = Adif::MORPH_ADIF_STRICT): void
+    {
         $tick = $this->tick();
         $filter = null;
         switch ($mode) {
@@ -317,17 +379,18 @@ class Document {
                 $this->unroll_pota_refs();
                 break;
         }
-        if (!empty($filter)) {
+        if (! empty($filter)) {
             // Convert array to hash set for O(1) lookups
             $filter_set = array_flip($filter);
             foreach ($this->entries as $i => $entry) {
-                $this->entries[$i] = array_filter($entry, fn($key) => isset($filter_set[$key]), ARRAY_FILTER_USE_KEY);
+                $this->entries[$i] = array_filter($entry, fn ($key) => isset($filter_set[$key]), ARRAY_FILTER_USE_KEY);
             }
         }
         $this->timer($tick, __FUNCTION__);
     }
 
-    public function unroll_pota_refs() : void {
+    public function unroll_pota_refs(): void
+    {
         $tick = $this->tick();
         foreach ($this->entries as $i => $entry) {
 
@@ -337,11 +400,11 @@ class Document {
             $isPotaRef = isset($entry['pota_ref']);
 
             // mangle my_sig_info into my_pota_ref
-            if ($isMySigInfo && !$isMyPotaRef) {
+            if ($isMySigInfo && ! $isMyPotaRef) {
                 $entry['my_pota_ref'] = $entry['my_sig_info'];
             }
             // mangle sig_info into pota_ref
-            if ($isSigInfo && !$isPotaRef) {
+            if ($isSigInfo && ! $isPotaRef) {
                 $entry['pota_ref'] = $entry['sig_info'];
             }
 
@@ -379,7 +442,7 @@ class Document {
             }
 
             // only activator side in -fer
-            elseif ($isActivatorFer && !$isHunterFer) {
+            elseif ($isActivatorFer && ! $isHunterFer) {
                 $this->removeEntry($i);
                 $new_entry = $entry;
                 $new_entry['pota_unrolled_from_rec'] = $i;
@@ -408,7 +471,7 @@ class Document {
             }
 
             // only hunter side in -fer
-            elseif ($isHunterFer && !$isActivatorFer) {
+            elseif ($isHunterFer && ! $isActivatorFer) {
                 $this->removeEntry($i);
                 $new_entry = $entry;
                 $new_entry['pota_unrolled_from_rec'] = $i;
@@ -437,7 +500,7 @@ class Document {
             }
 
             // neither side in -fers, check for @locs
-            elseif (!$isActivatorFer && !$isHunterFer) {
+            elseif (! $isActivatorFer && ! $isHunterFer) {
                 if ($isActivatorLoc) {
                     $mprparts = explode('@', $entry['my_pota_ref']);
                     $myref = $mprparts[0];
@@ -473,7 +536,8 @@ class Document {
         $this->timer($tick, __FUNCTION__);
     }
 
-    public function chunk(int $size = Adif::CHUNK_MAX_SIZE) : void {
+    public function chunk(int $size = Adif::CHUNK_MAX_SIZE): void
+    {
         $tick = $this->tick();
         $current_size = strlen(json_encode($this->entries));
         if ($current_size > $size) {
@@ -500,13 +564,16 @@ class Document {
         $this->timer($tick, __FUNCTION__);
     }
 
-    private function generateAdifKeyValue(string $key, string $value, bool $newline = true) : string {
+    private function generateAdifKeyValue(string $key, string $value, bool $newline = true): string
+    {
         $key = trim(strtolower($key));
         $value = trim($value);
+
         return '<' . $key . ':' . strlen($value) . '>' . $value . ($newline ? PHP_EOL : '');
     }
 
-    public function generateAdifHeaders() : string {
+    public function generateAdifHeaders(): string
+    {
         $hs = [];
         foreach ($this->sources as $s) {
             $hs[] = 'Source [' . implode(', ', $s) . ']' . PHP_EOL;
@@ -515,10 +582,12 @@ class Document {
         $hs[] = $this->generateAdifKeyValue('created_timestamp', date('Ymd His'));
         $hs[] = $this->generateAdifKeyValue('programid', 'POTA-ADIF');
         $hs[] = $this->generateAdifKeyValue('programversion', '2.0.0');
+
         return trim(implode($hs)) . PHP_EOL . '<eoh>' . PHP_EOL . PHP_EOL;
     }
 
-    public function generateAdifEntries() : string {
+    public function generateAdifEntries(): string
+    {
         $recs = [];
         foreach ($this->entries as $entry) {
             $rec = '';
@@ -527,17 +596,21 @@ class Document {
             }
             $recs[] = trim($rec) . PHP_EOL . '<eor>';
         }
+
         return implode(PHP_EOL . PHP_EOL, $recs);
     }
 
-    public function toAdif() : string {
+    public function toAdif(): string
+    {
         $tick = $this->tick();
         $data = $this->generateAdifHeaders() . $this->generateAdifEntries();
         $this->timer($tick, __FUNCTION__);
+
         return $data;
     }
 
-    public function toJson(bool $pretty = false) : string {
+    public function toJson(bool $pretty = false): string
+    {
         $tick = $this->tick();
         $data = ['timers' => [], 'meta' => [], 'headers' => [], 'entries' => []];
         if (count($this->sources)) {
@@ -564,7 +637,7 @@ class Document {
                 }
                 $data['entries'][] = $entries;
             }
-        } else if (count($this->entries)) {
+        } elseif (count($this->entries)) {
             $data['entries'] = $this->entries;
         }
         $data['timers'] = $this->timers;
@@ -573,8 +646,7 @@ class Document {
         $data['timers'][$fn] = $tm;
         $json = ($pretty ? json_encode($data, JSON_PRETTY_PRINT) : json_encode($data)) . PHP_EOL;
         $this->timer($tick, $fn);
-        return str_replace((string)$tm, (string)$this->getTimers($fn), $json);
+
+        return str_replace((string) $tm, (string) $this->getTimers($fn), $json);
     }
-
 }
-

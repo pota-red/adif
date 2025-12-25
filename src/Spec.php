@@ -2,8 +2,8 @@
 
 namespace Pota\Adif;
 
-class Spec {
-
+class Spec
+{
     public static array $enum_field = ['address', 'address_intl', 'age', 'altitude', 'ant_az', 'ant_el', 'ant_path', 'arrl_sect', 'award_granted',
         'award_submitted', 'a_index', 'band', 'band_rx', 'call', 'check', 'class', 'clublog_qso_upload_date', 'clublog_qso_upload_status', 'cnty',
         'cnty_alt', 'comment', 'comment_intl', 'cont', 'contacted_op', 'contest_id', 'country', 'country_intl', 'cqz', 'credit_submitted',
@@ -64,7 +64,7 @@ class Spec {
         'PAX' => ['PAX2'],
         'PHONE' => [], // POTA specific, not ADIF compliant, used for legacy importer only
         'PKT' => [],
-        'PSK' => ['8PSK125', '8PSK125F', '8PSK125FL', '8PSK250', '8PSK250F', '8PSK250FL', '8PSK500', '8PSK500F', '8PSK1000', '8PSK1000F', '8PSK1200F', 'FSK31', 'PSK10', 'PSK31', 'PSK63', 'PSK63F', 'PSK63RC4', 'PSK63RC5', 'PSK63RC10', 'PSK63RC20', 'PSK63RC32', 'PSK125', 'PSK125C12', 'PSK125R', 'PSK125RC10', 'PSK125RC12', 'PSK125RC16', 'PSK125RC4', 'PSK125RC5', 'PSK250', 'PSK250C6', 'PSK250R', 'PSK250RC2', 'PSK250RC3', 'PSK250RC5', 'PSK250RC6', 'PSK250RC7', 'PSK500', 'PSK500C2', 'PSK500C4', 'PSK500R', 'PSK500RC2', 'PSK500RC3', 'PSK500RC4', 'PSK800C2', 'PSK800RC2', 'PSK1000', 'PSK1000C2', 'PSK1000R', 'PSK1000RC2', 'PSKAM10', 'PSKAM31', 'PSKAM50', 'PSKFEC31', 'QPSK31', 'QPSK63', 'QPSK125','QPSK250', 'QPSK500', 'SIM31'],
+        'PSK' => ['8PSK125', '8PSK125F', '8PSK125FL', '8PSK250', '8PSK250F', '8PSK250FL', '8PSK500', '8PSK500F', '8PSK1000', '8PSK1000F', '8PSK1200F', 'FSK31', 'PSK10', 'PSK31', 'PSK63', 'PSK63F', 'PSK63RC4', 'PSK63RC5', 'PSK63RC10', 'PSK63RC20', 'PSK63RC32', 'PSK125', 'PSK125C12', 'PSK125R', 'PSK125RC10', 'PSK125RC12', 'PSK125RC16', 'PSK125RC4', 'PSK125RC5', 'PSK250', 'PSK250C6', 'PSK250R', 'PSK250RC2', 'PSK250RC3', 'PSK250RC5', 'PSK250RC6', 'PSK250RC7', 'PSK500', 'PSK500C2', 'PSK500C4', 'PSK500R', 'PSK500RC2', 'PSK500RC3', 'PSK500RC4', 'PSK800C2', 'PSK800RC2', 'PSK1000', 'PSK1000C2', 'PSK1000R', 'PSK1000RC2', 'PSKAM10', 'PSKAM31', 'PSKAM50', 'PSKFEC31', 'QPSK31', 'QPSK63', 'QPSK125', 'QPSK250', 'QPSK500', 'SIM31'],
         'PSK2K' => [],
         'Q15' => [],
         'QRA64' => ['QRA64A', 'QRA64B', 'QRA64C', 'QRA64D', 'QRA64E'],
@@ -80,7 +80,7 @@ class Spec {
         'V4' => [],
         'VOI' => [],
         'WINMOR' => [],
-        'WSPR' => []
+        'WSPR' => [],
     ];
 
     public static array $enum_dxcc_entity = [0 => 'None', 1 => 'CANADA', 3 => 'AFGHANISTAN', 4 => 'AGALEGA & ST. BRANDON IS.', 5 => 'ALAND IS.', 6 => 'ALASKA',
@@ -178,7 +178,7 @@ class Spec {
         'my_lat', 'my_lon', 'my_pota_ref', 'my_rig', 'my_sig', 'my_sig_info', 'my_state', 'operator', 'pota_ref', 'qso_date', 'rst_rcvd', 'rst_sent',
         'rx_pwr', 'sat_mode', 'sat_name', 'sig', 'sig_info', 'state', 'station_callsign', 'submode', 'time_on', 'tx_pwr', 'my_sig', 'my_sig_info'];
 
-    //public static array $pota_unique = ['band', 'call', 'mode', 'my_pota_ref', 'my_sig_info', 'operator', 'pota_ref', 'qso_date', 'sig_info', 'submode'];
+    // public static array $pota_unique = ['band', 'call', 'mode', 'my_pota_ref', 'my_sig_info', 'operator', 'pota_ref', 'qso_date', 'sig_info', 'submode'];
     public static array $pota_unique = ['band', 'call', 'mode', 'operator', 'submode', 'qso_date',
         'pota_my_park_ref', 'pota_my_location', 'pota_park_ref', 'pota_location'];
 
@@ -186,114 +186,142 @@ class Spec {
         'my_sig_info', 'my_state', 'pota_ref', 'rst_rcvd', 'rst_sent', 'rx_pwr', 'sat_mode', 'sat_name', 'sig', 'sig_info', 'state', 'station_callsign',
         'submode', 'tx_pwr', 'my_sig', 'my_sig_info'];
 
-    public static function isField(string $text) : bool {
+    public static function isField(string $text): bool
+    {
         return in_array(strtolower($text), self::$enum_field);
     }
 
-    public static function isBand(string $text) : bool  {
+    public static function isBand(string $text): bool
+    {
         return array_key_exists(strtoupper($text), self::$enum_band);
     }
 
-    public static function isMode(string $text) : bool {
+    public static function isMode(string $text): bool
+    {
         return array_key_exists(strtoupper($text), self::$enum_mode);
     }
 
-    public static function isSubMode(string $text) : bool {
+    public static function isSubMode(string $text): bool
+    {
         $text = strtoupper($text);
         foreach (self::$enum_mode as $m => $s) {
             if (in_array($text, $s)) {
                 return true;
             }
         }
+
         return false;
     }
 
-    public static function isContinent(string $text) : bool {
+    public static function isContinent(string $text): bool
+    {
         return array_key_exists(trim(strtoupper($text)), self::$enum_continent);
     }
 
-    public static function isAntPath(string $text) : bool {
+    public static function isAntPath(string $text): bool
+    {
         return array_key_exists(trim(strtoupper($text)), self::$enum_antenna_path);
     }
 
-    public static function isArrlSection(string $text) : bool {
+    public static function isArrlSection(string $text): bool
+    {
         return array_key_exists(trim(strtoupper($text)), self::$enum_arrl_section);
     }
 
-    public static function isQsoDownload(string $text) : bool {
+    public static function isQsoDownload(string $text): bool
+    {
         return array_key_exists(trim(strtoupper($text)), self::$enum_qso_download);
     }
 
-    public static function isQsoUpload(string $text) : bool {
+    public static function isQsoUpload(string $text): bool
+    {
         return array_key_exists(trim(strtoupper($text)), self::$enum_qso_upload);
     }
 
-    public static function isQsoRcvd(string $text) : bool {
+    public static function isQsoRcvd(string $text): bool
+    {
         return array_key_exists(trim(strtoupper($text)), self::$enum_qso_rcvd);
     }
 
-    public static function isQsoSent(string $text) : bool {
+    public static function isQsoSent(string $text): bool
+    {
         return array_key_exists(trim(strtoupper($text)), self::$enum_qso_sent);
     }
 
-    public static function isQslVia(string $text) : bool {
+    public static function isQslVia(string $text): bool
+    {
         return array_key_exists(trim(strtoupper($text)), self::$enum_qsl_via);
     }
 
-    public static function isQslMedium(string $text) : bool {
+    public static function isQslMedium(string $text): bool
+    {
         return array_key_exists(trim(strtoupper($text)), self::$enum_qsl_medium);
     }
 
-    public static function isDxcc(string $text) : bool {
-        return array_key_exists((int)$text, self::$enum_dxcc_entity);
+    public static function isDxcc(string $text): bool
+    {
+        return array_key_exists((int) $text, self::$enum_dxcc_entity);
     }
 
-    public static function isPropagation(string $text) : bool {
+    public static function isPropagation(string $text): bool
+    {
         return array_key_exists(trim(strtoupper($text)), self::$enum_propagation);
     }
 
-    public static function isLat(string $text) : bool {
+    public static function isLat(string $text): bool
+    {
         return preg_match('/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/', $text);
     }
 
-    public static function isLon(string $text) : bool {
+    public static function isLon(string $text): bool
+    {
         return preg_match('/^[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/', $text);
     }
 
-    public static function isMaidenhead(string $text) : bool {
+    public static function isMaidenhead(string $text): bool
+    {
         $len = strlen($text);
         if ($len <= 12 && $len % 2 == 0) {
             $rs = ['[A-R]{2}', '[0-9]{2}', '[A-X]{2}', '[0-9]{2}', '[A-X]{2}', '[0-9]{2}'];
+
             return preg_match('/^' . implode('', array_slice($rs, 0, intval($len / 2))) . '$/', strtoupper($text));
         }
+
         return false;
     }
 
-    public static function isDate(string $text) : bool {
+    public static function isDate(string $text): bool
+    {
         $data = preg_replace('/\D/', '', $text);
         if (strlen($data) == 8) {
             $y = intval(substr($data, 0, 4));
             $m = intval(substr($data, 4, 2));
             $d = intval(substr($data, 6, 2));
-            return ($y >= 1930 && $y <= ((int)date('Y') + 1) && $m >= 1 && $m <= 12 && $d >= 1 && $d <= 31);
+
+            return $y >= 1930 && $y <= ((int) date('Y') + 1) && $m >= 1 && $m <= 12 && $d >= 1 && $d <= 31;
         }
+
         return false;
     }
 
-    public static function isTime(string $text) : bool {
+    public static function isTime(string $text): bool
+    {
         $data = preg_replace('/\D/', '', $text);
         if (strlen($text) == 4 || strlen($text) == 6) {
             $h = intval(substr($data, 0, 2));
             $m = intval(substr($data, 2, 2));
             $s = strlen($data) == 6 ? intval(substr($data, 4, 2)) : 0;
-            return ($h >= 0 && $h <= 23 && $m >= 0 && $m <= 59 && $s >= 0 && $s <= 59);
+
+            return $h >= 0 && $h <= 23 && $m >= 0 && $m <= 59 && $s >= 0 && $s <= 59;
         }
+
         return false;
     }
 
-    public static function isFreq(string $text, ?string $band = null) : bool {
-        $text = (float)$text;
-        if (!empty($band) && array_key_exists($band, self::$enum_band)) {
+    public static function isFreq(string $text, ?string $band = null): bool
+    {
+        $text = (float) $text;
+        if (! empty($band) && array_key_exists($band, self::$enum_band)) {
             return $text >= self::$enum_band[$band][0] && $text <= self::$enum_band[$band][1];
         }
         foreach (self::$enum_band as $range) {
@@ -301,39 +329,46 @@ class Spec {
                 return true;
             }
         }
+
         return false;
     }
 
-    public static function bandFromFreq(string $text) : string|null {
-        $text = (float)$text;
+    public static function bandFromFreq(string $text): ?string
+    {
+        $text = (float) $text;
         foreach (self::$enum_band as $band => $range) {
             if ($text >= $range[0] && $text <= $range[1]) {
                 return $band;
             }
         }
+
         return null;
     }
 
-    public static function isPotaRef(string $text) : bool {
+    public static function isPotaRef(string $text): bool
+    {
         if (self::isWwffRef($text)) {
             return false;
         }
+
         return preg_match('/^([A-z0-9]+-[0-9]{4,})(@[A-z0-9]+(-[A-Z0-9]+)?)?$/', $text);
-       // return preg_match('/([A-z0-9]+-[0-9]{4,})(@([A-z0-9]+-[A-Z0-9]+))?/', $text);
+        // return preg_match('/([A-z0-9]+-[0-9]{4,})(@([A-z0-9]+-[A-Z0-9]+))?/', $text);
     }
 
-    public static function isIotaRef(string $text) : bool {
+    public static function isIotaRef(string $text): bool
+    {
         $text = explode('-', trim($text), 2);
+
         return self::isContinent($text[0]) && is_numeric($text[1]);
     }
 
-    public static function isWwffRef(string $text) : bool {
+    public static function isWwffRef(string $text): bool
+    {
         return preg_match('/^([A-z0-9]{1,4}FF-[0-9]{4,})$/', $text);
     }
 
-    public static function isSotaRef(string $text) : bool {
+    public static function isSotaRef(string $text): bool
+    {
         return preg_match('/^([A-z0-9]+\/[A-Z0-9]+-[0-9]{1,3})$/', $text);
     }
-
 }
-

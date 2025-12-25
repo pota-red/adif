@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Pota\Adif\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
-use Pota\Adif\Document;
 use Pota\Adif\Adif;
+use Pota\Adif\Document;
 
 final class DocumentTest extends TestCase
 {
     // Construction tests
-    public function testConstructsFromFile(): void
+    public function test_constructs_from_file(): void
     {
         $path = testDataPath('p75.adi');
         $doc = new Document($path);
@@ -20,7 +20,7 @@ final class DocumentTest extends TestCase
         $this->assertEquals(0, $doc->count); // Not parsed yet
     }
 
-    public function testConstructsFromString(): void
+    public function test_constructs_from_string(): void
     {
         $adif = "Test header\n<eoh>\n<call:5>W1AW<band:3>20M<mode:3>SSB<eor>";
         $doc = new Document($adif);
@@ -29,13 +29,13 @@ final class DocumentTest extends TestCase
         $this->assertEquals(0, $doc->count); // Not parsed yet
     }
 
-    public function testConstructsEmptyDocument(): void
+    public function test_constructs_empty_document(): void
     {
-        $doc = new Document();
+        $doc = new Document;
         $this->assertEquals(0, $doc->count);
     }
 
-    public function testThrowsExceptionForInvalidFile(): void
+    public function test_throws_exception_for_invalid_file(): void
     {
         $this->expectException(\Exception::class);
         // Non-existent files throw the generic "Unable to create instance" exception
@@ -45,7 +45,7 @@ final class DocumentTest extends TestCase
         new Document('/nonexistent/file.adi');
     }
 
-    public function testThrowsExceptionForInvalidData(): void
+    public function test_throws_exception_for_invalid_data(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Unable to create instance');
@@ -54,7 +54,7 @@ final class DocumentTest extends TestCase
     }
 
     // Parsing tests
-    public function testParsesSimpleFile(): void
+    public function test_parses_simple_file(): void
     {
         $path = testDataPath('small.adi');
         $doc = new Document($path);
@@ -63,7 +63,7 @@ final class DocumentTest extends TestCase
         $this->assertGreaterThan(0, $doc->count);
     }
 
-    public function testParsesP75File(): void
+    public function test_parses_p75_file(): void
     {
         $path = testDataPath('p75.adi');
         $doc = new Document($path);
@@ -73,18 +73,17 @@ final class DocumentTest extends TestCase
         $this->assertEquals(50, $doc->count);
     }
 
-    public function testParseExtractsHeaders(): void
+    public function test_parse_extracts_headers(): void
     {
         $adif = "ADIF Export\n<programid:8>Test App<programversion:5>1.0.0<eoh>\n<call:5>W1AW<eor>";
         $doc = new Document($adif);
         $doc->parse();
 
-        $headers = $doc->getHeaders();
-        $this->assertEquals('Test App', $headers['programid']);
-        $this->assertEquals('1.0.0', $headers['programversion']);
+        $this->assertEquals('Test App', $doc->getHeaders('programid'));
+        $this->assertEquals('1.0.0', $doc->getHeaders('programversion'));
     }
 
-    public function testParseExtractsEntries(): void
+    public function test_parse_extracts_entries(): void
     {
         $adif = "Test\n<eoh>\n<call:5>W1AW<band:3>20M<mode:3>SSB<eor>";
         $doc = new Document($adif);
@@ -96,43 +95,43 @@ final class DocumentTest extends TestCase
         $this->assertEquals('20m', $entries[0]['band']);
     }
 
-    public function testParseHandlesMultipleEntries(): void
+    public function test_parse_handles_multiple_entries(): void
     {
         $adif = "Test\n<eoh>\n" .
                 "<call:5>W1AW<band:3>20M<eor>\n" .
-                "<call:5>K1ABC<band:3>40M<eor>";
+                '<call:5>K1ABC<band:3>40M<eor>';
         $doc = new Document($adif);
         $doc->parse();
 
         $this->assertEquals(2, $doc->count);
     }
 
-    public function testParseWithoutHeaderSection(): void
+    public function test_parse_without_header_section(): void
     {
-        $adif = "<call:5>W1AW<band:3>20M<eor>";
+        $adif = '<call:5>W1AW<band:3>20M<eor>';
         $doc = new Document($adif);
         $doc->parse();
 
         $this->assertEquals(1, $doc->count);
     }
 
-    public function testParseThrowsOnMalformedInput(): void
+    public function test_parse_throws_on_malformed_input(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Malformed input');
 
-        $doc = new Document();
-        $doc->fromString("no tags at all");
+        $doc = new Document;
+        $doc->fromString('no tags at all');
         $doc->parse();
     }
 
     // First/last entry tracking
-    public function testTracksFirstAndLastEntry(): void
+    public function test_tracks_first_and_last_entry(): void
     {
         $adif = "Test\n<eoh>\n" .
                 "<call:5>W1AW<qso_date:8>20231225<time_on:6>120000<eor>\n" .
                 "<call:5>K1ABC<qso_date:8>20231225<time_on:6>100000<eor>\n" .
-                "<call:5>N1XYZ<qso_date:8>20231225<time_on:6>140000<eor>";
+                '<call:5>N1XYZ<qso_date:8>20231225<time_on:6>140000<eor>';
         $doc = new Document($adif);
         $doc->parse();
 
@@ -144,17 +143,17 @@ final class DocumentTest extends TestCase
         $this->assertEquals('n1xyz', $last['call']); // 1400 is latest
     }
 
-    public function testReturnsNullForFirstLastEntryWhenEmpty(): void
+    public function test_returns_null_for_first_last_entry_when_empty(): void
     {
-        $doc = new Document();
+        $doc = new Document;
         $this->assertNull($doc->getFirstEntry());
         $this->assertNull($doc->getLastEntry());
     }
 
     // Sanitization tests
-    public function testSanitizeNormalizesData(): void
+    public function test_sanitize_normalizes_data(): void
     {
-        $adif = "Test\n<eoh>\n<call:5>w1aw<band:2>20m<mode:3>usb<eor>";
+        $adif = "Test\n<eoh>\n<call:5>w1aw<band:2>20m<mode:3>usb<qso_date:3>foo<time_on:3>bar<eor>";
         $doc = new Document($adif);
         $doc->parse();
         $doc->sanitize();
@@ -167,9 +166,9 @@ final class DocumentTest extends TestCase
     }
 
     // Validation tests
-    public function testValidateDetectsErrors(): void
+    public function test_validate_detects_errors(): void
     {
-        $adif = "Test\n<eoh>\n<call:5>W1AW<band:7>INVALID<mode:3>XXX<eor>";
+        $adif = "Test\n<eoh>\n<call:5>W1AW<band:7>INVALID<mode:3>XXX<qso_date:3>foo<time_on:3>bar<eor>";
         $doc = new Document($adif);
         $doc->parse();
         $doc->sanitize();
@@ -180,9 +179,9 @@ final class DocumentTest extends TestCase
         $this->assertNotEmpty($errors);
     }
 
-    public function testValidateWithPotaMode(): void
+    public function test_validate_with_pota_mode(): void
     {
-        $adif = "Test\n<eoh>\n<call:5>W1AW<band:3>20M<eor>";
+        $adif = "Test\n<eoh>\n<call:5>W1AW<band:3>20M<qso_date:3>foo<time_on:3>bar<eor>";
         $doc = new Document($adif);
         $doc->setMode(Document::MODE_POTA);
         $doc->parse();
@@ -192,12 +191,12 @@ final class DocumentTest extends TestCase
         $this->assertTrue($doc->hasErrors());
     }
 
-    public function testDisableQpsCheck(): void
+    public function test_disable_qps_check(): void
     {
         // Create entries at same timestamp
         $entries = [];
         for ($i = 0; $i < 100; $i++) {
-            $entries[] = "<call:5>W1AW<qso_date:8>20231225<time_on:4>1200<eor>";
+            $entries[] = '<call:5>W1AW<qso_date:8>20231225<time_on:4>1200<eor>';
         }
         $adif = "Test\n<eoh>\n" . implode("\n", $entries);
 
@@ -215,7 +214,7 @@ final class DocumentTest extends TestCase
     }
 
     // Deduplication tests
-    public function testDedupeRemovesDuplicates(): void
+    public function test_dedupe_removes_duplicates(): void
     {
         $path = testDataPath('p75_dupes.adi');
         $doc = new Document($path);
@@ -229,11 +228,11 @@ final class DocumentTest extends TestCase
         $this->assertNotEmpty($doc->getDupes());
     }
 
-    public function testDedupeWithNoDuplicates(): void
+    public function test_dedupe_with_no_duplicates(): void
     {
         $adif = "Test\n<eoh>\n" .
                 "<call:5>W1AW<band:3>20M<qso_date:8>20231225<time_on:4>1200<mode:3>SSB<operator:4>W1AW<pota_my_park_ref:7>US-0001<eor>\n" .
-                "<call:5>K1ABC<band:3>40M<qso_date:8>20231225<time_on:4>1300<mode:3>CW<operator:4>W1AW<pota_my_park_ref:7>US-0001<eor>";
+                '<call:5>K1ABC<band:3>40M<qso_date:8>20231225<time_on:4>1300<mode:3>CW<operator:4>W1AW<pota_my_park_ref:7>US-0001<eor>';
         $doc = new Document($adif);
         $doc->parse();
 
@@ -245,7 +244,7 @@ final class DocumentTest extends TestCase
     }
 
     // Morph tests
-    public function testMorphAdifStrict(): void
+    public function test_morph_adif_strict(): void
     {
         $adif = "Test\n<eoh>\n<call:5>W1AW<band:3>20M<custom_field:5>value<eor>";
         $doc = new Document($adif);
@@ -258,7 +257,7 @@ final class DocumentTest extends TestCase
         $this->assertArrayNotHasKey('custom_field', $entries[0]);
     }
 
-    public function testMorphPotaOnly(): void
+    public function test_morph_pota_only(): void
     {
         $adif = "Test\n<eoh>\n<call:5>W1AW<band:3>20M<age:2>42<pota_ref:7>US-0001<eor>";
         $doc = new Document($adif);
@@ -271,7 +270,7 @@ final class DocumentTest extends TestCase
         $this->assertArrayNotHasKey('age', $entries[0]);
     }
 
-    public function testMorphPotaRefsUnrollsSingleRef(): void
+    public function test_morph_pota_refs_unrolls_single_ref(): void
     {
         $adif = "Test\n<eoh>\n<call:5>W1AW<my_pota_ref:7>US-0001<eor>";
         $doc = new Document($adif);
@@ -284,7 +283,7 @@ final class DocumentTest extends TestCase
         $this->assertEquals('us-0001', $entries[0]['pota_my_park_ref']);
     }
 
-    public function testMorphPotaRefsUnrollsMultipleActivatorRefs(): void
+    public function test_morph_pota_refs_unrolls_multiple_activator_refs(): void
     {
         $adif = "Test\n<eoh>\n<call:5>W1AW<my_pota_ref:15>US-0001,US-0002<eor>";
         $doc = new Document($adif);
@@ -295,7 +294,7 @@ final class DocumentTest extends TestCase
         $this->assertEquals($originalCount * 2, $doc->count);
     }
 
-    public function testMorphPotaRefsHandlesLocationSuffix(): void
+    public function test_morph_pota_refs_handles_location_suffix(): void
     {
         $adif = "Test\n<eoh>\n<call:5>W1AW<my_pota_ref:10>US-0001@WA<eor>";
         $doc = new Document($adif);
@@ -309,7 +308,7 @@ final class DocumentTest extends TestCase
     }
 
     // Chunking tests
-    public function testChunkKeepsSmallDocumentIntact(): void
+    public function test_chunk_keeps_small_document_intact(): void
     {
         $path = testDataPath('p75.adi');
         $doc = new Document($path);
@@ -321,7 +320,7 @@ final class DocumentTest extends TestCase
     }
 
     // Output generation tests
-    public function testToAdifGeneratesValidAdif(): void
+    public function test_to_adif_generates_valid_adif(): void
     {
         $path = testDataPath('p75.adi');
         $doc = new Document($path);
@@ -335,7 +334,7 @@ final class DocumentTest extends TestCase
         $this->assertStringContainsString('POTA-ADIF', $adif);
     }
 
-    public function testToJsonGeneratesValidJson(): void
+    public function test_to_json_generates_valid_json(): void
     {
         $path = testDataPath('p75.adi');
         $doc = new Document($path);
@@ -352,7 +351,7 @@ final class DocumentTest extends TestCase
         $this->assertEquals(50, $data['meta']['count']);
     }
 
-    public function testToJsonPrettyPrint(): void
+    public function test_to_json_pretty_print(): void
     {
         $adif = "Test\n<eoh>\n<call:5>W1AW<eor>";
         $doc = new Document($adif);
@@ -361,11 +360,11 @@ final class DocumentTest extends TestCase
         $json = $doc->toJson(true);
 
         $this->assertStringContainsString("\n", $json);
-        $this->assertStringContainsString("    ", $json); // Indentation
+        $this->assertStringContainsString('    ', $json); // Indentation
     }
 
     // Timer tests
-    public function testRecordsTimersForOperations(): void
+    public function test_records_timers_for_operations(): void
     {
         $path = testDataPath('small.adi');
         $doc = new Document($path);
@@ -382,9 +381,9 @@ final class DocumentTest extends TestCase
         $this->assertArrayHasKey('total', $timers);
     }
 
-    public function testAddTimerAggregatesValues(): void
+    public function test_add_timer_aggregates_values(): void
     {
-        $doc = new Document();
+        $doc = new Document;
         $doc->addTimer('test', 1.5);
         $doc->addTimer('test', 2.5);
 
@@ -392,7 +391,7 @@ final class DocumentTest extends TestCase
         $this->assertEquals(4.0, $timers['test']);
     }
 
-    public function testSumTimersReturnsTotal(): void
+    public function test_sum_timers_returns_total(): void
     {
         $path = testDataPath('small.adi');
         $doc = new Document($path);
@@ -404,7 +403,7 @@ final class DocumentTest extends TestCase
     }
 
     // Override field tests
-    public function testOverrideFieldAppliesValue(): void
+    public function test_override_field_applies_value(): void
     {
         $adif = "Test\n<eoh>\n<call:5>W1AW<operator:5>K1ABC<eor>";
         $doc = new Document($adif);
@@ -417,16 +416,16 @@ final class DocumentTest extends TestCase
     }
 
     // Linting tests
-    public function testLintDetectsFormatIssues(): void
+    public function test_lint_detects_format_issues(): void
     {
-        $doc = new Document();
-        $doc->fromString("no eoh or eor tags");
+        $doc = new Document;
+        $doc->fromString('no eoh or eor tags');
 
         $errors = $doc->lint();
         $this->assertNotEmpty($errors);
     }
 
-    public function testLintAcceptsValidFormat(): void
+    public function test_lint_accepts_valid_format(): void
     {
         $adif = "Test\n<eoh>\n<call:5>W1AW<eor>";
         $doc = new Document($adif);
@@ -436,17 +435,17 @@ final class DocumentTest extends TestCase
     }
 
     // Header and entry manipulation
-    public function testAddHeader(): void
+    public function test_add_header(): void
     {
-        $doc = new Document();
+        $doc = new Document;
         $doc->addHeader('programid', 'TestApp');
         $doc->addHeader('Custom header line');
 
-        $headers = $doc->getHeaders();
-        $this->assertEquals('TestApp', $headers['programid']);
+        $header = $doc->getHeaders('programid');
+        $this->assertEquals('TestApp', $header);
     }
 
-    public function testGetSpecificHeader(): void
+    public function test_get_specific_header(): void
     {
         $adif = "Test\n<programid:7>TestApp<eoh>\n<call:5>W1AW<eor>";
         $doc = new Document($adif);
@@ -456,16 +455,35 @@ final class DocumentTest extends TestCase
         $this->assertEquals('TestApp', $programId);
     }
 
-    public function testGetNonExistentHeaderReturnsEmptyString(): void
+    public function test_get_non_existent_header_returns_empty_string(): void
     {
-        $doc = new Document();
+        $doc = new Document;
         $result = $doc->getHeaders('nonexistent');
         $this->assertEquals('', $result);
     }
 
-    public function testAddEntry(): void
+    public function test_get_null_header_returns_empty_string(): void
     {
-        $doc = new Document();
+        $doc = new Document;
+        $result = $doc->getHeaders();
+        $this->assertEquals('', $result);
+    }
+
+    public function test_get_empty_string_header_returns_all_headers(): void
+    {
+        $doc = new Document;
+
+        $doc->addHeader('programid', 'TestApp');
+        $doc->addHeader('Custom header line');
+
+        $result = $doc->getHeaders('');
+
+        $this->assertEquals(['programid' => 'TestApp', 0 => 'Custom header line'], $result);
+    }
+
+    public function test_add_entry(): void
+    {
+        $doc = new Document;
         $doc->addEntry(['call' => 'W1AW', 'band' => '20M']);
 
         $this->assertEquals(1, $doc->count);
@@ -473,9 +491,9 @@ final class DocumentTest extends TestCase
         $this->assertEquals('W1AW', $entries[0]['call']);
     }
 
-    public function testAddMultipleEntries(): void
+    public function test_add_multiple_entries(): void
     {
-        $doc = new Document();
+        $doc = new Document;
         $doc->addEntry([
             ['call' => 'W1AW', 'band' => '20M'],
             ['call' => 'K1ABC', 'band' => '40M'],
@@ -484,9 +502,9 @@ final class DocumentTest extends TestCase
         $this->assertEquals(2, $doc->count);
     }
 
-    public function testRemoveEntry(): void
+    public function test_remove_entry(): void
     {
-        $doc = new Document();
+        $doc = new Document;
         $doc->addEntry(['call' => 'W1AW']);
         $doc->addEntry(['call' => 'K1ABC']);
         $doc->removeEntry(0);
@@ -495,43 +513,43 @@ final class DocumentTest extends TestCase
     }
 
     // Mode tests
-    public function testSetModeDefault(): void
+    public function test_set_mode_default(): void
     {
         $this->expectNotToPerformAssertions();
 
-        $doc = new Document();
+        $doc = new Document;
         $doc->setMode(Document::MODE_DEFAULT);
     }
 
-    public function testSetModePota(): void
+    public function test_set_mode_pota(): void
     {
         $this->expectNotToPerformAssertions();
 
-        $doc = new Document();
+        $doc = new Document;
         $doc->setMode(Document::MODE_POTA);
     }
 
     // From file/string tests
-    public function testFromFile(): void
+    public function test_from_file(): void
     {
-        $doc = new Document();
+        $doc = new Document;
         $doc->fromFile(testDataPath('p75.adi'));
 
         $this->assertEquals('p75.adi', $doc->filename);
     }
 
-    public function testFromFileThrowsForInvalidPath(): void
+    public function test_from_file_throws_for_invalid_path(): void
     {
         $this->expectException(\Exception::class);
 
-        $doc = new Document();
+        $doc = new Document;
         $doc->fromFile('/nonexistent/path.adi');
     }
 
-    public function testFromString(): void
+    public function test_from_string(): void
     {
-        $doc = new Document();
-        $doc->fromString("<call:5>W1AW<eor>");
+        $doc = new Document;
+        $doc->fromString('<call:5>W1AW<eor>');
 
         // Document should be ready for parsing
         $doc->parse();
@@ -539,9 +557,9 @@ final class DocumentTest extends TestCase
     }
 
     // Source tracking
-    public function testAddSource(): void
+    public function test_add_source(): void
     {
-        $doc = new Document();
+        $doc = new Document;
         $doc->addSource(['fn=test.adi', 'ec=10']);
 
         $json = json_decode($doc->toJson(), true);
@@ -555,7 +573,7 @@ final class DocumentTest extends TestCase
 
     // unroll_pota_refs tests - covering various branches
 
-    public function testUnrollPotaRefsBothSidesInFer(): void
+    public function test_unroll_pota_refs_both_sides_in_fer(): void
     {
         // Both activator and hunter have comma-separated park refs (both in -fers)
         $adif = "Test\n<eoh>\n<call:5>W1AW<my_pota_ref:15>US-0001,US-0002<pota_ref:15>US-0003,US-0004<eor>";
@@ -582,7 +600,7 @@ final class DocumentTest extends TestCase
         $this->assertContains('us-0002-us-0004', $parks);
     }
 
-    public function testUnrollPotaRefsBothSidesInFerWithLocations(): void
+    public function test_unroll_pota_refs_both_sides_in_fer_with_locations(): void
     {
         // Both sides with comma-separated refs AND location suffixes
         $adif = "Test\n<eoh>\n<call:5>W1AW<my_pota_ref:21>US-0001@WA,US-0002@OR<pota_ref:21>US-0003@CA,US-0004@NV<eor>";
@@ -610,7 +628,7 @@ final class DocumentTest extends TestCase
         $this->assertTrue($hasTheirLocation);
     }
 
-    public function testUnrollPotaRefsOnlyHunterSideInFer(): void
+    public function test_unroll_pota_refs_only_hunter_side_in_fer(): void
     {
         // Only hunter side has comma-separated refs (hunter-only -fer)
         $adif = "Test\n<eoh>\n<call:5>W1AW<my_pota_ref:7>US-0001<pota_ref:15>US-0003,US-0004<eor>";
@@ -632,7 +650,7 @@ final class DocumentTest extends TestCase
         }
     }
 
-    public function testUnrollPotaRefsOnlyHunterSideInFerWithLocation(): void
+    public function test_unroll_pota_refs_only_hunter_side_in_fer_with_location(): void
     {
         // Hunter side has comma-separated refs with locations, activator has single ref with location
         $adif = "Test\n<eoh>\n<call:5>W1AW<my_pota_ref:10>US-0001@WA<pota_ref:21>US-0003@CA,US-0004@NV<eor>";
@@ -651,7 +669,7 @@ final class DocumentTest extends TestCase
         }
     }
 
-    public function testUnrollPotaRefsActivatorFerWithHunterLocation(): void
+    public function test_unroll_pota_refs_activator_fer_with_hunter_location(): void
     {
         // Activator side has multiple parks, hunter has single park with location
         $adif = "Test\n<eoh>\n<call:5>W1AW<my_pota_ref:15>US-0001,US-0002<pota_ref:10>US-0003@CA<eor>";
@@ -669,7 +687,7 @@ final class DocumentTest extends TestCase
         }
     }
 
-    public function testUnrollPotaRefsHunterLocationOnly(): void
+    public function test_unroll_pota_refs_hunter_location_only(): void
     {
         // No -fers, but hunter has @location suffix
         $adif = "Test\n<eoh>\n<call:5>W1AW<my_pota_ref:7>US-0001<pota_ref:10>US-0003@CA<eor>";
@@ -685,7 +703,7 @@ final class DocumentTest extends TestCase
         $this->assertEquals('ca', $entries[0]['pota_location']);
     }
 
-    public function testUnrollPotaRefsSigInfoToMyPotaRef(): void
+    public function test_unroll_pota_refs_sig_info_to_my_pota_ref(): void
     {
         // my_sig_info should be converted to my_pota_ref when my_pota_ref is not present
         $adif = "Test\n<eoh>\n<call:5>W1AW<my_sig_info:7>US-0001<eor>";
@@ -697,7 +715,7 @@ final class DocumentTest extends TestCase
         $this->assertEquals('us-0001', $entries[0]['pota_my_park_ref']);
     }
 
-    public function testUnrollPotaRefsSigInfoToPotaRef(): void
+    public function test_unroll_pota_refs_sig_info_to_pota_ref(): void
     {
         // sig_info should be converted to pota_ref when pota_ref is not present
         $adif = "Test\n<eoh>\n<call:5>W1AW<sig_info:7>US-0003<eor>";
@@ -709,7 +727,7 @@ final class DocumentTest extends TestCase
         $this->assertEquals('us-0003', $entries[0]['pota_park_ref']);
     }
 
-    public function testUnrollPotaRefsSigInfoNotOverwritingExisting(): void
+    public function test_unroll_pota_refs_sig_info_not_overwriting_existing(): void
     {
         // When both my_sig_info and my_pota_ref are present, my_pota_ref takes precedence
         $adif = "Test\n<eoh>\n<call:5>W1AW<my_sig_info:7>US-9999<my_pota_ref:7>US-0001<eor>";
@@ -721,7 +739,7 @@ final class DocumentTest extends TestCase
         $this->assertEquals('us-0001', $entries[0]['pota_my_park_ref']);
     }
 
-    public function testUnrollPotaRefsNoPotaFields(): void
+    public function test_unroll_pota_refs_no_pota_fields(): void
     {
         // Entry without any pota fields should remain unchanged
         $adif = "Test\n<eoh>\n<call:5>W1AW<band:3>20M<eor>";
@@ -737,7 +755,7 @@ final class DocumentTest extends TestCase
         $this->assertArrayNotHasKey('pota_park_ref', $entries[0]);
     }
 
-    public function testUnrollPotaRefsActivatorFerWithLocationNoHunter(): void
+    public function test_unroll_pota_refs_activator_fer_with_location_no_hunter(): void
     {
         // Activator side has multiple parks with locations, no hunter ref
         $adif = "Test\n<eoh>\n<call:5>W1AW<my_pota_ref:21>US-0001@WA,US-0002@OR<eor>";
@@ -764,15 +782,15 @@ final class DocumentTest extends TestCase
 
     // chunk() tests - covering large document chunking
 
-    public function testChunkSplitsLargeDocument(): void
+    public function test_chunk_splits_large_document(): void
     {
         // Create a document with enough entries to exceed chunk size
-        $doc = new Document();
+        $doc = new Document;
 
         // Add many entries with substantial data to ensure we exceed chunk size
         for ($i = 0; $i < 500; $i++) {
             $doc->addEntry([
-                'call' => 'W' . str_pad((string)$i, 4, '0', STR_PAD_LEFT),
+                'call' => 'W' . str_pad((string) $i, 4, '0', STR_PAD_LEFT),
                 'band' => '20M',
                 'mode' => 'SSB',
                 'qso_date' => '20231225',
@@ -804,9 +822,9 @@ final class DocumentTest extends TestCase
         }
     }
 
-    public function testChunkWithEmptyDocument(): void
+    public function test_chunk_with_empty_document(): void
     {
-        $doc = new Document();
+        $doc = new Document;
         $doc->chunk();
 
         $json = json_decode($doc->toJson(), true);
@@ -814,15 +832,15 @@ final class DocumentTest extends TestCase
         $this->assertArrayHasKey('entries', $json);
     }
 
-    public function testChunkPreservesAllEntries(): void
+    public function test_chunk_preserves_all_entries(): void
     {
-        $doc = new Document();
+        $doc = new Document;
 
         // Add entries
         $entryCount = 100;
         for ($i = 0; $i < $entryCount; $i++) {
             $doc->addEntry([
-                'call' => 'W' . str_pad((string)$i, 4, '0', STR_PAD_LEFT),
+                'call' => 'W' . str_pad((string) $i, 4, '0', STR_PAD_LEFT),
                 'band' => '20M',
                 'comment' => str_repeat('x', 100), // Pad to increase size
             ]);
@@ -844,9 +862,9 @@ final class DocumentTest extends TestCase
 
     // generateAdifHeaders() tests - covering sources output
 
-    public function testGenerateAdifHeadersWithMultipleSources(): void
+    public function test_generate_adif_headers_with_multiple_sources(): void
     {
-        $doc = new Document();
+        $doc = new Document;
         $doc->addSource(['fn=file1.adi', 'ec=10']);
         $doc->addSource(['fn=file2.adi', 'ec=20']);
         $doc->addEntry(['call' => 'W1AW']);
@@ -858,9 +876,9 @@ final class DocumentTest extends TestCase
         $this->assertStringContainsString('Source [fn=file2.adi, ec=20]', $adif);
     }
 
-    public function testGenerateAdifHeadersWithNoSources(): void
+    public function test_generate_adif_headers_with_no_sources(): void
     {
-        $doc = new Document();
+        $doc = new Document;
         $doc->addEntry(['call' => 'W1AW']);
 
         $adif = $doc->toAdif();
@@ -874,20 +892,20 @@ final class DocumentTest extends TestCase
 
     // Additional edge case tests
 
-    public function testSetModeWithInvalidMode(): void
+    public function test_set_mode_with_invalid_mode(): void
     {
         $this->expectNotToPerformAssertions();
 
-        $doc = new Document();
+        $doc = new Document;
         $doc->setMode(999); // Invalid mode
     }
 
-    public function testToJsonWithDuplicatesAndErrors(): void
+    public function test_to_json_with_duplicates_and_errors(): void
     {
         // Test that duplicates and errors are included in JSON output
         $adif = "Test\n<eoh>\n" .
                 "<call:5>W1AW<band:3>20M<qso_date:8>20231225<time_on:4>1200<mode:3>SSB<operator:4>W1AW<pota_my_park_ref:7>US-0001<eor>\n" .
-                "<call:5>W1AW<band:3>20M<qso_date:8>20231225<time_on:4>1200<mode:3>SSB<operator:4>W1AW<pota_my_park_ref:7>US-0001<eor>"; // Duplicate
+                '<call:5>W1AW<band:3>20M<qso_date:8>20231225<time_on:4>1200<mode:3>SSB<operator:4>W1AW<pota_my_park_ref:7>US-0001<eor>'; // Duplicate
 
         $doc = new Document($adif);
         $doc->parse();
@@ -899,7 +917,7 @@ final class DocumentTest extends TestCase
         $this->assertNotEmpty($json['duplicates']);
     }
 
-    public function testToJsonWithHeaders(): void
+    public function test_to_json_with_headers(): void
     {
         $adif = "Test header\n<programid:7>TestApp<programversion:3>1.0<eoh>\n<call:5>W1AW<eor>";
         $doc = new Document($adif);
@@ -911,7 +929,7 @@ final class DocumentTest extends TestCase
         $this->assertEquals('TestApp', $json['headers']['programid']);
     }
 
-    public function testParseEntriesWithEmptyValues(): void
+    public function test_parse_entries_with_empty_values(): void
     {
         // Test that empty field values are handled correctly
         $adif = "Test\n<eoh>\n<call:5>W1AW<band:0><mode:3>SSB<eor>";
@@ -925,7 +943,7 @@ final class DocumentTest extends TestCase
         $this->assertArrayNotHasKey('band', $entries[0]);
     }
 
-    public function testUnrollPotaRefsDirectCallPreservesTimer(): void
+    public function test_unroll_pota_refs_direct_call_preserves_timer(): void
     {
         // Test calling unroll_pota_refs directly
         $adif = "Test\n<eoh>\n<call:5>W1AW<my_pota_ref:7>US-0001<eor>";
@@ -937,9 +955,9 @@ final class DocumentTest extends TestCase
         $this->assertArrayHasKey('unroll_pota_refs', $timers);
     }
 
-    public function testChunkTimerIsRecorded(): void
+    public function test_chunk_timer_is_recorded(): void
     {
-        $doc = new Document();
+        $doc = new Document;
         $doc->addEntry(['call' => 'W1AW']);
         $doc->chunk();
 
@@ -947,7 +965,7 @@ final class DocumentTest extends TestCase
         $this->assertArrayHasKey('chunk', $timers);
     }
 
-    public function testMorphTimerIsRecorded(): void
+    public function test_morph_timer_is_recorded(): void
     {
         $adif = "Test\n<eoh>\n<call:5>W1AW<my_pota_ref:7>US-0001<eor>";
         $doc = new Document($adif);
@@ -958,7 +976,7 @@ final class DocumentTest extends TestCase
         $this->assertArrayHasKey('morph', $timers);
     }
 
-    public function testUnrollPotaRefsHunterFerWithoutActivator(): void
+    public function test_unroll_pota_refs_hunter_fer_without_activator(): void
     {
         // Hunter has multiple parks, no activator ref at all
         $adif = "Test\n<eoh>\n<call:5>W1AW<pota_ref:15>US-0003,US-0004<eor>";
@@ -975,7 +993,7 @@ final class DocumentTest extends TestCase
         }
     }
 
-    public function testUnrollPotaRefsSigInfoWithFer(): void
+    public function test_unroll_pota_refs_sig_info_with_fer(): void
     {
         // sig_info with comma-separated values (fer)
         $adif = "Test\n<eoh>\n<call:5>W1AW<my_sig_info:15>US-0001,US-0002<eor>";
@@ -994,7 +1012,7 @@ final class DocumentTest extends TestCase
         $this->assertContains('us-0002', $parks);
     }
 
-    public function testUnrollPotaRefsTracksUnrolledFromRec(): void
+    public function test_unroll_pota_refs_tracks_unrolled_from_rec(): void
     {
         // Verify pota_unrolled_from_rec is set when unrolling
         $adif = "Test\n<eoh>\n<call:5>W1AW<my_pota_ref:15>US-0001,US-0002<eor>";
