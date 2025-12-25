@@ -274,17 +274,17 @@ class Document {
 
     public function dedupe() : void {
         $tick = $this->tick();
-        $hashes = [];
+        $hashes = [];  // Use array keys as hash set for O(1) lookup
         foreach ($this->entries as $i => $entry) {
             $hash = [];
             foreach (Spec::$pota_unique as $k) {
                 $hash[] = array_key_exists($k, $entry) ? $entry[$k] : '-';
             }
             $hash = implode('|', $hash);
-            if (in_array($hash, $hashes)) {
+            if (isset($hashes[$hash])) {  // O(1) hash lookup instead of O(n) in_array
                 $this->duplicates[$i] = $entry;
             } else {
-                $hashes[] = $hash;
+                $hashes[$hash] = true;  // Store as key, not value
             }
         }
         $ds = array_keys($this->duplicates);
@@ -318,8 +318,10 @@ class Document {
                 break;
         }
         if (!empty($filter)) {
+            // Convert array to hash set for O(1) lookups
+            $filter_set = array_flip($filter);
             foreach ($this->entries as $i => $entry) {
-                $this->entries[$i] = array_filter($entry, fn($key) => in_array($key, $filter), ARRAY_FILTER_USE_KEY);
+                $this->entries[$i] = array_filter($entry, fn($key) => isset($filter_set[$key]), ARRAY_FILTER_USE_KEY);
             }
         }
         $this->timer($tick, __FUNCTION__);
