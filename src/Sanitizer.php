@@ -31,7 +31,7 @@ class Sanitizer {
                 case 'stx':
                 case 'dxcc':
                 case 'my_dxcc':
-                    $v = (integer)$v;
+                    $v = (int)$v;
                     break;
                 case 'altitude':
                 case 'distance':
@@ -125,7 +125,7 @@ class Sanitizer {
                 case 'silent_key':
                 case 'qso_random':
                 case 'force_init':
-                    $v = (boolean)$v;
+                    $v = (bool)$v;
                     break;
             }
             $fields[$k] = $v;

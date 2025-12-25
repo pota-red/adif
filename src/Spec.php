@@ -245,7 +245,7 @@ class Spec {
     }
 
     public static function isDxcc(string $text) : bool {
-        return array_key_exists((integer)$text, self::$enum_dxcc_entity);
+        return array_key_exists((int)$text, self::$enum_dxcc_entity);
     }
 
     public static function isPropagation(string $text) : bool {
@@ -275,7 +275,7 @@ class Spec {
             $y = intval(substr($data, 0, 4));
             $m = intval(substr($data, 4, 2));
             $d = intval(substr($data, 6, 2));
-            return ($y >= 1930 && $y <= ((integer)date('Y') + 1) && $m >= 1 && $m <= 12 && $d >= 1 && $d <= 31);
+            return ($y >= 1930 && $y <= ((int)date('Y') + 1) && $m >= 1 && $m <= 12 && $d >= 1 && $d <= 31);
         }
         return false;
     }
@@ -291,7 +291,7 @@ class Spec {
         return false;
     }
 
-    public static function isFreq(string $text, string $band = null) : bool {
+    public static function isFreq(string $text, ?string $band = null) : bool {
         $text = (float)$text;
         if (!empty($band) && array_key_exists($band, self::$enum_band)) {
             return $text >= self::$enum_band[$band][0] && $text <= self::$enum_band[$band][1];

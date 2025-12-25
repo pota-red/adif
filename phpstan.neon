@@ -1,0 +1,12 @@
+parameters:
+    level: 5
+    paths:
+        - src
+        - tests
+    tmpDir: .phpstan
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        # PHPDoc types treated as certain - these are false positives
+        - identifier: booleanNot.alwaysTrue
+        # Defensive null coalesce in Sanitizer
+        - identifier: nullCoalesce.expr

@@ -25,7 +25,7 @@ class Document {
     private int $mode = self::MODE_DEFAULT;
     private bool $check_qps = true;
 
-    public function __construct(string $data = null) {
+    public function __construct(?string $data = null) {
         if (!empty($data)) {
             if (str_contains($data, '<eor>') || str_contains($data, '<EOR>')) {
                 $this->fromString($data);
@@ -61,7 +61,7 @@ class Document {
         $this->timers[$name] = round(($this->tick() - $start) / 1e+6, 3);
     }
 
-    public function getTimers(string $name = null) : array|string {
+    public function getTimers(?string $name = null) : array|string {
         $name = trim(strtolower($name));
         if (!empty($name) && array_key_exists($name, $this->timers)) {
             return $this->timers[$name];
@@ -195,7 +195,7 @@ class Document {
         }
     }
 
-    public function getHeaders(string $header = null) : string|array {
+    public function getHeaders(?string $header = null) : string|array {
         $header = trim(strtolower($header));
         if (!empty($header)) {
             if (array_key_exists($header, $this->headers)) {
@@ -573,7 +573,7 @@ class Document {
         $data['timers'][$fn] = $tm;
         $json = ($pretty ? json_encode($data, JSON_PRETTY_PRINT) : json_encode($data)) . PHP_EOL;
         $this->timer($tick, $fn);
-        return str_replace($tm, (float)$this->getTimers($fn), $json);
+        return str_replace((string)$tm, (string)$this->getTimers($fn), $json);
     }
 
 }
