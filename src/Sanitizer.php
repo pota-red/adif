@@ -78,13 +78,7 @@ class Sanitizer {
                 case 'gridsquare':
                 case 'my_gridsquare':
                 case 'prop_mode':
-                    // Skip transformation if already uppercase
-                    $trimmed = trim($v);
-                    if ($trimmed !== strtoupper($trimmed)) {
-                        $v = strtoupper($trimmed);
-                    } else {
-                        $v = $trimmed;
-                    }
+                    $v = trim(strtoupper($v));
                     break;
                 case 'mode':
                     $v = trim(strtoupper($v));
