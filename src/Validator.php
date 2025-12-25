@@ -7,6 +7,7 @@ class Validator {
     public static function entry(array $fields) : bool|array {
         $errors = [];
         $required = Spec::$base_fields;
+        $required_set = array_flip($required);  // Convert to hash set for O(1) lookup
         $found_required = [];
         $self = [];
         foreach ($fields as $k => $v) {
@@ -16,8 +17,8 @@ class Validator {
         }
         foreach ($fields as $k => $v) {
             $k = trim(strtolower($k));
-            if (in_array($k, $required)) {
-                $found_required[] = $k;
+            if (isset($required_set[$k])) {
+                $found_required[$k] = true;  // Use hash set instead of array
             }
             $error = null;
             switch ($k) {
@@ -264,7 +265,7 @@ class Validator {
         }
         if (count($found_required) != count($required)) {
             foreach ($required as $k) {
-                if (!in_array($k, $found_required)) {
+                if (!isset($found_required[$k])) {
                     $errors[] = $k;
                 }
             }

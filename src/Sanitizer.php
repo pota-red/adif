@@ -78,7 +78,13 @@ class Sanitizer {
                 case 'gridsquare':
                 case 'my_gridsquare':
                 case 'prop_mode':
-                    $v = trim(strtoupper($v));
+                    // Skip transformation if already uppercase
+                    $trimmed = trim($v);
+                    if ($trimmed !== strtoupper($trimmed)) {
+                        $v = strtoupper($trimmed);
+                    } else {
+                        $v = $trimmed;
+                    }
                     break;
                 case 'mode':
                     $v = trim(strtoupper($v));
@@ -140,8 +146,9 @@ class Sanitizer {
     }
 
     public static function filter(array $fields, array $errors, array $optional) : array {
+        $optional_set = array_flip($optional);  // Convert to hash set for O(1) lookup
         foreach ($errors as $k => $v) {
-            if (in_array($v, $optional)) {
+            if (isset($optional_set[$v])) {
                 unset($fields[$v]);
                 unset($errors[$k]);
             }
