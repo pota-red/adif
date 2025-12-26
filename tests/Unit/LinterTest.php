@@ -24,7 +24,7 @@ final class LinterTest extends TestCase
 
         $result = Linter::lint($text, Document::MODE_DEFAULT);
         $this->assertArrayHasKey('@', $result);
-        $this->assertEquals('ADIF requires <eoh> and at least one <eor>', $result['@']);
+        $this->assertEquals(Linter::$BAD_FORM['@'], $result['@']);
     }
 
     public function test_rejects_adif_without_eor(): void
