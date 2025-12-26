@@ -4,7 +4,7 @@ namespace Pota\Adif;
 
 class Linter
 {
-    public static $BAD_FORM = ['@' => 'ADIF requires <eoh> and at least one <eor>'];
+    public static $BAD_FORM = ['@' => 'ADIF needs optional <EOH> and requires at least one <EOR>'];
 
     public static function lintPota(string $text): array
     {
