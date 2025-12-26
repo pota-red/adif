@@ -2,3 +2,11 @@ vendor
 .idea
 .editorconfig
 composer.lock
+
+# Test coverage
+.phpunit.cache/
+coverage/
+coverage.xml
+
+# PHPStan
+.phpstan/

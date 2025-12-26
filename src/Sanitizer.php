@@ -2,11 +2,12 @@
 
 namespace Pota\Adif;
 
-class Sanitizer {
+class Sanitizer
+{
+    public static function entry(array $fields): array
+    {
 
-    public static function entry(array $fields) : array {
-
-        if (isset($fields['station_callsign']) && !isset($fields['operator'])) {
+        if (isset($fields['station_callsign']) && ! isset($fields['operator'])) {
             $fields['operator'] = $fields['station_callsign'];
         }
 
@@ -31,11 +32,11 @@ class Sanitizer {
                 case 'stx':
                 case 'dxcc':
                 case 'my_dxcc':
-                    $v = (integer)$v;
+                    $v = (int) $v;
                     break;
                 case 'altitude':
                 case 'distance':
-                    $v = (float)$v;
+                    $v = (float) $v;
                     break;
                 case 'ant_path':
                 case 'clublog_qso_upload_status':
@@ -115,7 +116,7 @@ class Sanitizer {
                     break;
                 case 'freq':
                 case 'freq_rx':
-                    $v = trim(number_format((float)$v, 6, '.', ''));
+                    $v = trim(number_format((float) $v, 6, '.', ''));
                     break;
                 case 'cont':
                     if (strlen($v) > 2) {
@@ -125,21 +126,23 @@ class Sanitizer {
                 case 'silent_key':
                 case 'qso_random':
                 case 'force_init':
-                    $v = (boolean)$v;
+                    $v = (bool) $v;
                     break;
             }
             $fields[$k] = $v;
         }
-        if (array_key_exists('band', $fields) && !Spec::isBand($fields['band']) && array_key_exists('freq', $fields)) {
+        if (array_key_exists('band', $fields) && ! Spec::isBand($fields['band']) && array_key_exists('freq', $fields)) {
             $fields['band'] = Spec::bandFromFreq($fields['freq']);
         }
-        if (array_key_exists('band_rx', $fields) && !Spec::isBand($fields['band_rx']) && array_key_exists('freq_rx', $fields)) {
+        if (array_key_exists('band_rx', $fields) && ! Spec::isBand($fields['band_rx']) && array_key_exists('freq_rx', $fields)) {
             $fields['band_rx'] = Spec::bandFromFreq($fields['freq_rx']);
         }
+
         return $fields;
     }
 
-    public static function filter(array $fields, array $errors, array $optional) : array {
+    public static function filter(array $fields, array $errors, array $optional): array
+    {
         $optional_set = array_flip($optional);  // Convert to hash set for O(1) lookup
         foreach ($errors as $k => $v) {
             if (isset($optional_set[$v])) {
@@ -147,8 +150,7 @@ class Sanitizer {
                 unset($errors[$k]);
             }
         }
+
         return [$fields, count($errors) == 0 ?? null];
     }
-
 }
-
