@@ -462,11 +462,13 @@ final class DocumentTest extends TestCase
         $this->assertEquals('', $result);
     }
 
-    public function test_get_null_header_returns_empty_string(): void
+    public function test_get_null_header_returns_all_headers(): void
     {
         $doc = new Document;
+        $doc->addHeader('programid', 'TestApp');
+        $doc->addHeader('Custom header line');
         $result = $doc->getHeaders();
-        $this->assertEquals('', $result);
+        $this->assertEquals(['programid' => 'TestApp', 0 => 'Custom header line'], $result);
     }
 
     public function test_get_empty_string_header_returns_all_headers(): void
