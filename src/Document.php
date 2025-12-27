@@ -238,19 +238,13 @@ class Document
 
     public function getHeaders(?string $header = null): string|array
     {
-        if (is_null($header)) {
-            return '';
-        }
-
         $header = trim(strtolower($header));
         if (! empty($header)) {
             if (array_key_exists($header, $this->headers)) {
                 return $this->headers[$header];
             }
-
             return '';
         }
-
         return $this->headers;
     }
 
