@@ -18,15 +18,17 @@ class Sanitizer
         foreach ($fields as $k => $v) {
             $k = trim(strtolower($k));
             switch ($k) {
+                case 'tx_pwr':
+                case 'rx_pwr':
+                    $v = substr($v, 0, 10);
+                    break;
                 case 'age':
                 case 'ant_az':
-                case 'tx_pwr':
                 case 'ant_el':
                 case 'a_index':
                 case 'k_index':
                 case 'max_bursts':
                 case 'my_altitude':
-                case 'rx_pwr':
                 case 'sfi':
                 case 'srx':
                 case 'stx':
