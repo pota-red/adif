@@ -115,6 +115,7 @@ class Sanitizer
                     break;
                 case 'rst_rcvd':
                 case 'rst_sent':
+                    $v = substr($v, 0, 8);
                     break;
                 case 'freq':
                 case 'freq_rx':
