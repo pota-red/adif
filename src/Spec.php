@@ -333,6 +333,16 @@ class Spec
         return false;
     }
 
+    public static function modeFromSubMode(string $mode): ?string
+    {
+        foreach (self::$enum_mode as $k => $v) {
+            if (in_array(strtoupper($mode), $v)) {
+                return $k;
+            }
+        }
+        return null;
+    }
+
     public static function bandFromFreq(string $text): ?string
     {
         $text = (float) $text;
