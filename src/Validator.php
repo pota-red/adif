@@ -280,6 +280,9 @@ class Validator
         $first = time();
         $last = 0;
         foreach ($entries as $entry) {
+            if (! isset($entry['qso_date']) || ! isset($entry['time_on'])) {
+                continue;
+            }
             $stamp = strtotime($entry['qso_date'] . ' ' . $entry['time_on']);
             if ($stamp < $first) {
                 $first = $stamp;
