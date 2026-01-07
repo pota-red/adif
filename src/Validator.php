@@ -26,12 +26,12 @@ class Validator
                 case 'call':
                 case 'operator':
                     $self[] = $v;
-                    if (!preg_match('|^(?=.*[A-Za-z])(?=.*[0-9]).+$|', $v)) {
+                    if (!preg_match('/^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9\/]+$/', $v)) {
                         $error = $k;
                     }
                     break;
                 case 'station_callsign':
-                    if (!preg_match('|^(?=.*[A-Za-z])(?=.*[0-9]).+$|', $v)) {
+                    if (!preg_match('/^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9\/]+$/', $v)) {
                         $error = $k;
                     }
                     break;
