@@ -162,6 +162,11 @@ class Sanitizer
         if (isset($fields['operator']) && isset($fields['station_callsign']) && $fields['operator'] == $fields['station_callsign']) {
             unset($fields['station_callsign']);
         }
+        foreach (['call', 'operator', 'station_callsign'] as $k) {
+            if (isset($fields[$k]) && preg_match('/^(.)\1*$/', $fields[$k]) === 1) {
+                unset($fields[$k]);
+            }
+        }
 
         return $fields;
     }
