@@ -2,54 +2,43 @@
 
 namespace Pota\Adif;
 
-class Sanitizer {
+class Sanitizer
+{
+    public static function entry(array $fields): array
+    {
 
-    public static function entry(array $fields) : array {
-
-        if (isset($fields['station_callsign']) && !isset($fields['operator'])) {
+        if (isset($fields['station_callsign']) && ! isset($fields['operator'])) {
             $fields['operator'] = $fields['station_callsign'];
         }
 
         // prefer my_pota_ref and pota_ref over my_sig_info and sig_info
-        if (isset($fields['my_sig_info']) && isset($fields['my_pota_ref'])) {
-            unset($fields['my_sig_info']);
-        }
-        if (isset($fields['sig_info']) && isset($fields['pota_ref'])) {
-            unset($fields['sig_info']);
-        }
-
         // mangle my_sig_info and sig_info to end up with only my_pota_ref and pota_ref if these are pota refs
-        if (isset($fields['my_sig_info']) && Spec::isPotaRef($fields['my_sig_info'])) {
-            $fields['my_pota_ref'] = $fields['my_sig_info'];
-            unset($fields['my_sig_info']);
-        }
-        if (isset($fields['sig_info']) && Spec::isPotaRef($fields['sig_info'])) {
-            $fields['pota_ref'] = $fields['sig_info'];
-            unset($fields['sig_info']);
-        }
+        // ^^ both above are done in morph unroll pota refs now
 
         foreach ($fields as $k => $v) {
             $k = trim(strtolower($k));
             switch ($k) {
+                case 'tx_pwr':
+                case 'rx_pwr':
+                    $v = substr($v, 0, 10);
+                    break;
                 case 'age':
                 case 'ant_az':
-                case 'tx_pwr':
                 case 'ant_el':
                 case 'a_index':
                 case 'k_index':
                 case 'max_bursts':
                 case 'my_altitude':
-                case 'rx_pwr':
                 case 'sfi':
                 case 'srx':
                 case 'stx':
                 case 'dxcc':
                 case 'my_dxcc':
-                    $v = (integer)$v;
+                    $v = (int) $v;
                     break;
                 case 'altitude':
                 case 'distance':
-                    $v = (float)$v;
+                    $v = (float) $v;
                     break;
                 case 'ant_path':
                 case 'clublog_qso_upload_status':
@@ -75,6 +64,10 @@ class Sanitizer {
                 case 'call':
                 case 'pota_ref':
                 case 'my_pota_ref':
+                case 'pota_my_park_ref':
+                case 'pota_my_location':
+                case 'pota_park_ref':
+                case 'pota_location':
                 case 'sig_info':
                 case 'my_sig_info':
                 case 'operator':
@@ -122,13 +115,11 @@ class Sanitizer {
                     break;
                 case 'rst_rcvd':
                 case 'rst_sent':
-                    $v = trim(str_replace(['-','_',' '], '', $v));
-                    break;
-                    $v = substr(trim(preg_replace('/\D/', '', $v)), 0, 5);
+                    $v = substr($v, 0, 8);
                     break;
                 case 'freq':
                 case 'freq_rx':
-                    $v = trim(number_format((float)$v, 6, '.', ''));
+                    $v = trim(number_format((float) $v, 6, '.', ''));
                     break;
                 case 'cont':
                     if (strlen($v) > 2) {
@@ -138,29 +129,31 @@ class Sanitizer {
                 case 'silent_key':
                 case 'qso_random':
                 case 'force_init':
-                    $v = (boolean)$v;
+                    $v = (bool) $v;
                     break;
             }
             $fields[$k] = $v;
         }
-        if (array_key_exists('band', $fields) && !Spec::isBand($fields['band']) && array_key_exists('freq', $fields)) {
+        if (array_key_exists('band', $fields) && ! Spec::isBand($fields['band']) && array_key_exists('freq', $fields)) {
             $fields['band'] = Spec::bandFromFreq($fields['freq']);
         }
-        if (array_key_exists('band_rx', $fields) && !Spec::isBand($fields['band_rx']) && array_key_exists('freq_rx', $fields)) {
+        if (array_key_exists('band_rx', $fields) && ! Spec::isBand($fields['band_rx']) && array_key_exists('freq_rx', $fields)) {
             $fields['band_rx'] = Spec::bandFromFreq($fields['freq_rx']);
         }
+
         return $fields;
     }
 
-    public static function filter(array $fields, array $errors, array $optional) : array {
+    public static function filter(array $fields, array $errors, array $optional): array
+    {
+        $optional_set = array_flip($optional);  // Convert to hash set for O(1) lookup
         foreach ($errors as $k => $v) {
-            if (in_array($v, $optional)) {
+            if (isset($optional_set[$v])) {
                 unset($fields[$v]);
                 unset($errors[$k]);
             }
         }
+
         return [$fields, count($errors) == 0 ?? null];
     }
-
 }
-
