@@ -25,11 +25,6 @@ class Validator
             switch ($k) {
                 case 'call':
                 case 'operator':
-                    $self[] = $v;
-                    if (!Spec::isPotentialCallsign($v)) {
-                        $error = $k;
-                    }
-                    break;
                 case 'station_callsign':
                     if (!Spec::isPotentialCallsign($v)) {
                         $error = $k;
@@ -268,9 +263,6 @@ class Validator
             if (!empty($error)) {
                 $errors[] = $error;
             }
-        }
-        if (count(array_unique($self)) != 2) {
-            $errors[] = '@self';
         }
         if (count($found_required) != count($required)) {
             foreach ($required as $k) {
