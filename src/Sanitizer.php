@@ -59,7 +59,6 @@ class Sanitizer
                         $v = substr($v, 0, 1);
                     }
                     break;
-                case 'call':
                 case 'pota_ref':
                 case 'my_pota_ref':
                 case 'pota_my_park_ref':
@@ -68,8 +67,6 @@ class Sanitizer
                 case 'pota_location':
                 case 'sig_info':
                 case 'my_sig_info':
-                case 'operator':
-                case 'station_callsign':
                 case 'cnty':
                 case 'submode':
                 case 'state':
@@ -80,6 +77,14 @@ class Sanitizer
                 case 'my_gridsquare':
                 case 'prop_mode':
                     $v = trim(strtoupper($v));
+                    break;
+                case 'call':
+                case 'operator':
+                case 'station_callsign':
+                    $v = trim(strtoupper($v));
+                    if (strlen($v) > 30) {
+                        $v = substr($v, 0, 30);
+                    }
                     break;
                 case 'mode':
                     $v = trim(strtoupper($v));
@@ -109,11 +114,17 @@ class Sanitizer
                 case 'qso_date':
                 case 'qso_date_off':
                     $v = trim(preg_replace('/\D/', '', $v));
+                    if (strlen($v) > 8) {
+                        $v = substr($v, 0, 8);
+                    }
                     $hash[$k] = $v;
                     break;
                 case 'time_on':
                 case 'time_off':
                     $v = str_pad(trim(preg_replace('/\D/', '', $v)), 6, '0');
+                    if (strlen($v) > 6) {
+                        $v = substr($v, 0, 6);
+                    }
                     break;
                 case 'rst_rcvd':
                 case 'rst_sent':
@@ -142,11 +153,14 @@ class Sanitizer
             }
             $fields[$k] = $v;
         }
-        if (array_key_exists('band', $fields) && !Spec::isBand($fields['band']) && array_key_exists('freq', $fields)) {
+        if (isset($fields['band']) && !Spec::isBand($fields['band']) && isset($fields['freq'])) {
             $fields['band'] = Spec::bandFromFreq($fields['freq']);
         }
-        if (array_key_exists('band_rx', $fields) && !Spec::isBand($fields['band_rx']) && array_key_exists('freq_rx', $fields)) {
+        if (isset($fields['band_rx']) && !Spec::isBand($fields['band_rx']) && isset($fields['freq_rx'])) {
             $fields['band_rx'] = Spec::bandFromFreq($fields['freq_rx']);
+        }
+        if (isset($fields['operator']) && isset($fields['station_callsign']) && $fields['operator'] == $fields['station_callsign']) {
+            unset($fields['station_callsign']);
         }
 
         return $fields;
