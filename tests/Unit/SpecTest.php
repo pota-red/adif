@@ -363,7 +363,7 @@ final class SpecTest extends TestCase
     #[DataProvider('validLatProvider')]
     public function test_is_lat_with_valid_latitudes(string $lat): void
     {
-        $this->assertTrue((bool) Spec::isLat($lat));
+        $this->assertTrue((bool)Spec::isLat($lat));
     }
 
     public static function validLatProvider(): array
@@ -381,7 +381,7 @@ final class SpecTest extends TestCase
     #[DataProvider('invalidLatProvider')]
     public function test_is_lat_with_invalid_latitudes(string $lat): void
     {
-        $this->assertFalse((bool) Spec::isLat($lat));
+        $this->assertFalse((bool)Spec::isLat($lat));
     }
 
     public static function invalidLatProvider(): array
@@ -397,7 +397,7 @@ final class SpecTest extends TestCase
     #[DataProvider('validLonProvider')]
     public function test_is_lon_with_valid_longitudes(string $lon): void
     {
-        $this->assertTrue((bool) Spec::isLon($lon));
+        $this->assertTrue((bool)Spec::isLon($lon));
     }
 
     public static function validLonProvider(): array
@@ -414,7 +414,7 @@ final class SpecTest extends TestCase
     #[DataProvider('invalidLonProvider')]
     public function test_is_lon_with_invalid_longitudes(string $lon): void
     {
-        $this->assertFalse((bool) Spec::isLon($lon));
+        $this->assertFalse((bool)Spec::isLon($lon));
     }
 
     public static function invalidLonProvider(): array
@@ -430,7 +430,7 @@ final class SpecTest extends TestCase
     #[DataProvider('validMaidenheadProvider')]
     public function test_is_maidenhead_with_valid_grids(string $grid): void
     {
-        $this->assertTrue((bool) Spec::isMaidenhead($grid));
+        $this->assertTrue((bool)Spec::isMaidenhead($grid));
     }
 
     public static function validMaidenheadProvider(): array
@@ -447,7 +447,7 @@ final class SpecTest extends TestCase
     #[DataProvider('invalidMaidenheadProvider')]
     public function test_is_maidenhead_with_invalid_grids(string $grid): void
     {
-        $this->assertFalse((bool) Spec::isMaidenhead($grid));
+        $this->assertFalse((bool)Spec::isMaidenhead($grid));
     }
 
     public static function invalidMaidenheadProvider(): array
@@ -463,7 +463,7 @@ final class SpecTest extends TestCase
     {
         // Empty string is technically valid (length 0 is even and <= 12)
         // This is the actual behavior of the implementation
-        $this->assertTrue((bool) Spec::isMaidenhead(''));
+        $this->assertTrue((bool)Spec::isMaidenhead(''));
     }
 
     // isDate tests
@@ -588,7 +588,7 @@ final class SpecTest extends TestCase
     #[DataProvider('validPotaRefProvider')]
     public function test_is_pota_ref_with_valid_references(string $ref): void
     {
-        $this->assertTrue((bool) Spec::isPotaRef($ref));
+        $this->assertTrue((bool)Spec::isPotaRef($ref));
     }
 
     public static function validPotaRefProvider(): array
@@ -605,7 +605,7 @@ final class SpecTest extends TestCase
     #[DataProvider('invalidPotaRefProvider')]
     public function test_is_pota_ref_with_invalid_references(string $ref): void
     {
-        $this->assertFalse((bool) Spec::isPotaRef($ref));
+        $this->assertFalse((bool)Spec::isPotaRef($ref));
     }
 
     public static function invalidPotaRefProvider(): array
@@ -644,7 +644,7 @@ final class SpecTest extends TestCase
     #[DataProvider('validWwffRefProvider')]
     public function test_is_wwff_ref_with_valid_references(string $ref): void
     {
-        $this->assertTrue((bool) Spec::isWwffRef($ref));
+        $this->assertTrue((bool)Spec::isWwffRef($ref));
     }
 
     public static function validWwffRefProvider(): array
@@ -658,15 +658,15 @@ final class SpecTest extends TestCase
 
     public function test_is_wwff_ref_with_invalid_references(): void
     {
-        $this->assertFalse((bool) Spec::isWwffRef('US-0001')); // POTA format
-        $this->assertFalse((bool) Spec::isWwffRef('USFF0001')); // no dash
+        $this->assertFalse((bool)Spec::isWwffRef('US-0001')); // POTA format
+        $this->assertFalse((bool)Spec::isWwffRef('USFF0001')); // no dash
     }
 
     // isSotaRef tests
     #[DataProvider('validSotaRefProvider')]
     public function test_is_sota_ref_with_valid_references(string $ref): void
     {
-        $this->assertTrue((bool) Spec::isSotaRef($ref));
+        $this->assertTrue((bool)Spec::isSotaRef($ref));
     }
 
     public static function validSotaRefProvider(): array
@@ -680,8 +680,8 @@ final class SpecTest extends TestCase
 
     public function test_is_sota_ref_with_invalid_references(): void
     {
-        $this->assertFalse((bool) Spec::isSotaRef('US-0001')); // POTA format
-        $this->assertFalse((bool) Spec::isSotaRef('W7WLC001')); // no separators
+        $this->assertFalse((bool)Spec::isSotaRef('US-0001')); // POTA format
+        $this->assertFalse((bool)Spec::isSotaRef('W7WLC001')); // no separators
     }
 
     // Static array tests

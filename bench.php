@@ -11,7 +11,7 @@ if ($argc < 2) {
 }
 
 $file = $argv[1];
-if (! file_exists($file)) {
+if (!file_exists($file)) {
     echo "File not found: $file\n";
     exit(1);
 }

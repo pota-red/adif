@@ -11,9 +11,9 @@ if ($argc < 2) {
 }
 
 $file = $argv[1];
-$iterations = isset($argv[2]) ? (int) $argv[2] : 10;
+$iterations = isset($argv[2]) ? (int)$argv[2] : 10;
 
-if (! file_exists($file)) {
+if (!file_exists($file)) {
     echo "File not found: $file\n";
     exit(1);
 }
@@ -36,7 +36,7 @@ for ($iter = 0; $iter < $iterations; $iter++) {
 
     $timers = $doc->getTimers();
     foreach ($timers as $name => $ms) {
-        if (! isset($all_timers[$name])) {
+        if (!isset($all_timers[$name])) {
             $all_timers[$name] = [];
         }
         $all_timers[$name][] = $ms;

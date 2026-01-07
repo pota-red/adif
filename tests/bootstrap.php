@@ -16,6 +16,6 @@ function testDataPath(string $filename): string
 }
 
 // Ensure test data directory exists
-if (! is_dir(ADIF_TEST_DATA_DIR)) {
+if (!is_dir(ADIF_TEST_DATA_DIR)) {
     throw new RuntimeException('Test data directory not found: ' . ADIF_TEST_DATA_DIR);
 }

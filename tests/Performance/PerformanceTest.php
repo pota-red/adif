@@ -204,7 +204,7 @@ final class PerformanceTest extends TestCase
     public function test_parse_performance_large_file(): void
     {
         $path = testDataPath('large.adi');
-        if (! file_exists($path)) {
+        if (!file_exists($path)) {
             $this->markTestSkipped('large.adi not available');
         }
 
@@ -222,7 +222,7 @@ final class PerformanceTest extends TestCase
     public function test_dedupe_performance_large_file(): void
     {
         $path = testDataPath('large.adi');
-        if (! file_exists($path)) {
+        if (!file_exists($path)) {
             $this->markTestSkipped('large.adi not available');
         }
 

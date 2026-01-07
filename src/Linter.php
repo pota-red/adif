@@ -17,7 +17,7 @@ class Linter
         $errors = [];
         foreach ($parts as $i => $part) {
             foreach ($fields as $field) {
-                if (! preg_match('/<' . $field . ':[0-9]*>/is', $part)) {
+                if (!preg_match('/<' . $field . ':[0-9]*>/is', $part)) {
                     $errors[$i][] = $field;
                 }
             }

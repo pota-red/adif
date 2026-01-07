@@ -7,7 +7,7 @@ class Sanitizer
     public static function entry(array $fields): array
     {
 
-        if (isset($fields['station_callsign']) && ! isset($fields['operator'])) {
+        if (isset($fields['station_callsign']) && !isset($fields['operator'])) {
             $fields['operator'] = $fields['station_callsign'];
         }
 
@@ -34,11 +34,11 @@ class Sanitizer
                 case 'stx':
                 case 'dxcc':
                 case 'my_dxcc':
-                    $v = (int) $v;
+                    $v = (int)$v;
                     break;
                 case 'altitude':
                 case 'distance':
-                    $v = (float) $v;
+                    $v = (float)$v;
                     break;
                 case 'ant_path':
                 case 'clublog_qso_upload_status':
@@ -59,8 +59,6 @@ class Sanitizer
                         $v = substr($v, 0, 1);
                     }
                     break;
-                case 'band':
-                case 'band_rx':
                 case 'call':
                 case 'pota_ref':
                 case 'my_pota_ref':
@@ -91,6 +89,10 @@ class Sanitizer
                     }
                     $hash[$k] = $v;
                     break;
+                case 'band':
+                case 'band_rx':
+                    $v = substr($v, 0, 6);
+                    break;
                 case 'dcl_qslrdate':
                 case 'dcl_qslsdate':
                 case 'eqsl_qslrdate':
@@ -119,7 +121,7 @@ class Sanitizer
                     break;
                 case 'freq':
                 case 'freq_rx':
-                    $v = trim(number_format((float) $v, 6, '.', ''));
+                    $v = trim(number_format((float)$v, 6, '.', ''));
                     break;
                 case 'cont':
                     if (strlen($v) > 2) {
@@ -129,15 +131,21 @@ class Sanitizer
                 case 'silent_key':
                 case 'qso_random':
                 case 'force_init':
-                    $v = (bool) $v;
+                    $v = (bool)$v;
+                    break;
+                case 'lat':
+                case 'lon':
+                case 'my_lat':
+                case 'my_lon':
+                    $v = substr($v, 0, 16);
                     break;
             }
             $fields[$k] = $v;
         }
-        if (array_key_exists('band', $fields) && ! Spec::isBand($fields['band']) && array_key_exists('freq', $fields)) {
+        if (array_key_exists('band', $fields) && !Spec::isBand($fields['band']) && array_key_exists('freq', $fields)) {
             $fields['band'] = Spec::bandFromFreq($fields['freq']);
         }
-        if (array_key_exists('band_rx', $fields) && ! Spec::isBand($fields['band_rx']) && array_key_exists('freq_rx', $fields)) {
+        if (array_key_exists('band_rx', $fields) && !Spec::isBand($fields['band_rx']) && array_key_exists('freq_rx', $fields)) {
             $fields['band_rx'] = Spec::bandFromFreq($fields['freq_rx']);
         }
 

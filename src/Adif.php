@@ -46,11 +46,11 @@ class Adif
                 $new->addTimer('parse', $doc->getTimers('parse'));
                 $hs = ["fn={$doc->filename}", "ec={$doc->count}"];
                 $h = $doc->getHeaders('programid');
-                if (! empty($h)) {
+                if (!empty($h)) {
                     $hs[] = "pn=$h";
                 }
                 $h = $doc->getHeaders('programversion');
-                if (! empty($h)) {
+                if (!empty($h)) {
                     $hs[] = "pv=$h";
                 }
                 $new->addSource($hs);

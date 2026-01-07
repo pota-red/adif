@@ -7,7 +7,7 @@ A general purpose ADIF handling library.
 * Load ADIF from file or string
 * Parse ADIF
 * Merge multiple files
-* Sanitize data - cleans up common typoes (eg: hypens in dates, colons in times, etc)
+* Sanitize data - cleans up common typoes (eg: hyphens in dates, colons in times, etc)
 * Validate data - Generic rules based on ADIF 3.1.5
 * Deduplicate entries - Based on POTA unique contact rules
 * Morph data - Strip entry data to ADIF core spec or POTA supported fields
@@ -28,7 +28,7 @@ A general purpose ADIF handling library.
 ### Include With `composer`
 
 Add repository and require to your `composer.json`.
-```
+```json
 {
     "repositories": [
         {
@@ -41,12 +41,15 @@ Add repository and require to your `composer.json`.
     }
 }
 ```
-Run `composer update`.
+Run
+```bash
+composer update
+```
 
 
 ### Setup Your Script
 
-```
+```php
 require 'vendor/autoload.php';
 
 use Pota\Adif\Adif;
@@ -56,12 +59,12 @@ use Pota\Adif\Document;
 Full usage example at [example.md](example.md).
 
 ### Fresh ADIF
-```
+```php
 $doc = new Document;
 $doc->addEntry(array $adif_fields);
 ```
 ### From String
-```
+```php
 $doc = new Document(string $adif_data);
 $doc->parse();
 $headers = $doc->getHeaders();
@@ -69,7 +72,7 @@ $entries = $doc->getEntries();
 ```
 
 ### Single File
-```
+```php
 $doc = new Document(string $path_to_file);
 $doc->parse();
 $headers = $doc->getHeaders();
@@ -77,7 +80,7 @@ $entries = $doc->getEntries();
 ```
 
 ### Multiple Files
-```
+```php
 $lib = new Adif;
 $lib->loadFile(string $path_to_file_1);
 ...
@@ -89,14 +92,19 @@ unset($lib);
 
 ---
 
-After running `parse()`:
+After running
+```php
+parse();
+```
 
 ### Sanitize
 
-```$doc->sanitize();```
+```php
+$doc->sanitize();
+```
 
 ### Validate
-```
+```php
 $doc->validate();
 if ($doc->hasErrors()) {
     $errors = $doc->getErrors();
@@ -106,7 +114,7 @@ Array keys in `getErrors()` are the sequential array key from the `getEntries()`
 
 
 ### Deduplicate
-```
+```php
 $doc->dedupe();
 if ($doc->hasDupes()) {
     $dupes = $doc->getDupes();
@@ -120,9 +128,15 @@ Morph modes:
 1. `MORPH_ADIF_STRICT` -- remove entry fields which are not explicitly named in the specification
 2. `MORPH_POTA_ONLY` -- remove fields which are not used by POTA
 
-```
+```php
 $doc->morph(Adif::MORPH_ADIF_STRICT);
 ``` 
+
+### POTA Check
+```php
+$doc->potaCheck();
+```
+Adds `pota_valid` key to each entry with boolean value. If the entry does not meet minimum POTA requirements, the value is `false`; 
 
 --- 
 

@@ -792,7 +792,7 @@ final class DocumentTest extends TestCase
         // Add many entries with substantial data to ensure we exceed chunk size
         for ($i = 0; $i < 500; $i++) {
             $doc->addEntry([
-                'call' => 'W' . str_pad((string) $i, 4, '0', STR_PAD_LEFT),
+                'call' => 'W' . str_pad((string)$i, 4, '0', STR_PAD_LEFT),
                 'band' => '20M',
                 'mode' => 'SSB',
                 'qso_date' => '20231225',
@@ -842,7 +842,7 @@ final class DocumentTest extends TestCase
         $entryCount = 100;
         for ($i = 0; $i < $entryCount; $i++) {
             $doc->addEntry([
-                'call' => 'W' . str_pad((string) $i, 4, '0', STR_PAD_LEFT),
+                'call' => 'W' . str_pad((string)$i, 4, '0', STR_PAD_LEFT),
                 'band' => '20M',
                 'comment' => str_repeat('x', 100), // Pad to increase size
             ]);

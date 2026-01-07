@@ -40,11 +40,11 @@ class Document
 
     private int $mode = self::MODE_DEFAULT;
 
-    private bool $check_qps = true;
+    private bool $check_qps = false;
 
     public function __construct(?string $data = null)
     {
-        if (! empty($data)) {
+        if (!empty($data)) {
             if (str_contains($data, '<eor>') || str_contains($data, '<EOR>')) {
                 $this->fromString($data);
             } elseif (is_file($data)) {
@@ -86,9 +86,9 @@ class Document
 
     public function getTimers(?string $name = null): array|string
     {
-        if (! is_null($name)) {
+        if (!is_null($name)) {
             $name = trim(strtolower($name));
-            if (! empty($name) && array_key_exists($name, $this->timers)) {
+            if (!empty($name) && isset($this->timers[$name])) {
                 return $this->timers[$name];
             }
         }
@@ -100,7 +100,7 @@ class Document
     public function addTimer(string $name, float $value): void
     {
         $name = trim(strtolower($name));
-        if (! empty($name) && array_key_exists($name, $this->timers)) {
+        if (!empty($name) && isset($this->timers[$name])) {
             $this->timers[$name] += $value;
         } else {
             $this->timers[$name] = $value;
@@ -163,14 +163,9 @@ class Document
     public function parseHeaders(string $text): array
     {
         $data = [];
-        if (preg_match_all('/<([a-z_]*):.+?>([a-z0-9_ -.\/:@]+)?|(.*)/i', $text, $hs)) {
-            foreach ($hs[3] as $h) {
-                if (! empty($h)) {
-                    $data['strings'][] = trim($h);
-                }
-            }
+        if (preg_match_all('/<([a-z0-9_]*):.+?>([a-z0-9_ -.\/:@]+)?/i', $text, $hs)) {
             for ($i = 0; $i < count($hs[1]); $i++) {
-                if (! empty($hs[1][$i])) {
+                if (!empty($hs[1][$i])) {
                     $data[strtolower($hs[1][$i])] = trim($hs[2][$i]);
                 }
             }
@@ -192,18 +187,18 @@ class Document
                 for ($i = 0; $i < count($fs[0]); $i++) {
                     $f = $fs[1][$i];
                     $v = trim($fs[2][$i]);
-                    if (! empty($v)) {
+                    if (!empty($v)) {
                         $vs[$f] = $v;
                     }
                 }
-                if (! empty($vs)) {
+                if (!empty($vs)) {
                     ksort($vs);
                     foreach ($this->overrides as $f => $v) {
                         $vs[$f] = $v;
                     }
                     $data[] = $vs;
                 }
-                if (array_key_exists('qso_date', $vs) && array_key_exists('time_on', $vs)) {
+                if (isset($vs['qso_date']) && isset($vs['time_on'])) {
                     $t = strtotime($vs['qso_date'] . ' ' . $vs['time_on']);
                     if ($t < $first) {
                         $first = $t;
@@ -239,12 +234,14 @@ class Document
     public function getHeaders(?string $header = null): string|array
     {
         $header = trim(strtolower($header));
-        if (! empty($header)) {
-            if (array_key_exists($header, $this->headers)) {
+        if (!empty($header)) {
+            if (isset($this->headers[$header])) {
                 return $this->headers[$header];
             }
+
             return '';
         }
+
         return $this->headers;
     }
 
@@ -307,7 +304,7 @@ class Document
             }
         }
         if ($this->check_qps) {
-            if (! Validator::duration($this->entries)) {
+            if (!Validator::duration($this->entries)) {
                 $this->errors['@'][] = 'qps';
             }
         }
@@ -331,7 +328,7 @@ class Document
         foreach ($this->entries as $i => $entry) {
             $hash = [];
             foreach (Spec::$pota_unique as $k) {
-                $hash[] = array_key_exists($k, $entry) ? $entry[$k] : '-';
+                $hash[] = $entry[$k] ?? '-';
             }
             $hash = implode('|', $hash);
             if (isset($hashes[$hash])) {  // O(1) hash lookup instead of O(n) in_array
@@ -373,7 +370,7 @@ class Document
                 $this->unroll_pota_refs();
                 break;
         }
-        if (! empty($filter)) {
+        if (!empty($filter)) {
             // Convert array to hash set for O(1) lookups
             $filter_set = array_flip($filter);
             foreach ($this->entries as $i => $entry) {
@@ -394,11 +391,11 @@ class Document
             $isPotaRef = isset($entry['pota_ref']);
 
             // mangle my_sig_info into my_pota_ref
-            if ($isMySigInfo && ! $isMyPotaRef) {
+            if ($isMySigInfo && !$isMyPotaRef) {
                 $entry['my_pota_ref'] = $entry['my_sig_info'];
             }
             // mangle sig_info into pota_ref
-            if ($isSigInfo && ! $isPotaRef) {
+            if ($isSigInfo && !$isPotaRef) {
                 $entry['pota_ref'] = $entry['sig_info'];
             }
 
@@ -436,7 +433,7 @@ class Document
             }
 
             // only activator side in -fer
-            elseif ($isActivatorFer && ! $isHunterFer) {
+            elseif ($isActivatorFer && !$isHunterFer) {
                 $this->removeEntry($i);
                 $new_entry = $entry;
                 $new_entry['pota_unrolled_from_rec'] = $i;
@@ -465,7 +462,7 @@ class Document
             }
 
             // only hunter side in -fer
-            elseif ($isHunterFer && ! $isActivatorFer) {
+            elseif ($isHunterFer && !$isActivatorFer) {
                 $this->removeEntry($i);
                 $new_entry = $entry;
                 $new_entry['pota_unrolled_from_rec'] = $i;
@@ -494,7 +491,7 @@ class Document
             }
 
             // neither side in -fers, check for @locs
-            elseif (! $isActivatorFer && ! $isHunterFer) {
+            elseif (!$isActivatorFer && !$isHunterFer) {
                 if ($isActivatorLoc) {
                     $mprparts = explode('@', $entry['my_pota_ref']);
                     $myref = $mprparts[0];
@@ -554,6 +551,18 @@ class Document
             }
         } else {
             $this->chunks[] = array_keys($this->entries);
+        }
+        $this->timer($tick, __FUNCTION__);
+    }
+
+    public function potaCheck() {
+        $tick = $this->tick();
+        foreach ($this->entries as $i => $entry) {
+            if (isset($this->errors[$i])) {
+                $this->entries[$i]['pota_valid'] = (!array_intersect($this->errors[$i], Spec::$pota_minimum));
+            } else {
+                $this->entries[$i]['pota_valid'] = true;
+            }
         }
         $this->timer($tick, __FUNCTION__);
     }
@@ -641,6 +650,6 @@ class Document
         $json = ($pretty ? json_encode($data, JSON_PRETTY_PRINT) : json_encode($data)) . PHP_EOL;
         $this->timer($tick, $fn);
 
-        return str_replace((string) $tm, (string) $this->getTimers($fn), $json);
+        return str_replace((string)$tm, (string)$this->getTimers($fn), $json);
     }
 }

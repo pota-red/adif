@@ -26,43 +26,43 @@ class Validator
                 case 'call':
                 case 'operator':
                     $self[] = $v;
-                    if (!preg_match('/^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9\/]+$/', $v)) {
+                    if (!Spec::isPotentialCallsign($v)) {
                         $error = $k;
                     }
                     break;
                 case 'station_callsign':
-                    if (!preg_match('/^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9\/]+$/', $v)) {
+                    if (!Spec::isPotentialCallsign($v)) {
                         $error = $k;
                     }
                     break;
                 case 'age':
-                    if (! is_numeric($v) || $v < 0 || $v > 120) {
+                    if (!is_numeric($v) || $v < 0 || $v > 120) {
                         $error = $k;
                     }
                     break;
                 case 'ant_az':
-                    if (! is_numeric($v) || $v < 0 || $v > 360) {
+                    if (!is_numeric($v) || $v < 0 || $v > 360) {
                         $error = $k;
                     }
                     break;
                 case 'ant_el':
-                    if (! is_numeric($v) || $v < -90 || $v > 90) {
+                    if (!is_numeric($v) || $v < -90 || $v > 90) {
                         $error = $k;
                     }
                     break;
                 case 'ant_path':
-                    if (! Spec::isAntPath($v)) {
+                    if (!Spec::isAntPath($v)) {
                         $error = $k;
                     }
                     break;
                 case 'arrl_sect':
                 case 'my_arrl_sect':
-                    if (! Spec::isArrlSection($v)) {
+                    if (!Spec::isArrlSection($v)) {
                         $error = $k;
                     }
                     break;
                 case 'a_index':
-                    if (! is_numeric($v) || $v < 0 || $v > 400) {
+                    if (!is_numeric($v) || $v < 0 || $v > 400) {
                         $error = $k;
                     }
                     break;
@@ -76,60 +76,60 @@ class Validator
                 case 'my_iota_island_id':
                 case 'ten_ten':
                 case 'uksmg':
-                    if (! is_numeric($v) || $v < 0) {
+                    if (!is_numeric($v) || $v < 0) {
                         $error = $k;
                     }
                     break;
                 case 'altitude':
                 case 'my_altitude':
-                    if (! is_numeric($v)) {
+                    if (!is_numeric($v)) {
                         $error = $k;
                     }
                     break;
                 case 'k_index':
-                    if (! is_numeric($v) || $v < 0 || $v > 9) {
+                    if (!is_numeric($v) || $v < 0 || $v > 9) {
                         $error = $k;
                     }
                     break;
                 case 'my_cq_zone':
-                    if (! is_numeric($v) || $v < 1 || $v > 40) {
+                    if (!is_numeric($v) || $v < 1 || $v > 40) {
                         $error = $k;
                     }
                     break;
                 case 'nr_bursts':
                 case 'nr_pings':
-                    if (! is_int($v)) {
+                    if (!is_int($v)) {
                         $error = $k;
                     }
                     break;
                 case 'my_itu_zone':
-                    if (! is_numeric($v) || $v < 1 || $v > 90) {
+                    if (!is_numeric($v) || $v < 1 || $v > 90) {
                         $error = $k;
                     }
                     break;
                 case 'sfi':
-                    if (! is_numeric($v) || $v < 0 || $v > 300) {
+                    if (!is_numeric($v) || $v < 0 || $v > 300) {
                         $error = $k;
                     }
                     break;
                 case 'freq':
-                    if (! Spec::isFreq($v, (array_key_exists('band', $fields) ? $fields['band'] : null))) {
+                    if (!Spec::isFreq($v, (array_key_exists('band', $fields) ? $fields['band'] : null))) {
                         $error = $k;
                     }
                     break;
                 case 'freq_rx':
-                    if (! Spec::isFreq($v, (array_key_exists('band_rx', $fields) ? $fields['band_rx'] : null))) {
+                    if (!Spec::isFreq($v, (array_key_exists('band_rx', $fields) ? $fields['band_rx'] : null))) {
                         $error = $k;
                     }
                     break;
                 case 'band':
                 case 'band_rx':
-                    if (! Spec::isBand($v)) {
+                    if (!Spec::isBand($v)) {
                         $error = $k;
                     }
                     break;
                 case 'mode':
-                    if (! Spec::isMode($v)) {
+                    if (!Spec::isMode($v)) {
                         $error = $k;
                     }
                     break;
@@ -148,24 +148,24 @@ class Validator
                 case 'qslsdate':
                 case 'qso_date':
                 case 'qso_date_off':
-                    if (! Spec::isDate($v)) {
+                    if (!Spec::isDate($v)) {
                         $error = $k;
                     }
                     break;
                 case 'time_off':
                 case 'time_on':
-                    if (! Spec::isTime($v)) {
+                    if (!Spec::isTime($v)) {
                         $error = $k;
                     }
                     break;
                 case 'submode':
-                    if (! Spec::isSubMode($v)) {
+                    if (!Spec::isSubMode($v)) {
                         $error = $k;
                     }
                     break;
                 case 'gridsquare':
                 case 'my_gridsquare':
-                    if (! Spec::isMaidenhead($v)) {
+                    if (!Spec::isMaidenhead($v)) {
                         $error = $k;
                     }
                     break;
@@ -173,7 +173,7 @@ class Validator
                 case 'my_vucc_grids':
                     $vs = explode(',', $v);
                     foreach ($vs as $v1) {
-                        if (! Spec::isMaidenhead(trim($v1))) {
+                        if (!Spec::isMaidenhead(trim($v1))) {
                             $error = $k;
                             break;
                         }
@@ -193,12 +193,12 @@ class Validator
                 case 'hamqth_qso_upload_status':
                 case 'hrdlog_qso_upload_status':
                 case 'qrzcom_qso_upload_status':
-                    if (! Spec::isQsoUpload($v)) {
+                    if (!Spec::isQsoUpload($v)) {
                         $error = $k;
                     }
                     break;
                 case 'qrzcom_qso_download_status':
-                    if (! Spec::isQsoDownload($v)) {
+                    if (!Spec::isQsoDownload($v)) {
                         $error = $k;
                     }
                     break;
@@ -206,7 +206,7 @@ class Validator
                 case 'eqsl_qsl_rcvd':
                 case 'lotw_qsl_rcvd':
                 case 'qsl_rcvd':
-                    if (! Spec::isQsoRcvd($v)) {
+                    if (!Spec::isQsoRcvd($v)) {
                         $error = $k;
                     }
                     break;
@@ -214,58 +214,58 @@ class Validator
                 case 'eqsl_qsl_sent':
                 case 'lotw_qsl_sent':
                 case 'qsl_sent':
-                    if (! Spec::isQsoSent($v)) {
+                    if (!Spec::isQsoSent($v)) {
                         $error = $k;
                     }
                     break;
                 case 'qsl_rcvd_via':
                 case 'qsl_sent_via':
-                    if (! Spec::isQslVia($v)) {
+                    if (!Spec::isQslVia($v)) {
                         $error = $k;
                     }
                     break;
                 case 'cont':
-                    if (! Spec::isContinent($v)) {
+                    if (!Spec::isContinent($v)) {
                         $error = $k;
                     }
                     break;
                 case 'dxcc':
                 case 'my_dxcc':
-                    if (! Spec::isDxcc($v)) {
+                    if (!Spec::isDxcc($v)) {
                         $error = $k;
                     }
                     break;
                 case 'prop_mode':
-                    if (! Spec::isPropagation($v)) {
+                    if (!Spec::isPropagation($v)) {
                         $error = $k;
                     }
                     break;
                 case 'pota_park_ref':
                 case 'pota_my_park_ref':
-                    if (! Spec::isPotaRef($v)) {
+                    if (!Spec::isPotaRef($v)) {
                         $error = $k;
                     }
                     break;
                 case 'sota_ref':
                 case 'my_sota_ref':
-                    if (! Spec::isSotaRef($v)) {
+                    if (!Spec::isSotaRef($v)) {
                         $error = $k;
                     }
                     break;
                 case 'iota':
                 case 'my_iota':
-                    if (! Spec::isIotaRef($v)) {
+                    if (!Spec::isIotaRef($v)) {
                         $error = $k;
                     }
                     break;
                 case 'wwff_ref':
                 case 'my_wwff_ref':
-                    if (! Spec::isWwffRef($v)) {
+                    if (!Spec::isWwffRef($v)) {
                         $error = $k;
                     }
                     break;
             }
-            if (! empty($error)) {
+            if (!empty($error)) {
                 $errors[] = $error;
             }
         }
@@ -274,7 +274,7 @@ class Validator
         }
         if (count($found_required) != count($required)) {
             foreach ($required as $k) {
-                if (! isset($found_required[$k])) {
+                if (!isset($found_required[$k])) {
                     $errors[] = $k;
                 }
             }
@@ -288,7 +288,7 @@ class Validator
         $first = time();
         $last = 0;
         foreach ($entries as $entry) {
-            if (! isset($entry['qso_date']) || ! isset($entry['time_on'])) {
+            if (!isset($entry['qso_date']) || !isset($entry['time_on'])) {
                 continue;
             }
             $stamp = strtotime($entry['qso_date'] . ' ' . $entry['time_on']);
