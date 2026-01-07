@@ -384,7 +384,6 @@ class Document
     {
         $tick = $this->tick();
         foreach ($this->entries as $i => $entry) {
-
             $isMySigInfo = isset($entry['my_sig_info']);
             $isSigInfo = isset($entry['sig_info']);
             $isMyPotaRef = isset($entry['my_pota_ref']);
