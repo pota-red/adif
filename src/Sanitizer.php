@@ -96,7 +96,7 @@ class Sanitizer
                     break;
                 case 'band':
                 case 'band_rx':
-                    $v = substr($v, 0, 6);
+                    $v = substr(str_replace(' ', '', str_replace(['met', 'mtr'], 'M', $v)), 0, 6);
                     break;
                 case 'dcl_qslrdate':
                 case 'dcl_qslsdate':

@@ -454,7 +454,6 @@ class Document
                             $new_entry['pota_location'] = trim($theirstate);
                         }
                         $new_entry['pota_park_ref'] = trim($theirref);
-
                     }
                     $this->addEntry($new_entry);
                 }
@@ -554,7 +553,8 @@ class Document
         $this->timer($tick, __FUNCTION__);
     }
 
-    public function potaCheck() {
+    public function potaCheck(): void
+    {
         $tick = $this->tick();
         foreach ($this->entries as $i => $entry) {
             if (isset($this->errors[$i])) {
