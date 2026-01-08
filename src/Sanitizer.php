@@ -81,7 +81,7 @@ class Sanitizer
                 case 'call':
                 case 'operator':
                 case 'station_callsign':
-                    $v = trim(strtoupper($v));
+                    $v = trim(str_replace(' ', '', strtoupper($v)));
                     if (strlen($v) > 30) {
                         $v = substr($v, 0, 30);
                     }
