@@ -81,7 +81,7 @@ class Sanitizer
                 case 'call':
                 case 'operator':
                 case 'station_callsign':
-                    $v = trim(str_replace(' ', '', strtoupper($v)));
+                    $v = trim(str_replace([' ', ','], '', strtoupper($v)));
                     if (strlen($v) > 30) {
                         $v = substr($v, 0, 30);
                     }
@@ -96,7 +96,7 @@ class Sanitizer
                     break;
                 case 'band':
                 case 'band_rx':
-                    $v = substr(str_replace(' ', '', str_replace(['met', 'mtr'], 'M', $v)), 0, 6);
+                    $v = substr(str_replace(' ', '', str_replace(['met', 'mtr', 'mers'], 'M', strtolower($v))), 0, 6);
                     break;
                 case 'dcl_qslrdate':
                 case 'dcl_qslsdate':
