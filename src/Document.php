@@ -179,7 +179,7 @@ class Document
         $first = time();
         $last = 0;
         $data = [];
-        $text = explode('<eor>', strtolower($text));
+        $text = explode('<eor>', str_replace('<EOR>', '<eor>', $text));
         foreach ($text as $chunk) {
             $chunk = trim($chunk);
             if (preg_match_all('/<([a-z0-9_]*):.+?>([a-z0-9_ -.\/:@]+)?/i', $chunk, $fs)) {
