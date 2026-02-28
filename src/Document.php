@@ -185,7 +185,7 @@ class Document
             if (preg_match_all('/<([a-z0-9_]*):.+?>([a-z0-9_ -.\/:@]+)?/i', $chunk, $fs)) {
                 $vs = [];
                 for ($i = 0; $i < count($fs[0]); $i++) {
-                    $f = $fs[1][$i];
+                    $f = strtolower($fs[1][$i]);
                     $v = trim($fs[2][$i]);
                     if (!empty($v)) {
                         $vs[$f] = $v;
